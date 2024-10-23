@@ -35,7 +35,13 @@ dependencies {
 
     implementation(libs.appcompat)
     implementation(libs.material)
+    implementation(libs.constraintlayout)
     testImplementation(libs.junit)
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)
+
+    // Libraries for QR scanning and generating
+    implementation(libs.zxing.embedded)
+    implementation(libs.zxing.core)
+
 }
