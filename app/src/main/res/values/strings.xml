@@ -1,3 +1,18 @@
 <resources>
-    <string name="app_name">carbon-project</string>
+    <string name="app_name">Event Lottery System</string>
+    <string name="create_new_facility">Create New Facility</string>
+    <string name="delete_users">Delete Users</string>
+    <string name="phone">Phone:</string>
+    <string name="email">Email:</string>
+    <string name="name">Name:</string>
+    <string name="user_profile_picture">User profile picture</string>
+    <string name="create_facility">Create Facility</string>
+    <string name="enter_description">Enter description</string>
+    <string name="description">Description</string>
+    <string name="enter_capacity">Enter capacity</string>
+    <string name="capacity">Capacity</string>
+    <string name="enter_location">Enter location</string>
+    <string name="location">Location</string>
+    <string name="enter_facility_name">Enter facility name</string>
+    <string name="facility_name">Facility Name</string>
 </resources>
