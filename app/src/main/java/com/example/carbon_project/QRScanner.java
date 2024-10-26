@@ -16,7 +16,7 @@ import androidx.fragment.app.Fragment;
 import com.journeyapps.barcodescanner.ScanContract;
 import com.journeyapps.barcodescanner.ScanOptions;
 
-public class QRScannerFragment extends Fragment {
+public class QRScanner extends Fragment {
 
     private static final int CAMERA_PERMISSION_REQUEST_CODE = 101;
 
