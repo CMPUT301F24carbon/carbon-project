@@ -1,6 +1,58 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_height="wrap_content"
+    android:layout_width="match_parent">
+
+    <!-- Event Image -->
+    <ImageView
+        android:id="@+id/imageView_event_image"
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        android:contentDescription="Event Image"
+        android:padding="5dp"
+        android:src="@drawable/ic_image"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <!-- Event Name -->
+    <TextView
+        android:id="@+id/textView_event_name"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="5dp"
+        android:layout_marginEnd="80dp"
+        android:text="Event Name"
+        android:textSize="24sp"
+        app:layout_constraintStart_toEndOf="@id/imageView_event_image"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <!-- Facility Name -->
+    <TextView
+        android:id="@+id/textView_facility_name"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
+        android:layout_marginBottom="5dp"
+        android:layout_marginStart="2dp"
+        android:textSize="15sp"
+        android:text="Facility Name"
+        app:layout_constraintStart_toEndOf="@id/imageView_event_image"
+        app:layout_constraintEnd_toEndOf="@id/textView_event_name"
+        app:layout_constraintTop_toBottomOf="@id/textView_event_name" />
+
+    <!-- Status -->
+    <TextView
+        android:id="@+id/textView_status"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Status"
+        android:textSize="15sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/textView_event_name"
+        app:layout_constraintTop_toTopOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

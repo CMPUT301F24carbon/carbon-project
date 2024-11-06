@@ -7,18 +7,26 @@
     android:layout_height="match_parent"
     tools:context=".MainActivity">
 
+    <ListView
+        android:id="@+id/listView_event_list"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        app:layout_constraintTop_toBottomOf="@id/top_navigation"
+        app:layout_constraintBottom_toTopOf="@id/bottom_navigation" >
+    </ListView>
+
     <!-- Top Navigation bar -->
     <com.google.android.material.appbar.MaterialToolbar
         android:id="@+id/top_navigation"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
-        app:layout_constraintEnd_toEndOf="parent"
+        android:background="?attr/colorPrimary"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:menu="@menu/top_nav_menu"
-        app:title="@string/app_name"
-        android:onClick="onTitleClick" />
+        app:title="Entrant" />     <!-- Modify the title to match the current user -->
 
     <!-- Button Navigation bar -->
     <com.google.android.material.bottomnavigation.BottomNavigationView
@@ -26,6 +34,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
+        android:background="?attr/colorPrimary"
         app:labelVisibilityMode="unlabeled"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
