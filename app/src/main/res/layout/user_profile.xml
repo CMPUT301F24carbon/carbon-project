@@ -10,16 +10,15 @@
         android:id="@+id/textView_profile_image"
         android:layout_width="150dp"
         android:layout_height="150dp"
+        android:layout_marginTop="70dp"
         android:background="@drawable/bg_circular_shape"
         android:gravity="center"
         android:text="A"
         android:textSize="100sp"
-        android:layout_marginTop="80dp"
+        android:visibility="visible"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.1"
-        android:visibility="visible" />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <!-- Profile Image -->
     <ImageView
@@ -57,13 +56,14 @@
             android:paddingStart="5dp"
             android:text="Name:" />
 
-        <TextView
-            android:id="@+id/textView_name"
+        <EditText
+            android:id="@+id/editText_name"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:padding="10dp"
+            android:textSize="20sp"
             android:text="FirstName LastName"
-            android:textSize="20sp" />
+            android:enabled="false" />
 
         <!-- Email -->
         <TextView
@@ -75,13 +75,15 @@
             android:paddingStart="5dp"
             android:text="Email:" />
 
-        <TextView
-            android:id="@+id/textView_email"
+        <EditText
+            android:id="@+id/editText_email"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:padding="10dp"
+            android:textSize="20sp"
+            android:inputType="textEmailAddress"
             android:text="12345678@gmail.com"
-            android:textSize="20sp" />
+            android:enabled="false" />
 
         <!-- Phone -->
         <TextView
@@ -93,13 +95,14 @@
             android:paddingStart="5dp"
             android:text="Phone:" />
 
-        <TextView
-            android:id="@+id/textView_phone_number"
+        <EditText
+            android:id="@+id/editText_phone_number"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:enabled="false"
             android:padding="10dp"
-            android:text="123456789"
-            android:textSize="20sp" />
+            android:inputType="phone"
+            android:text="N/A" />
 
         <!-- Facility -->
         <TextView
@@ -111,32 +114,68 @@
             android:paddingStart="5dp"
             android:text="Facility:" />
 
-        <TextView
-            android:id="@+id/textView_facility"
+        <!-- A fake EditText but operating as a button -->
+        <EditText
+            android:id="@+id/editText_facility"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:clickable="false"
+            android:focusable="false"
+            android:enabled="false"
             android:padding="10dp"
-            android:text="Facility Name"
-            android:textSize="20sp" />
+            android:text="N/A" />
 
     </LinearLayout>
 
+    <!-- Edit Profile -->
     <com.google.android.material.button.MaterialButton
         android:id="@+id/button_edit_profile"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="30dp"
         android:clickable="true"
+        android:focusable="true"
         android:text="Edit"
-        android:textColor="?attr/colorPrimaryVariant"
+        android:textColor="@color/white"
         app:backgroundTint="@color/purple_light"
-        app:icon="@android:drawable/ic_menu_edit"
+        app:icon="@drawable/ic_edit"
         app:iconGravity="textStart"
         app:iconPadding="8dp"
-        app:iconTint="?attr/colorPrimaryVariant"
+        app:iconTint="@color/white"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        android:visibility="visible" />
 
+    <!-- Save Profile -->
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/button_save_profile"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="30dp"
+        android:clickable="true"
+        android:focusable="true"
+        android:text="Save"
+        android:textColor="@color/white"
+        app:backgroundTint="@color/purple_light"
+        app:icon="@drawable/ic_save"
+        app:iconGravity="textStart"
+        app:iconPadding="8dp"
+        app:iconTint="@color/white"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        android:visibility="gone" />
 
+    <!-- Upload Image -->
+    <Button
+        android:id="@+id/button_upload"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="200dp"
+        android:backgroundTint="@color/purple_500"
+        android:text="Upload"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:visibility="gone" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
