@@ -7,16 +7,15 @@ package com.example.carbon_project;
 public class Organizer extends User {
 
     /**
-     * Constructor for creating an Entrant.
-     * @param userId Unique identifier for the user.
-     * @param firstName First Name of the user.
-     * @param lastName Last Name of the user.
-     * @param email Email address of the user.
-     * @param phoneNumber Contact number of the user.
-     * @param profileImage Contact number of the user.
+     * Constructs a User object and writes it to firestore
+     * @param userId      Unique identifier for the user.
+     * @param name        Name of the user.
+     * @param email       Email address of the user.
+     * @param phoneNumber Phone number of the user.
+     * @param profileImage  ProfileImage of the user.
      */
-    public Organizer(String userId, String firstName, String lastName, String email, String phoneNumber, String profileImage) {
-        super(userId, firstName, lastName, email, phoneNumber, profileImage);
+    public Organizer(String userId, String name, String email, String phoneNumber, String profileImage) {
+        super(userId, name, email, phoneNumber, profileImage);
     }
 
     /**
@@ -38,11 +37,4 @@ public class Organizer extends User {
     public void handleNotification(String message) {
     }
 
-    /**
-     * Get the initials of the organizer.
-     * @return A string containing the initials of the organizer.
-     */
-    public String getInitials() {
-        return String.valueOf(getFirstName().charAt(0)) + getLastName().charAt(0);
-    }
 }
