@@ -32,7 +32,7 @@ import java.io.OutputStream;
 //        .addToBackStack(null)
 //        .commit();
 
-public class QRGenerator extends Fragment {
+public class QRGeneratorFragment extends Fragment {
 
     private static final int STORAGE_PERMISSION_REQUEST_CODE = 101;
     private static final String ARG_QR_TEXT = "qr_text";  // The text QR code shows
@@ -40,8 +40,8 @@ public class QRGenerator extends Fragment {
     private Button saveButton;
     private Bitmap qrCodeBitmap;
 
-    public static QRGenerator newInstance(String text) {
-        QRGenerator fragment = new QRGenerator();
+    public static QRGeneratorFragment newInstance(String text) {
+        QRGeneratorFragment fragment = new QRGeneratorFragment();
         Bundle args = new Bundle();
         args.putString(ARG_QR_TEXT, text); // Pass the string as an argument
         fragment.setArguments(args);
