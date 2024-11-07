@@ -6,9 +6,10 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentActivity;
 
-public class CreateFacilityActivity extends FragmentActivity {
+public class CreateFacilityActivity extends AppCompatActivity {
 
     private EditText facilityNameInput;
     private EditText locationInput;

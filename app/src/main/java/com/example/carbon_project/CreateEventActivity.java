@@ -1,2 +1,3 @@
-package com.example.carbon_project;public class CreateEventActivity {
+package com.example.carbon_project;
+    public class CreateEventActivity {
 }
