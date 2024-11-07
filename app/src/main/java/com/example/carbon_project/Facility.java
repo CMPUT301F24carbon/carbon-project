@@ -1,5 +1,7 @@
 package com.example.carbon_project;
 
+import java.util.ArrayList;
+
 /**
  * Class represents a Facility; which belong to an organizer.
  */
@@ -9,6 +11,7 @@ public class Facility {
     private String location;
     private int capacity;
     private String description;
+    private ArrayList<Event> facilityEvents;
 
     /**
      * Constructor to initialize the facility.
@@ -96,5 +99,21 @@ public class Facility {
      */
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    /**
+     * Returns the list of events associated with this Facility
+     * @return an ArrayList<Event> of Events associated with this Facility
+     */
+    public ArrayList<Event> getEvents() {
+        return facilityEvents;
+    }
+
+    /**
+     * Adds an event to the Facility's list
+     * @param event the Event to be added to the list
+     */
+    public void addEvent(Event event) {
+        facilityEvents.add(event);
     }
 }
