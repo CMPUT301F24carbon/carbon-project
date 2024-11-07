@@ -35,8 +35,17 @@ android {
 dependencies {
     implementation(libs.appcompat)
     implementation(libs.material)
+
+    implementation(libs.constraintlayout)
+
     implementation(platform("com.google.firebase:firebase-bom:33.5.1"))
+
     testImplementation(libs.junit)
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)
+
+    // Libraries for QR scanning and generating
+    implementation(libs.zxing.embedded)
+    implementation(libs.zxing.core)
+
 }
