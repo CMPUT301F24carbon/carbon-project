@@ -4,7 +4,6 @@
     android:orientation="vertical"
     android:padding="16dp">
 
-    <!-- RecyclerView for displaying the list of facilities -->
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/facilityRecyclerView"
         android:layout_width="match_parent"
