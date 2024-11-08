@@ -1,5 +1,6 @@
 package com.example.carbon_project;
 
+import android.app.DatePickerDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -9,6 +10,9 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 
 public class CreateEventActivity extends AppCompatActivity {
 
@@ -20,6 +24,8 @@ public class CreateEventActivity extends AppCompatActivity {
     private CheckBox geolocationCheckbox;
     private Button publishButton;
     private Button backButton;
+    private EditText eventStartDateInput;
+    private EditText eventEndDateInput;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,7 +40,12 @@ public class CreateEventActivity extends AppCompatActivity {
         geolocationCheckbox = findViewById(R.id.eventCheckbox);
         publishButton = findViewById(R.id.publishButton);
         backButton = findViewById(R.id.backButton);
+        eventStartDateInput = findViewById(R.id.eventStartDateInput);
+        eventEndDateInput = findViewById(R.id.eventEndDateInput);
 
+        // set start and end date
+        eventStartDateInput.setOnClickListener(v -> showDatePickerDialog(eventStartDateInput));
+        eventEndDateInput.setOnClickListener(v -> showDatePickerDialog(eventEndDateInput));
 
         // Publish button functionality
         publishButton.setOnClickListener(new View.OnClickListener() {
@@ -97,4 +108,18 @@ public class CreateEventActivity extends AppCompatActivity {
         description.setText("");
     }
 
+    private void showDatePickerDialog(final EditText editText) {
+        Calendar calendar = Calendar.getInstance();
+        int year = calendar.get(Calendar.YEAR);
+        int month = calendar.get(Calendar.MONTH);
+        int day = calendar.get(Calendar.DAY_OF_MONTH);
+
+        DatePickerDialog datePickerDialog = new DatePickerDialog(this, (view, selectedYear, selectedMonth, selectedDay) -> {
+            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd", getResources().getConfiguration().locale);
+            calendar.set(selectedYear, selectedMonth, selectedDay);
+            editText.setText(dateFormat.format(calendar.getTime()));
+        }, year, month, day);
+
+        datePickerDialog.show();
+    }
 }

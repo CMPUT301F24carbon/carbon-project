@@ -23,6 +23,7 @@
         </activity>
         <activity android:name=".CreateFacilityActivity" />
         <activity android:name=".FacilityListActivity" />
+        <activity android:name=".CreateEventActivity" />
 
     </application>
 

@@ -126,6 +126,16 @@
         android:visibility="gone" />
 
     <Button
+        android:id="@+id/createEventButton"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="@string/create_new_event"
+        app:layout_constraintTop_toBottomOf="@id/createFacilityButton"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:visibility="gone" />
+
+    <Button
         android:id="@+id/deleteUserButton"
         android:layout_width="0dp"
         android:layout_height="wrap_content"

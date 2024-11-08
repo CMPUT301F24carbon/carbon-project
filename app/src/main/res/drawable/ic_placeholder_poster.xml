@@ -4,17 +4,14 @@
     android:viewportWidth="24"
     android:viewportHeight="24">
 
-    <!-- Background Rectangle as a Path -->
     <path
         android:fillColor="#FF000000"
         android:pathData="M0,0 H24 V24 H0 Z"/>
 
-    <!-- Sun Circle -->
     <path
         android:fillColor="#FFFF00"
         android:pathData="M12,6 A2,2 0 1,1 12,10 A2,2 0 1,1 12,6"/>
 
-    <!-- Mountains Shape -->
     <path
         android:fillColor="#000000"
         android:pathData="M3,21 L10,10 L14,15 L18,12 L21,21 Z"/>
