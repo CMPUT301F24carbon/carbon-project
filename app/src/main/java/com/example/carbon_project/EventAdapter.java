@@ -38,12 +38,8 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHol
         // Get the current event object
         Event currentEvent = events.get(position);
 
-        // Set event name, location, and date
         holder.eventNameTextView.setText(currentEvent.getName());
         holder.eventLocationTextView.setText(currentEvent.getLocation());
-        holder.eventStatusTextView.setText(currentEvent.getDate());
-
-        // Set event capacity, start date, and end date
         holder.eventCapacityTextView.setText("Capacity: " + currentEvent.getCapacity());
         holder.eventStartDateTextView.setText("Start Date: " + currentEvent.getStartDate());
         holder.eventEndDateTextView.setText("End Date: " + currentEvent.getEndDate());
