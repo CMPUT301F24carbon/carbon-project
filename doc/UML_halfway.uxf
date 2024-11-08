@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <diagram program="umlet" version="15.1">
-  <zoom_level>10</zoom_level>
+  <zoom_level>3</zoom_level>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>580</x>
-      <y>30</y>
-      <w>300</w>
-      <h>250</h>
+      <x>261</x>
+      <y>351</y>
+      <w>90</w>
+      <h>75</h>
     </coordinates>
     <panel_attributes>&lt;&lt;abstract&gt;&gt;
 User
@@ -30,10 +30,10 @@ User
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>580</x>
-      <y>400</y>
-      <w>300</w>
-      <h>160</h>
+      <x>261</x>
+      <y>447</y>
+      <w>90</w>
+      <h>48</h>
     </coordinates>
     <panel_attributes>Organizer
 --
@@ -50,21 +50,21 @@ User
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>720</x>
-      <y>270</y>
-      <w>30</w>
-      <h>150</h>
+      <x>303</x>
+      <y>423</y>
+      <w>9</w>
+      <h>30</h>
     </coordinates>
     <panel_attributes>lt=&lt;&lt;-</panel_attributes>
-    <additional_attributes>10.0;10.0;10.0;130.0</additional_attributes>
+    <additional_attributes>10.0;10.0;10.0;80.0</additional_attributes>
   </element>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>990</x>
-      <y>90</y>
-      <w>300</w>
-      <h>140</h>
+      <x>384</x>
+      <y>369</y>
+      <w>90</w>
+      <h>42</h>
     </coordinates>
     <panel_attributes>Entrant
 --
@@ -80,10 +80,10 @@ User
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>870</x>
-      <y>150</y>
-      <w>140</w>
-      <h>30</h>
+      <x>348</x>
+      <y>387</y>
+      <w>42</w>
+      <h>9</h>
     </coordinates>
     <panel_attributes>lt=&lt;&lt;-</panel_attributes>
     <additional_attributes>10.0;10.0;120.0;10.0</additional_attributes>
@@ -91,10 +91,10 @@ User
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>180</x>
-      <y>90</y>
-      <w>300</w>
-      <h>140</h>
+      <x>141</x>
+      <y>369</y>
+      <w>90</w>
+      <h>42</h>
     </coordinates>
     <panel_attributes>Admin
 --
@@ -110,10 +110,10 @@ User
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>470</x>
-      <y>150</y>
-      <w>130</w>
-      <h>30</h>
+      <x>228</x>
+      <y>387</y>
+      <w>39</w>
+      <h>9</h>
     </coordinates>
     <panel_attributes>lt=&lt;&lt;-</panel_attributes>
     <additional_attributes>110.0;10.0;10.0;10.0</additional_attributes>
@@ -121,10 +121,10 @@ User
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>990</x>
-      <y>310</y>
-      <w>300</w>
-      <h>360</h>
+      <x>384</x>
+      <y>435</y>
+      <w>90</w>
+      <h>105</h>
     </coordinates>
     <panel_attributes>Event
 --
@@ -145,7 +145,6 @@ User
       date: String, location: String,
       capacity: int, geolocationRequired: boolean
       waitingListLimit: int)
-+setDate(date: String): void
 +lottery(): void
 +addEntrant(entrant: Entrant): void
 +removeEntrant(entrant: Entrant): void</panel_attributes>
@@ -154,23 +153,23 @@ User
   <element>
     <id>UMLNote</id>
     <coordinates>
-      <x>190</x>
-      <y>440</y>
-      <w>200</w>
-      <h>50</h>
+      <x>144</x>
+      <y>459</y>
+      <w>69</w>
+      <h>15</h>
     </coordinates>
-    <panel_attributes>Imported packages and
-getters are ignored in this UML
+    <panel_attributes>Imported packages, getters
+and setters are ignored in this UML
 bg=white</panel_attributes>
     <additional_attributes/>
   </element>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>1130</x>
-      <y>220</y>
-      <w>50</w>
-      <h>110</h>
+      <x>426</x>
+      <y>408</y>
+      <w>15</w>
+      <h>33</h>
     </coordinates>
     <panel_attributes>lt=&lt;&lt;&lt;&lt;.&gt;
 m1=0..*
@@ -180,10 +179,10 @@ m2=0..1</panel_attributes>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>580</x>
-      <y>660</y>
-      <w>300</w>
-      <h>250</h>
+      <x>261</x>
+      <y>516</y>
+      <w>90</w>
+      <h>57</h>
     </coordinates>
     <panel_attributes>Facility
 --
@@ -196,35 +195,227 @@ m2=0..1</panel_attributes>
 +Facility(facilityId: String, location: String,
       capacity: String, description: String,
       facilityEvents: ArrayList&lt;Event&gt;)
-+setName(name: String): void
-+setLocation(location: String): void
-+setCapacity(capacity: int): void
-+setDescription(description: String): void
 +addEvent(event: Event): void</panel_attributes>
     <additional_attributes/>
   </element>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>870</x>
-      <y>570</y>
-      <w>140</w>
-      <h>110</h>
+      <x>348</x>
+      <y>513</y>
+      <w>42</w>
+      <h>12</h>
     </coordinates>
     <panel_attributes>lt=&lt;&lt;&lt;&lt;.&gt;
 m1=0..*
 m2=0..1</panel_attributes>
-    <additional_attributes>10.0;90.0;120.0;10.0</additional_attributes>
+    <additional_attributes>10.0;10.0;120.0;10.0</additional_attributes>
   </element>
   <element>
     <id>UMLActor</id>
     <coordinates>
-      <x>390</x>
-      <y>500</y>
-      <w>60</w>
-      <h>110</h>
+      <x>204</x>
+      <y>477</y>
+      <w>18</w>
+      <h>33</h>
     </coordinates>
     <panel_attributes/>
     <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>372</x>
+      <y>567</y>
+      <w>117</w>
+      <h>45</h>
+    </coordinates>
+    <panel_attributes>EventAdapter
+--
+-events: ArrayList&lt;Event&gt;
+--
++EventAdapter(events: ArrayList&lt;Event&gt;
++onCreateViewHolder(parent: ViewGroup, viewType: int):
+      EventAdapter.EventViewHolder
++onBindViewHolder(holder: EventAdapter.EventViewHolder,
+      position: int): void
++getItemCount(): int</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>426</x>
+      <y>537</y>
+      <w>15</w>
+      <h>36</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;&lt;&lt;-
+m1=0..*
+m2=0..1</panel_attributes>
+    <additional_attributes>10.0;100.0;10.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>495</x>
+      <y>504</y>
+      <w>81</w>
+      <h>51</h>
+    </coordinates>
+    <panel_attributes>&lt;&lt;Static&gt;&gt;
+EventViewHolder
+--
+-eventNameTextView: TextView
+-eventLocationTextView: TextView
+-eventStatusTextView: TextView
+-eventCapacityTextView: TextView
+-eventStartDateTextView: TextView
+-eventEndDateTextView: TextView
+--
++EventViewHolder(itemView: View): void</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>486</x>
+      <y>552</y>
+      <w>57</w>
+      <h>42</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;&lt;&lt;&lt;-
+m1=0..1
+m2=0..1</panel_attributes>
+    <additional_attributes>10.0;120.0;170.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>510</x>
+      <y>435</y>
+      <w>66</w>
+      <h>45</h>
+    </coordinates>
+    <panel_attributes>EventManager
+--
+-instance: EventManager
+-events: ArrayList&lt;Event&gt;
+--
+-EventManager(): void
++getInstance(): EventManager
++addEvent(event: Event): void
++getEvents(): ArrayList&lt;Event&gt;</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>471</x>
+      <y>453</y>
+      <w>45</w>
+      <h>12</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;.&gt;&gt;&gt;&gt;
+m1=0..1
+m2=0..*</panel_attributes>
+    <additional_attributes>10.0;10.0;130.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>111</x>
+      <y>522</y>
+      <w>120</w>
+      <h>45</h>
+    </coordinates>
+    <panel_attributes>FacilityAdapter
+--
+-facilities: ArrayList&lt;Facility&gt; 
+--
++FacilityAdapter(facilities: ArrayList&lt;Facility&gt;): void
++onCreateViewHolder(parent: ViewGroup, viewType: int):
+      FacilityAdapter.FacilityViewHolder
++onBindViewHolder(holder: FacilityAdapter.FacilityViewHolder,
+      position: int): void
++getItemCount(): int</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>228</x>
+      <y>543</y>
+      <w>39</w>
+      <h>12</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;&lt;&lt;-
+m1=0..*
+m2=0..1</panel_attributes>
+    <additional_attributes>10.0;10.0;110.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>129</x>
+      <y>597</y>
+      <w>84</w>
+      <h>42</h>
+    </coordinates>
+    <panel_attributes>&lt;&lt;Static&gt;&gt;
+FacilityViewHolder
+--
+-facilityName: TextView
+-facilityLocation: TextView
+-facilityCapacity: TextView
+-facilityDescription: TextView
+--
++FacilityViewHolder(itemView: View): void</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>168</x>
+      <y>564</y>
+      <w>15</w>
+      <h>39</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;&lt;&lt;&lt;-
+m1=0..1
+m2=1</panel_attributes>
+    <additional_attributes>10.0;10.0;10.0;110.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>273</x>
+      <y>594</y>
+      <w>69</w>
+      <h>45</h>
+    </coordinates>
+    <panel_attributes>FacilityManager
+--
+-instance: FacilityManager
+-facilities: ArrayList&lt;Facility&gt;
+--
+-FacilityManager(): void
++getInstance(): FacilityManager
++addFacility(event: Event): void
++getFacilities(): ArrayList&lt;Facility&gt;</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>210</x>
+      <y>615</y>
+      <w>69</w>
+      <h>12</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;.&gt;&gt;&gt;&gt;
+m1=0..1
+m2=0..*</panel_attributes>
+    <additional_attributes>10.0;10.0;210.0;10.0</additional_attributes>
   </element>
 </diagram>
