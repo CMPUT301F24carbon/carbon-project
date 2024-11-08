@@ -9,6 +9,8 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import java.util.UUID;
+
 public class CreateFacilityActivity extends AppCompatActivity {
     private EditText facilityNameInput;
     private EditText locationInput;
@@ -75,7 +77,7 @@ public class CreateFacilityActivity extends AppCompatActivity {
     }
 
     private String generateUniqueId() {
-        return "FAC" + System.currentTimeMillis();
+        return "FAC" + UUID.randomUUID().toString();
     }
 
     private void clearInputs() {
