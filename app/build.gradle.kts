@@ -1,6 +1,7 @@
 plugins {
     alias(libs.plugins.android.application)
-    id("com.google.gms.google-services")
+    id("com.google.gms.google-services") version
+            "4.4.0" apply false
 }
 
 android {
@@ -39,10 +40,13 @@ dependencies {
     implementation(libs.constraintlayout)
 
     implementation(platform("com.google.firebase:firebase-bom:33.5.1"))
+    implementation(libs.ext.junit)
+    implementation(libs.androidx.espresso.core)
 
-    testImplementation(libs.junit)
-    androidTestImplementation(libs.ext.junit)
-    androidTestImplementation(libs.espresso.core)
+    testImplementation("junit:junit:4.13.2")
+    androidTestImplementation("androidx.test.espresso:espresso-core:3.4.0")
+    androidTestImplementation("androidx.test:rules:1.4.0")
+    androidTestImplementation("androidx.test:runner:1.4.0")
 
     // Libraries for QR scanning and generating
     implementation(libs.zxing.embedded)
