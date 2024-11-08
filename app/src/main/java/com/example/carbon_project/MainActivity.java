@@ -15,7 +15,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.user_screen);
 
         // Test data for user organizer
-        User organizer = new Organizer("O001", "Gagan","Cheema", "gagan.cheema@example.com", "123-456-7890", null);
+        User organizer = new Organizer("O001", "Team","Carbon", "team.carbon@example.com", "123-456-7890", null);
 
         // To keep track of which type of user is active.
         User activeUser = organizer;

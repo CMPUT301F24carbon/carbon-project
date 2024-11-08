@@ -55,26 +55,33 @@ public class CreateFacilityActivity extends AppCompatActivity {
             return;
         }
 
-        // Parse the capacity as an integer
-        int capacity = Integer.parseInt(facilityCapacity);
+        // Handle number format exception
+        int capacity;
+        try {
+            capacity = Integer.parseInt(facilityCapacity);
+        } catch (NumberFormatException e) {
+            Toast.makeText(this, "Please enter a valid number for capacity.", Toast.LENGTH_SHORT).show();
+            return;
+        }
 
-        // Create the new facility object
         Facility newFacility = new Facility(generateUniqueId(), facilityName, facilityLocation, capacity, facilityDescription);
+        FacilityManager.getInstance().addFacility(newFacility);
 
-        // Create an intent to pass the new facility data to the next activity
         Intent resultIntent = new Intent(this, FacilityListActivity.class);
-        // Pass facility data through intent extras
-        resultIntent.putExtra("facilityName", newFacility.getName());
-        resultIntent.putExtra("facilityLocation", newFacility.getLocation());
-        resultIntent.putExtra("facilityCapacity", newFacility.getCapacity());
-        resultIntent.putExtra("facilityDescription", newFacility.getDescription());
-        resultIntent.putExtra("facilityId", newFacility.getFacilityId());
-
-        // Start the next activity
         startActivity(resultIntent);
+
+        Toast.makeText(this, "Facility created successfully!", Toast.LENGTH_SHORT).show();
+        clearInputs();
     }
 
     private String generateUniqueId() {
         return "FAC" + System.currentTimeMillis();
+    }
+
+    private void clearInputs() {
+        facilityNameInput.setText("");
+        locationInput.setText("");
+        capacityInput.setText("");
+        descriptionInput.setText("");
     }
 }

@@ -20,20 +20,15 @@ public class FacilityListActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_facility_list);
 
+        // Initialize RecyclerView
         facilityRecyclerView = findViewById(R.id.facilityRecyclerView);
         facilityRecyclerView.setLayoutManager(new LinearLayoutManager(this));
-        facilities = new ArrayList<>();
 
-        // Retrieve data from the intent
-        String facilityName = getIntent().getStringExtra("facilityName");
-        String facilityLocation = getIntent().getStringExtra("facilityLocation");
-        int facilityCapacity = getIntent().getIntExtra("facilityCapacity", 0);
-        String facilityDescription = getIntent().getStringExtra("facilityDescription");
+        // Get the list of all facilities from the FacilityManager
+        facilities = FacilityManager.getInstance().getFacilities();
 
-        if (facilityName != null && facilityLocation != null && facilityDescription != null) {
-            facilities.add(new Facility("1", facilityName, facilityLocation, facilityCapacity, facilityDescription));
-        } else {
-            Toast.makeText(this, "No facility data received", Toast.LENGTH_SHORT).show();
+        if (facilities.isEmpty()) {
+            Toast.makeText(this, "No facilities available", Toast.LENGTH_SHORT).show();
         }
 
         // Initialize the adapter and set it to the RecyclerView
