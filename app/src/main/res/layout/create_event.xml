@@ -7,7 +7,6 @@
     android:layout_height="match_parent"
     android:padding="16dp">
 
-    <!-- Header -->
     <TextView
         android:id="@+id/createEventHeader"
         android:layout_width="wrap_content"
@@ -20,7 +19,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"/>
 
-    <!-- Default Image or Uploaded Image Section -->
     <ImageView
         android:id="@+id/eventImage"
         android:layout_width="200dp"
@@ -32,7 +30,6 @@
         app:layout_constraintEnd_toEndOf="parent"
         android:scaleType="centerCrop"/>
 
-    <!-- Event Name Section -->
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/eventNameSection"
         android:layout_width="0dp"
@@ -52,19 +49,49 @@
             android:textSize="16sp"
             android:textColor="@color/black"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"/>
+            app:layout_constraintTop_toTopOf="parent" />
 
         <EditText
             android:id="@+id/eventNameInput"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="4dp"
+            android:layout_marginTop="8dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/eventNameLabel" />
+            app:layout_constraintTop_toTopOf="@+id/eventNameLabel"
+            android:hint="Event Name" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <!-- Event Capacity Section -->
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/eventLocationSection"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:background="@drawable/bg_rounded_rectangle"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/eventNameSection"
+        android:layout_marginTop="10dp"
+        android:padding="8dp">
+
+        <TextView
+            android:id="@+id/eventLocationLabel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Event Location:"
+            android:textSize="16sp"
+            android:textColor="@color/black"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <Spinner
+            android:id="@+id/eventLocationSpinner"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/eventLocationLabel"/>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/eventCapacitySection"
         android:layout_width="0dp"
@@ -72,7 +99,7 @@
         android:background="@drawable/bg_rounded_rectangle"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/eventNameSection"
+        app:layout_constraintTop_toBottomOf="@id/eventLocationSection"
         android:layout_marginTop="10dp"
         android:padding="8dp">
 
@@ -84,26 +111,25 @@
             android:textSize="16sp"
             android:textColor="@color/black"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"/>
+            app:layout_constraintTop_toTopOf="parent" />
 
         <EditText
             android:id="@+id/eventCapacityInput"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="4dp"
+            android:layout_marginTop="8dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/eventCapacityLabel"/>
+            app:layout_constraintTop_toTopOf="@+id/eventCapacityLabel"
+            android:hint="Capacity" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <!-- Event Start Date Section -->
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/eventStartDateSection"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:background="@drawable/bg_rounded_rectangle"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@id/eventCapacitySection"
         android:layout_marginTop="10dp"
         android:padding="8dp">
@@ -116,27 +142,29 @@
             android:textSize="16sp"
             android:textColor="@color/black"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"/>
+            app:layout_constraintTop_toTopOf="parent" />
 
         <EditText
             android:id="@+id/eventStartDateInput"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="4dp"
-            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginTop="8dp"
+            android:focusable="false"
+            android:clickable="true"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/eventStartDateLabel"/>
+            app:layout_constraintTop_toTopOf="@+id/eventStartDateLabel"
+            android:hint="Select Start Date"
+            android:inputType="none" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <!-- Event End Date Section -->
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/eventEndDateSection"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:background="@drawable/bg_rounded_rectangle"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintStart_toEndOf="@id/eventStartDateSection"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/eventStartDateSection"
+        app:layout_constraintTop_toBottomOf="@id/eventCapacitySection"
         android:layout_marginTop="10dp"
         android:padding="8dp">
 
@@ -148,19 +176,22 @@
             android:textSize="16sp"
             android:textColor="@color/black"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"/>
+            app:layout_constraintTop_toTopOf="parent" />
 
         <EditText
             android:id="@+id/eventEndDateInput"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="4dp"
+            android:layout_marginTop="8dp"
+            android:focusable="false"
+            android:clickable="true"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/eventEndDateLabel"/>
+            app:layout_constraintTop_toTopOf="@+id/eventEndDateLabel"
+            android:hint="Select End Date"
+            android:inputType="none" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <!-- Event Description Section -->
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/eventDescriptionSection"
         android:layout_width="0dp"
@@ -180,19 +211,19 @@
             android:textSize="16sp"
             android:textColor="@color/black"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"/>
+            app:layout_constraintTop_toTopOf="parent" />
 
         <EditText
             android:id="@+id/eventDescriptionInput"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="4dp"
+            android:layout_marginTop="8dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/eventDescriptionLabel"/>
+            app:layout_constraintTop_toTopOf="@+id/eventDescriptionLabel"
+            android:hint="Description" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <!-- Geolocation Checkbox -->
     <CheckBox
         android:id="@+id/eventCheckbox"
         android:layout_width="wrap_content"
@@ -204,7 +235,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/eventDescriptionSection" />
 
-    <!-- Buttons Section for Back and Create Facility -->
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="0dp"
         android:layout_height="wrap_content"

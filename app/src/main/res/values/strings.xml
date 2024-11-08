@@ -23,4 +23,5 @@
     <string name="event_description_label">Description</string>
     <string name="publish_event_button">Publish</string>
     <string name="back">Back</string>
+    <string name="create_new_event">Create New Event</string>
 </resources>
