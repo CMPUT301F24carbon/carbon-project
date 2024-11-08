@@ -43,7 +43,7 @@
         app:layout_constraintEnd_toEndOf="@id/textView_event_name"
         app:layout_constraintTop_toBottomOf="@id/textView_event_name" />
 
-    <!-- Status -->
+    <!-- Event Status -->
     <TextView
         android:id="@+id/textView_status"
         android:layout_width="wrap_content"
@@ -54,5 +54,41 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@id/textView_event_name"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <!-- Event Capacity -->
+    <TextView
+        android:id="@+id/textView_capacity"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
+        android:text="Capacity: 100"
+        android:textSize="15sp"
+        app:layout_constraintStart_toEndOf="@id/imageView_event_image"
+        app:layout_constraintEnd_toEndOf="@id/textView_event_name"
+        app:layout_constraintTop_toBottomOf="@id/textView_facility_name" />
+
+    <!-- Event Start Date -->
+    <TextView
+        android:id="@+id/textView_start_date"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
+        android:text="Start Date: 01 Jan 2024"
+        android:textSize="15sp"
+        app:layout_constraintStart_toEndOf="@id/imageView_event_image"
+        app:layout_constraintEnd_toEndOf="@id/textView_event_name"
+        app:layout_constraintTop_toBottomOf="@id/textView_capacity" />
+
+    <!-- Event End Date -->
+    <TextView
+        android:id="@+id/textView_end_date"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
+        android:text="End Date: 03 Jan 2024"
+        android:textSize="15sp"
+        app:layout_constraintStart_toEndOf="@id/imageView_event_image"
+        app:layout_constraintEnd_toEndOf="@id/textView_event_name"
+        app:layout_constraintTop_toBottomOf="@id/textView_start_date" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

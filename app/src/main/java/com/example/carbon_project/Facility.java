@@ -5,7 +5,7 @@ import java.util.ArrayList;
 /**
  * Class represents a Facility; which belong to an organizer.
  */
-public class Facility {
+public class Facility  {
     private String facilityId;
     private String name;
     private String location;

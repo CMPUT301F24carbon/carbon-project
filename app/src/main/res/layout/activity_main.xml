@@ -26,7 +26,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:menu="@menu/top_nav_menu"
-        app:title="Entrant" />     <!-- Modify the title to match the current user -->
+        app:title="Entrant" />
 
     <!-- Button Navigation bar -->
     <com.google.android.material.bottomnavigation.BottomNavigationView

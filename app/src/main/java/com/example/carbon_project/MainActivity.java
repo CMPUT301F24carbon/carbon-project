@@ -7,6 +7,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
 
+import java.util.ArrayList;
+
 public class MainActivity extends AppCompatActivity {
 
     @Override
@@ -14,10 +16,13 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.user_screen);
 
-        // Test data for user organizer
-        User organizer = new Organizer("O001", "Gagan","Cheema", "gagan.cheema@example.com", "123-456-7890", null);
+        User organizer = new Organizer("O001", "Team","Carbon", "team.carbon@example.com", "123-456-7890", null);
 
-        // To keep track of which type of user is active.
+        Facility grandArena = new Facility("F001", "Grand Arena", "123 Main St, Downtown",1000,"A Luxary Hotel");
+        Facility downtownHall = new Facility("F002", "Downtown Hall", "456 Elm St, City Center", 500 , "A Beautiful Penthouse overlooking the NYC");
+
+
+
         User activeUser = organizer;
 
         // References to screen elements
@@ -25,8 +30,9 @@ public class MainActivity extends AppCompatActivity {
         TextView userEmailTextView = findViewById(R.id.userEmail);
         TextView userPhoneTextView = findViewById(R.id.userPhone);
         ImageView profileImageView = findViewById(R.id.profileImageView);
-        TextView initialsTextView = findViewById(R.id.initialsTextView); // New TextView for initials
+        TextView initialsTextView = findViewById(R.id.initialsTextView);
         Button createFacilityButton = findViewById(R.id.createFacilityButton);
+        Button createEventButton = findViewById(R.id.createEventButton);
         Button deleteUserButton = findViewById(R.id.deleteUserButton);
 
         // user data on user_screen
@@ -49,13 +55,22 @@ public class MainActivity extends AppCompatActivity {
         // Handle role-based actions
         if (activeUser instanceof Organizer) {
             createFacilityButton.setVisibility(Button.VISIBLE);
+            createEventButton.setVisibility(Button.VISIBLE); // Show Create Event button for Organizer
+
             createFacilityButton.setOnClickListener(v -> {
                 // Start the create facility activity
                 Intent intent = new Intent(MainActivity.this, CreateFacilityActivity.class);
                 startActivity(intent);
             });
+
+            createEventButton.setOnClickListener(v -> {
+                // Start the create event activity
+                Intent intent = new Intent(MainActivity.this, CreateEventActivity.class);
+                startActivity(intent);
+            });
         } else {
             createFacilityButton.setVisibility(Button.GONE);
+            createEventButton.setVisibility(Button.GONE); // Hide Create Event button for non-Organizers
         }
 
         if (activeUser instanceof Admin) {

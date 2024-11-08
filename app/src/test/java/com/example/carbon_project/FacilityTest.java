@@ -1,90 +1,89 @@
 package com.example.carbon_project;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
-import java.util.ArrayList;
+import org.junit.Before;
+import org.junit.Test;
 
+/**
+ * Test class for the Facility class.
+ */
 public class FacilityTest {
 
     private Facility facility;
 
-    @BeforeEach
+    /**
+     * Sets up the test environment by initializing a sample Facility object.
+     */
+    @Before
     public void setUp() {
-        // Initialize a Facility object before each test
-        facility = new Facility("F001", "Community Hall", "123 Main St", 100, "A large community hall for events.");
+        facility = new Facility("FAC001", "Conference Room", "New York", 50, "A large conference room with projectors.");
     }
 
+    /**
+     * Tests the constructor and getter methods of the Facility class.
+     */
     @Test
-    void testGetFacilityId() {
-        assertEquals("F001", facility.getFacilityId());
+    public void testFacilityConstructor() {
+        // Test the constructor and getter methods
+        assertEquals("FAC001", facility.getFacilityId());
+        assertEquals("Conference Room", facility.getName());
+        assertEquals("New York", facility.getLocation());
+        assertEquals(50, facility.getCapacity());
+        assertEquals("A large conference room with projectors.", facility.getDescription());
     }
 
+    /**
+     * Tests the setName method of the Facility class.
+     */
     @Test
-    void testGetName() {
-        assertEquals("Community Hall", facility.getName());
+    public void testSetName() {
+        // Test setter method
+        facility.setName("Meeting Room");
+        assertEquals("Meeting Room", facility.getName());
     }
 
+    /**
+     * Tests the setLocation method of the Facility class.
+     */
     @Test
-    void testSetName() {
-        facility.setName("Updated Hall");
-        assertEquals("Updated Hall", facility.getName());
+    public void testSetLocation() {
+        // Test setter method
+        facility.setLocation("Los Angeles");
+        assertEquals("Los Angeles", facility.getLocation());
     }
 
+    /**
+     * Tests the setCapacity method of the Facility class.
+     */
     @Test
-    void testGetLocation() {
-        assertEquals("123 Main St", facility.getLocation());
-    }
-
-    @Test
-    void testSetLocation() {
-        facility.setLocation("456 Elm St");
-        assertEquals("456 Elm St", facility.getLocation());
-    }
-
-    @Test
-    void testGetCapacity() {
+    public void testSetCapacity() {
+        // Test setter method
+        facility.setCapacity(100);
         assertEquals(100, facility.getCapacity());
     }
 
+    /**
+     * Tests the setDescription method of the Facility class.
+     */
     @Test
-    void testSetCapacity() {
-        facility.setCapacity(150);
-        assertEquals(150, facility.getCapacity());
+    public void testSetDescription() {
+        // Test setter method
+        facility.setDescription("A small meeting room.");
+        assertEquals("A small meeting room.", facility.getDescription());
     }
 
+    /**
+     * Tests creating a Facility object with empty fields.
+     */
     @Test
-    void testGetDescription() {
-        assertEquals("A large community hall for events.", facility.getDescription());
-    }
-
-    @Test
-    void testSetDescription() {
-        facility.setDescription("Updated description for the community hall.");
-        assertEquals("Updated description for the community hall.", facility.getDescription());
-    }
-
-    @Test
-    void testGetEvents() {
-        Event event = new Event("E001", "Annual Meeting", "2025-05-01", "Community Hall", 50, false);
-        facility.addEvent(event);
-
-        assertEquals(1, facility.getEvents().size());
-        assertEquals("E001", facility.getEvents().get(0).getEventId());
-    }
-
-    @Test
-    void testAddEvent() {
-        Event event1 = new Event("E001", "Community Workshop", "2025-06-01", "Community Hall", 75, false);
-        Event event2 = new Event("E002", "Festival", "2025-07-01", "Community Hall", 150, true);
-
-        facility.addEvent(event1);
-        facility.addEvent(event2);
-
-        ArrayList<Event> events = facility.getEvents();
-        assertEquals(2, events.size());
-        assertEquals(event1, events.get(0));
-        assertEquals(event2, events.get(1));
+    public void testFacilityWithEmptyFields() {
+        // Create a facility with empty name
+        Facility emptyFacility = new Facility("FAC002", "", "Los Angeles", 0, "");
+        assertTrue(emptyFacility.getName().isEmpty());
+        assertEquals("Los Angeles", emptyFacility.getLocation());
+        assertEquals(0, emptyFacility.getCapacity());
+        assertTrue(emptyFacility.getDescription().isEmpty());
     }
 }

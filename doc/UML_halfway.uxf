@@ -1,0 +1,230 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<diagram program="umlet" version="15.1">
+  <zoom_level>10</zoom_level>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>580</x>
+      <y>30</y>
+      <w>300</w>
+      <h>250</h>
+    </coordinates>
+    <panel_attributes>&lt;&lt;abstract&gt;&gt;
+User
+--
+-userId: String
+-firstName: String
+-lastName: String
+-email: String
+-phoneNumber: String
+-profileImage: String
+--
++User(userId: String, firstName: String
+      lastName: String, email: String,
+      phoneNumber: String, profileImage: String)
++setProfileImageUri(String profileImage): void              |
++getInitials(): String
++handleNotification(String message): void</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>580</x>
+      <y>400</y>
+      <w>300</w>
+      <h>160</h>
+    </coordinates>
+    <panel_attributes>Organizer
+--
+--
++Organizer(userId: String, firstName: String
+      lastName: String, email: String,
+      phoneNumber: String, profileImage: String)
++joinEvent(eventId: String): void
++leaveEvent(eventId: String): void
++handleNotification(message: String): void
++getInitials(): String</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>720</x>
+      <y>270</y>
+      <w>30</w>
+      <h>150</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;-</panel_attributes>
+    <additional_attributes>10.0;10.0;10.0;130.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>990</x>
+      <y>90</y>
+      <w>300</w>
+      <h>140</h>
+    </coordinates>
+    <panel_attributes>Entrant
+--
+--
++Entrant(userId: String, firstName: String
+      lastName: String, email: String,
+      phoneNumber: String, profileImage: String)
++joinEvent(eventId: String): void
++leaveEvent(eventId: String): void
++handleNotification(message: String): void</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>870</x>
+      <y>150</y>
+      <w>140</w>
+      <h>30</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;-</panel_attributes>
+    <additional_attributes>10.0;10.0;120.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>180</x>
+      <y>90</y>
+      <w>300</w>
+      <h>140</h>
+    </coordinates>
+    <panel_attributes>Admin
+--
+--
++Admin(userId: String, firstName: String
+      lastName: String, email: String,
+      phoneNumber: String, profileImage: String)
++deleteEvent(eventId: String): void
++removeUser(userId: String): void
++handleNotification(message: String): void</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>470</x>
+      <y>150</y>
+      <w>130</w>
+      <h>30</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;-</panel_attributes>
+    <additional_attributes>110.0;10.0;10.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>990</x>
+      <y>310</y>
+      <w>300</w>
+      <h>360</h>
+    </coordinates>
+    <panel_attributes>Event
+--
+-eventId: String
+-name: String
+-date: String
+-location: String
+-capacity: int
+-waitingListLimit: int
+-waitingList: ArrayList&lt;Entrant&gt;
+-selectedList: ArrayList&lt;Entrant&gt;
+-geolocationRequired: boolean 
+--
++Event(eventId: String, name: String,
+      date: String, location: String,
+      capacity: int, geolocationRequired: boolean)
++Event(eventId: String, name: String,
+      date: String, location: String,
+      capacity: int, geolocationRequired: boolean
+      waitingListLimit: int)
++setDate(date: String): void
++lottery(): void
++addEntrant(entrant: Entrant): void
++removeEntrant(entrant: Entrant): void</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLNote</id>
+    <coordinates>
+      <x>190</x>
+      <y>440</y>
+      <w>200</w>
+      <h>50</h>
+    </coordinates>
+    <panel_attributes>Imported packages and
+getters are ignored in this UML
+bg=white</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>1130</x>
+      <y>220</y>
+      <w>50</w>
+      <h>110</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;&lt;&lt;.&gt;
+m1=0..*
+m2=0..1</panel_attributes>
+    <additional_attributes>10.0;90.0;10.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>580</x>
+      <y>660</y>
+      <w>300</w>
+      <h>250</h>
+    </coordinates>
+    <panel_attributes>Facility
+--
+-facilityId: String
+-location: String
+-capacity: int
+-description: String
+-facilityEvents: ArrayList&lt;Event&gt;
+--
++Facility(facilityId: String, location: String,
+      capacity: String, description: String,
+      facilityEvents: ArrayList&lt;Event&gt;)
++setName(name: String): void
++setLocation(location: String): void
++setCapacity(capacity: int): void
++setDescription(description: String): void
++addEvent(event: Event): void</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>870</x>
+      <y>570</y>
+      <w>140</w>
+      <h>110</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;&lt;&lt;.&gt;
+m1=0..*
+m2=0..1</panel_attributes>
+    <additional_attributes>10.0;90.0;120.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLActor</id>
+    <coordinates>
+      <x>390</x>
+      <y>500</y>
+      <w>60</w>
+      <h>110</h>
+    </coordinates>
+    <panel_attributes/>
+    <additional_attributes/>
+  </element>
+</diagram>
