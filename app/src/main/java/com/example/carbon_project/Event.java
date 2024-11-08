@@ -14,8 +14,8 @@ public class Event {
     private String location;
     private int capacity;
     private int waitingListLimit;
-    private ArrayList<Entrant> waitingList;
-    private ArrayList<Entrant> selectedList;
+    private ArrayList<Entrant> waitingList = new ArrayList<>();
+    private ArrayList<Entrant> selectedList = new ArrayList<>();
     private boolean geolocationRequired;
 
     /**
@@ -25,7 +25,7 @@ public class Event {
      * @param date Date of the event.
      * @param location Location of the event.
      * @param capacity Maximum capacity of attendees for the event.
-     * @param geolocationRequired True/False depending if the organizer wants to use geolocation for this event
+     * @param geolocationRequired True/False depending if the organizer wants to use geolocation for this event.
      */
     public Event(String eventId, String name, String date, String location, int capacity, boolean geolocationRequired) {
         this.eventId = eventId;
@@ -43,8 +43,8 @@ public class Event {
      * @param date Date of the event.
      * @param location Location of the event.
      * @param capacity Maximum capacity of attendees for the event.
-     * @param geolocationRequired True/False depending if the organizer wants to use geolocation for this event
-     * @param waitingListLimit Max size for the waitingList
+     * @param geolocationRequired True/False depending if the organizer wants to use geolocation for this event.
+     * @param waitingListLimit Max size for the waitingList.
      */
     public Event(String eventId, String name, String date, String location, int capacity, boolean geolocationRequired, int waitingListLimit) {
         this.eventId = eventId;
@@ -52,13 +52,43 @@ public class Event {
         this.date = date;
         this.location = location;
         this.capacity = capacity;
+        this.geolocationRequired = geolocationRequired;
         this.waitingListLimit = waitingListLimit;
     }
 
+    // Getter and Setter for eventId
     public String getEventId() { return eventId; }
+    public void setEventId(String eventId) { this.eventId = eventId; }
+
+    // Getter and Setter for name
     public String getName() { return name; }
+    public void setName(String name) { this.name = name; }
+
+    // Getter and Setter for date
     public String getDate() { return date; }
     public void setDate(String date) { this.date = date; }
+
+    // Getter and Setter for location
+    public String getLocation() { return location; }
+    public void setLocation(String location) { this.location = location; }
+
+    // Getter and Setter for capacity
+    public int getCapacity() { return capacity; }
+    public void setCapacity(int capacity) { this.capacity = capacity; }
+
+    // Getter and Setter for geolocationRequired
+    public boolean isGeolocationRequired() { return geolocationRequired; }
+    public void setGeolocationRequired(boolean geolocationRequired) { this.geolocationRequired = geolocationRequired; }
+
+    // Getter and Setter for waitingListLimit
+    public int getWaitingListLimit() { return waitingListLimit; }
+    public void setWaitingListLimit(int waitingListLimit) { this.waitingListLimit = waitingListLimit; }
+
+    // Getter for waitingList
+    public ArrayList<Entrant> getWaitingList() { return waitingList; }
+
+    // Getter for selectedList
+    public ArrayList<Entrant> getSelectedList() { return selectedList; }
 
     /**
      * Randomly selects users from the waitingList and moves them into the selectedList of Entrants
@@ -71,7 +101,6 @@ public class Event {
             waitingList.remove(randomIndex);
         }
         // notification code for notifying winners goes here
-
     }
 
     /**
@@ -88,7 +117,6 @@ public class Event {
             waitingList.add(entrant);
         } else if (waitingListLimit != 0) {
             //notify entrant that waiting list is full
-
         }
         else {
             waitingList.add(entrant);
@@ -96,7 +124,7 @@ public class Event {
     }
 
     /**
-     * removes an entrant from the waitingList or, if already selected will remove the entrant from the selectedList instead
+     * Removes an entrant from the waitingList or, if already selected, removes the entrant from the selectedList instead
      * @param entrant entrant to be removed
      */
     public void removeEntrant(Entrant entrant) {

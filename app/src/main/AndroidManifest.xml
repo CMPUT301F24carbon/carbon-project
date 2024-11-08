@@ -24,6 +24,7 @@
         <activity android:name=".CreateFacilityActivity" />
         <activity android:name=".FacilityListActivity" />
         <activity android:name=".CreateEventActivity" />
+        <activity android:name=".EventListActivity" />
 
     </application>
 

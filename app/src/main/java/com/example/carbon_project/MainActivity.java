@@ -7,6 +7,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
 
+import java.util.ArrayList;
+
 public class MainActivity extends AppCompatActivity {
 
     @Override
@@ -15,6 +17,11 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.user_screen);
 
         User organizer = new Organizer("O001", "Team","Carbon", "team.carbon@example.com", "123-456-7890", null);
+
+        Facility grandArena = new Facility("F001", "Grand Arena", "123 Main St, Downtown",1000,"A Luxary Hotel");
+        Facility downtownHall = new Facility("F002", "Downtown Hall", "456 Elm St, City Center", 500 , "A Beautiful Penthouse overlooking the NYC");
+
+
 
         User activeUser = organizer;
 
