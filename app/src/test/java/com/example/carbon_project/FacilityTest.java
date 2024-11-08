@@ -4,16 +4,25 @@ import org.junit.Before;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
+/**
+ * Test class for the Facility class.
+ */
 public class FacilityTest {
 
     private Facility facility;
 
+    /**
+     * Sets up the test environment by initializing a sample Facility object.
+     */
     @Before
     public void setUp() {
         // Initialize a sample facility before each test
         facility = new Facility("FAC001", "Conference Room", "New York", 50, "A large conference room with projectors.");
     }
 
+    /**
+     * Tests the constructor and getter methods of the Facility class.
+     */
     @Test
     public void testFacilityConstructor() {
         // Test the constructor and getter methods
@@ -24,6 +33,9 @@ public class FacilityTest {
         assertEquals("A large conference room with projectors.", facility.getDescription());
     }
 
+    /**
+     * Tests the setName method of the Facility class.
+     */
     @Test
     public void testSetName() {
         // Test setter method
@@ -31,6 +43,9 @@ public class FacilityTest {
         assertEquals("Meeting Room", facility.getName());
     }
 
+    /**
+     * Tests the setLocation method of the Facility class.
+     */
     @Test
     public void testSetLocation() {
         // Test setter method
@@ -38,6 +53,9 @@ public class FacilityTest {
         assertEquals("Los Angeles", facility.getLocation());
     }
 
+    /**
+     * Tests the setCapacity method of the Facility class.
+     */
     @Test
     public void testSetCapacity() {
         // Test setter method
@@ -45,6 +63,9 @@ public class FacilityTest {
         assertEquals(100, facility.getCapacity());
     }
 
+    /**
+     * Tests the setDescription method of the Facility class.
+     */
     @Test
     public void testSetDescription() {
         // Test setter method
@@ -52,6 +73,9 @@ public class FacilityTest {
         assertEquals("A small meeting room.", facility.getDescription());
     }
 
+    /**
+     * Tests creating a Facility object with empty fields.
+     */
     @Test
     public void testFacilityWithEmptyFields() {
         // Create a facility with empty name
