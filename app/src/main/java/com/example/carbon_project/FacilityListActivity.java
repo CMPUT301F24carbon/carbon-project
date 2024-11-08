@@ -9,6 +9,10 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
 
+/**
+ * FacilityListActivity is an activity that displays a list of facilities using a RecyclerView.
+ * It sets up the RecyclerView with a FacilityAdapter to display the facility details.
+ */
 public class FacilityListActivity extends AppCompatActivity {
 
     private RecyclerView facilityRecyclerView;
@@ -27,6 +31,7 @@ public class FacilityListActivity extends AppCompatActivity {
         // Get the list of all facilities from the FacilityManager
         facilities = FacilityManager.getInstance().getFacilities();
 
+        // Show a message if no facilities are available
         if (facilities.isEmpty()) {
             Toast.makeText(this, "No facilities available", Toast.LENGTH_SHORT).show();
         }

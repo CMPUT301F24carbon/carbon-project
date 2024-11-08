@@ -1,8 +1,10 @@
 package com.example.carbon_project;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+
 import org.junit.Before;
 import org.junit.Test;
-import static org.junit.Assert.*;
 
 /**
  * Test class for the Facility class.
@@ -16,7 +18,6 @@ public class FacilityTest {
      */
     @Before
     public void setUp() {
-        // Initialize a sample facility before each test
         facility = new Facility("FAC001", "Conference Room", "New York", 50, "A large conference room with projectors.");
     }
 

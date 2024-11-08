@@ -7,36 +7,32 @@ import java.util.Random;
  * Class represents an event object.
  * Stores information about event details.
  */
+
 public class Event {
     private String eventId;
     private String name;
-    private String date;            // Original event date
     private String location;
     private int capacity;
-    private int waitingListLimit;
+    private int waitingListLimit = 0; // Optional limit on waitingList size
     private ArrayList<Entrant> waitingList = new ArrayList<>();
     private ArrayList<Entrant> selectedList = new ArrayList<>();
     private boolean geolocationRequired;
-
-    // New fields for Start Date and End Date
     private String startDate;
     private String endDate;
 
     /**
-     * Constructor for creating an Event without the optional limit on waitingList size.
+     * Constructor for creating an Event with start and end dates.
      * @param eventId Unique identifier for the event.
      * @param name Name of the event.
-     * @param date Date of the event.
      * @param location Location of the event.
      * @param capacity Maximum capacity of attendees for the event.
      * @param geolocationRequired True/False depending if the organizer wants to use geolocation for this event.
      * @param startDate Start Date of the event.
      * @param endDate End Date of the event.
      */
-    public Event(String eventId, String name, String date, String location, int capacity, boolean geolocationRequired, String startDate, String endDate) {
+    public Event(String eventId, String name, String location, int capacity, boolean geolocationRequired, String startDate, String endDate) {
         this.eventId = eventId;
         this.name = name;
-        this.date = date;
         this.location = location;
         this.capacity = capacity;
         this.geolocationRequired = geolocationRequired;
@@ -45,10 +41,9 @@ public class Event {
     }
 
     /**
-     * Constructor for creating an Event with the optional limit on waitingList size.
+     * Constructor for creating an Event with an optional limit on waiting list size.
      * @param eventId Unique identifier for the event.
      * @param name Name of the event.
-     * @param date Date of the event.
      * @param location Location of the event.
      * @param capacity Maximum capacity of attendees for the event.
      * @param geolocationRequired True/False depending if the organizer wants to use geolocation for this event.
@@ -56,16 +51,9 @@ public class Event {
      * @param startDate Start Date of the event.
      * @param endDate End Date of the event.
      */
-    public Event(String eventId, String name, String date, String location, int capacity, boolean geolocationRequired, int waitingListLimit, String startDate, String endDate) {
-        this.eventId = eventId;
-        this.name = name;
-        this.date = date;
-        this.location = location;
-        this.capacity = capacity;
-        this.geolocationRequired = geolocationRequired;
+    public Event(String eventId, String name, String location, int capacity, boolean geolocationRequired, int waitingListLimit, String startDate, String endDate) {
+        this(eventId, name, location, capacity, geolocationRequired, startDate, endDate);
         this.waitingListLimit = waitingListLimit;
-        this.startDate = startDate;
-        this.endDate = endDate;
     }
 
     // Getter and Setter for eventId
@@ -75,10 +63,6 @@ public class Event {
     // Getter and Setter for name
     public String getName() { return name; }
     public void setName(String name) { this.name = name; }
-
-    // Getter and Setter for date (original event date)
-    public String getDate() { return date; }
-    public void setDate(String date) { this.date = date; }
 
     // Getter and Setter for location
     public String getLocation() { return location; }
@@ -111,31 +95,23 @@ public class Event {
     public void setEndDate(String endDate) { this.endDate = endDate; }
 
     /**
-     * Randomly selects users from the waitingList and moves them into the selectedList of Entrants
+     * Randomly selects users from the waitingList and moves them into the selectedList of Entrants.
      */
     public void lottery() {
         Random random = new Random();
-        while(selectedList.size() < capacity) {
+        while (selectedList.size() < capacity && !waitingList.isEmpty()) {
             int randomIndex = random.nextInt(waitingList.size());
-            selectedList.add(waitingList.get(randomIndex));
-            waitingList.remove(randomIndex);
+            selectedList.add(waitingList.remove(randomIndex));
         }
         // notification code for notifying winners goes here
     }
 
     /**
-     * Adds a new entrant to the waiting list
-     * @param entrant entrant to be added to the waiting list
+     * Adds a new entrant to the waiting list.
+     * @param entrant entrant to be added to the waiting list.
      */
     public void addEntrant(Entrant entrant) {
-        /*waitingListLimit is initialized to 0, so we check to see that its value is nonzero
-          if its value is nonzero, check if we are below its limit before we add the entrant
-          if its value is nonzero and we are not below the waitingListLimit, notify user that the waitinglist is full
-          if neither of the above is true then we add the user without any checks
-         */
-        if(waitingListLimit != 0 && waitingList.size() < waitingListLimit) {
-            waitingList.add(entrant);
-        } else if (waitingListLimit != 0) {
+        if (waitingListLimit != 0 && waitingList.size() >= waitingListLimit) {
             // notify entrant that waiting list is full
         } else {
             waitingList.add(entrant);
@@ -143,13 +119,11 @@ public class Event {
     }
 
     /**
-     * Removes an entrant from the waitingList or, if already selected, removes the entrant from the selectedList instead
-     * @param entrant entrant to be removed
+     * Removes an entrant from the waitingList or, if already selected, removes the entrant from the selectedList instead.
+     * @param entrant entrant to be removed.
      */
     public void removeEntrant(Entrant entrant) {
-        if (waitingList.contains(entrant)) {
-            waitingList.remove(entrant);
-        } else {
+        if (!waitingList.remove(entrant)) {
             selectedList.remove(entrant);
         }
     }
