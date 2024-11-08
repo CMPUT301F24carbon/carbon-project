@@ -2,7 +2,10 @@ package com.example.carbon_project;
 
 import android.app.DatePickerDialog;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -13,6 +16,7 @@ import android.widget.Spinner;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.AppCompatImageView;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -20,7 +24,9 @@ import java.util.Calendar;
 import java.util.UUID;
 
 /**
- * Activity for creating an event.
+ * CreateEventActivity is an activity for creating new events. It provides
+ * functionalities for inputting event details, selecting event dates, uploading
+ * an event image, and validating inputs before creating and publishing the event.
  */
 public class CreateEventActivity extends AppCompatActivity {
 
@@ -32,18 +38,17 @@ public class CreateEventActivity extends AppCompatActivity {
     private Button publishButton;
     private Button backButton;
     private Spinner eventLocationSpinner;
+    private AppCompatImageView eventImageView;
     private String selectedFacilityName;
 
-    /**
-     * Initializes the activity and sets up the UI elements and event listeners.
-     * @param savedInstanceState If the activity is being re-initialized, this Bundle
-     * contains the most recent data.
-     */
+    private static final int PICK_IMAGE_REQUEST = 1;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.create_event);
 
+        // Initialize UI elements
         eventNameInput = findViewById(R.id.eventNameInput);
         eventCapacityInput = findViewById(R.id.eventCapacityInput);
         eventStartDateInput = findViewById(R.id.eventStartDateInput);
@@ -52,6 +57,7 @@ public class CreateEventActivity extends AppCompatActivity {
         publishButton = findViewById(R.id.publishButton);
         backButton = findViewById(R.id.backButton);
         eventLocationSpinner = findViewById(R.id.eventLocationSpinner);
+        eventImageView = findViewById(R.id.eventImage);
 
         populateFacilities();
 
@@ -59,11 +65,11 @@ public class CreateEventActivity extends AppCompatActivity {
         eventStartDateInput.setOnClickListener(v -> showDatePickerDialog(eventStartDateInput));
         eventEndDateInput.setOnClickListener(v -> showDatePickerDialog(eventEndDateInput));
 
-        // Set up listener for publish button
         publishButton.setOnClickListener(v -> createEvent());
-
-        // Back button listener
         backButton.setOnClickListener(v -> finish());
+
+        // Click on camera icon to upload an image
+        eventImageView.setOnClickListener(v -> openGallery());
     }
 
     /**
@@ -74,7 +80,7 @@ public class CreateEventActivity extends AppCompatActivity {
         ArrayList<Facility> facilities = FacilityManager.getInstance().getFacilities();
         ArrayList<String> facilityNames = new ArrayList<>();
 
-        // Initialize test data if no facilities are available
+        // Initialize test data if no facilities are available FOR TESTING
         if (facilities.isEmpty()) {
             Facility grandArena = new Facility("F001", "Grand Arena", "123 Main St, Downtown", 1000, "A Luxury Hotel");
             Facility downtownHall = new Facility("F002", "Downtown Hall", "456 Elm St, City Center", 500, "A Beautiful Penthouse overlooking NYC");
@@ -137,16 +143,13 @@ public class CreateEventActivity extends AppCompatActivity {
         boolean geolocationRequired = geolocationCheckbox.isChecked();
         String eventId = generateUniqueId();
 
-        // Create new event
         Event newEvent = new Event(eventId, eventName, eventStartDate, selectedFacilityName, eventCapacity, geolocationRequired, eventStartDate, eventEndDate);
         EventManager.getInstance().addEvent(newEvent);
 
-        // Return to EventListActivity and show success message
         Intent resultIntent = new Intent(this, EventListActivity.class);
         startActivity(resultIntent);
         Toast.makeText(this, "Event created successfully!", Toast.LENGTH_SHORT).show();
 
-        // Clear inputs for the next event
         clearInputs();
     }
 
@@ -203,5 +206,38 @@ public class CreateEventActivity extends AppCompatActivity {
         eventEndDateInput.setText("");
         eventLocationSpinner.setSelection(0);
         geolocationCheckbox.setChecked(false);
+    }
+
+    /**
+     * Opens the gallery to allow the user to select an image for the event poster.
+     */
+    private void openGallery() {
+        Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+        intent.setType("image/*");
+        startActivityForResult(intent, PICK_IMAGE_REQUEST);
+    }
+
+    /**
+     * Handles the result of the image selection from the gallery.
+     * @param requestCode The request code for the intent.
+     * @param resultCode The result code of the activity.
+     * @param data The data returned by the intent.
+     */
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == PICK_IMAGE_REQUEST && resultCode == RESULT_OK && data != null) {
+            Uri imageUri = data.getData();
+            if (imageUri != null) {
+                try {
+                    Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), imageUri);
+                    eventImageView.setImageBitmap(bitmap);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    Toast.makeText(this, "Failed to load image", Toast.LENGTH_SHORT).show();
+                }
+            }
+        }
     }
 }
