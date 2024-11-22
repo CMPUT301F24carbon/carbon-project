@@ -6,7 +6,6 @@ import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Locale;
 
 // The methods you should know how to use are:
 // 0. User(userId)          You only need to pass in the userId i.e. device ID
@@ -56,21 +55,16 @@ import java.util.Locale;
  * Represents a user which is the superclass to Entrant, Admin and Organizer.
  */
 public class User {
+    // The user data is stored in the userData HashMap, which includes the following keys:
+    // "role", "firstName", "lastName", "email", "phoneNumber", "profileImage", "notificationSettings"
+    // For entrants, the following keys are also available:
+    // "joinedEventList"
+    // For organizers, the following keys are also available:
+    // "facilityId", "heldEventList"
+    // For admins, the following keys are also available:
+    // N/A
+    public HashMap<String, Object> userData;
     public String userId;
-    public String role;
-    public String firstName;
-    public String lastName;
-    public String email;
-    public String phoneNumber;
-    public String profileImage;
-    public HashMap<String, Boolean> notificationSettings;
-
-    // Entrant-specific fields
-    public ArrayList<String> joinedEventList;
-    // Organizer-specific fields
-    public String facilityId;
-    public ArrayList<String> heldEventList;
-    // Admin-specific fields
 
     /**
      * Constructs a User object.
@@ -79,46 +73,14 @@ public class User {
     public User(String userId) {
         this.userId = userId;
 
-        role = "entrant";       // The default role is "entrant", load from firestore if needed
-        firstName = null;
-        lastName = null;
-        email = null;
-        phoneNumber = null;
-        profileImage = null;
-        notificationSettings = new HashMap<>();
-
-        joinedEventList = new ArrayList<>();
-        heldEventList = new ArrayList<>();
-        facilityId = null;
-    }
-
-    /**
-     * Constructs a User object from a dictionary.
-     * @param userData      Dictionary containing user data.
-     */
-    public void fromDictionary(HashMap<String, Object> userData) {
-        role = (String) userData.get("role");
-        firstName = (String) userData.get("firstName");
-        lastName = (String) userData.get("lastName");
-        email = (String) userData.get("email");
-        phoneNumber = (String) userData.get("phoneNumber");
-        profileImage = (String) userData.get("profileImage");
-        notificationSettings = (HashMap<String, Boolean>) userData.get("notificationSettings");
-
-        switch (role) {
-            case "entrant":
-                // Entrant-specific fields
-                joinedEventList = (ArrayList<String>) userData.get("eventList");
-                break;
-            case "organizer":
-                // Organizer-specific fields
-                facilityId = (String) userData.get("facilityId");
-                heldEventList = (ArrayList<String>) userData.get("eventList");
-                break;
-            case "admin":
-                // Admin-specific fields
-                break;
-        }
+        userData = new HashMap<>();
+        userData.put("role", "entrant");        // The default role is "entrant", load from firestore if needed
+        userData.put("firstName", null);
+        userData.put("lastName", null);
+        userData.put("email", null);
+        userData.put("phoneNumber", null);
+        userData.put("profileImage", null);
+        userData.put("notificationSettings", new HashMap<>());
     }
 
     /**
@@ -140,13 +102,12 @@ public class User {
                 .addOnSuccessListener(documentSnapshot -> {
                     if (documentSnapshot.exists()) {
                         // Retrieve the user data from the document
-                        HashMap<String, Object> userData = (HashMap<String, Object>) documentSnapshot.getData();
+                        HashMap<String, Object> firestoreData = (HashMap<String, Object>) documentSnapshot.getData();
                         if (userData != null) {
-                            fromDictionary(userData);       // Load user data from the hash map
+                            userData.putAll(firestoreData);
                             System.out.println(getRole() + " " + getFullName() + " successfully loaded.");
                             callback.onDataLoaded(userData);
                         }
-
                     } else {
                         System.out.println("User with ID " + userId + " does not exist.");
                         callback.onError("Welcome, new user!");
@@ -156,38 +117,6 @@ public class User {
                     System.err.println("Error loading user data: " + e.getMessage());
                     callback.onError("Failed to load user data, please check your internet connection");
                 });
-
-    }
-
-    /**
-     * Constructs a User dictionary.
-     * @return A hashmap representing the user instance.
-     */
-    public HashMap<String, Object> toDictionary() {
-        HashMap<String, Object> map = new HashMap<>();
-        map.put("role", role);
-        map.put("firstName", firstName);
-        map.put("lastName", lastName);
-        map.put("email", email);
-        map.put("phoneNumber", phoneNumber);
-        map.put("profileImage", profileImage);
-        map.put("notificationSettings", notificationSettings);
-
-        switch (role.toLowerCase(Locale.ROOT)) {
-            case "entrant":
-                // Entrant-specific fields
-                map.put("eventList", joinedEventList);
-                break;
-            case "organizer":
-                // Organizer-specific fields
-                map.put("facilityId", facilityId);
-                map.put("eventList", heldEventList);
-                break;
-            case "admin":
-                // Admin-specific fields
-                break;
-        }
-        return map;
     }
 
     /**
@@ -198,9 +127,9 @@ public class User {
         DocumentReference userRef = usersRef.document(userId);
 
         // Update the user data to Firestore
-        userRef.set(toDictionary())
+        userRef.set(userData)
                 .addOnSuccessListener(aVoid -> {
-                    System.out.println(role + " with ID " + userId + " successfully updated.");
+                    System.out.println(getRole() + " with ID " + userId + " successfully updated.");
 
                 })
                 .addOnFailureListener(e -> {
@@ -214,8 +143,12 @@ public class User {
      * @param status        true if the notification is enabled, false otherwise.
      */
     public void handleNotification(String notification, Boolean status) {
+        HashMap notificationSettings = (HashMap<String, Boolean>) userData.get("notificationSettings");
+
         if (status) {
-            notificationSettings.remove(notification);
+            if (notificationSettings != null) {
+                notificationSettings.remove(notification);
+            }
         } else {
             notificationSettings.put(notification, false);
         }
@@ -234,7 +167,7 @@ public class User {
      * @return Users initials in the format "FL".
      */
     public String getInitials() {
-        if (firstName == null && lastName == null) {
+        if (getFirstName() == null && getLastName() == null) {
             return "N/A";
         }
         return getFirstName().charAt(0) + "" + getLastName().charAt(0);
@@ -247,7 +180,13 @@ public class User {
      * @param eventId ID of the event to join.
      */
     public void joinEvent(String eventId) {
+        ArrayList<String> joinedEventList = getJoinedEventList();
+        // Check if the joinedEventList is null
+        if (joinedEventList == null) {
+            joinedEventList = new ArrayList<>();
+        }
         joinedEventList.add(eventId);
+        userData.put("joinedEventList", joinedEventList);
     }
 
     /**
@@ -255,21 +194,23 @@ public class User {
      * @param eventId ID of the event to leave.
      */
     public void leaveEvent(String eventId) {
+        ArrayList<String> joinedEventList = getJoinedEventList();
         joinedEventList.remove(eventId);
+        userData.put("joinedEventList", joinedEventList);
     }
-
-    public ArrayList<String> getJoinedEventList() {return joinedEventList;}
 
     /**
      * Allows the entrant to become an organizer by joining a facility
      * @param facilityId ID of the facility to become an organizer.
      */
     public void becomeOrganizer(String facilityId) {
-        this.role = "Organizer";
-        this.facilityId = facilityId;
+        setRole("organizer");
+        setFacilityId(facilityId);
 
         uploadToFirestore();
     }
+
+    public ArrayList<String> getJoinedEventList() {return (ArrayList<String>) userData.get("joinedEventList");}
 
 
     // Organizer-specific methods
@@ -278,7 +219,13 @@ public class User {
      * @param eventId ID of the event to start.
      */
     public void startEvent(String eventId) {
+        ArrayList<String> heldEventList = getHeldEventList();
+        // Check if the heldEventList is null
+        if (heldEventList == null) {
+            heldEventList = new ArrayList<>();
+        }
         heldEventList.add(eventId);
+        userData.put("heldEventList", heldEventList);
     }
 
     /**
@@ -286,13 +233,15 @@ public class User {
      * @param eventId ID of the event to end.
      */
     public void endEvent(String eventId) {
+        ArrayList<String> heldEventList = getHeldEventList();
         heldEventList.remove(eventId);
+        userData.put("heldEventList", heldEventList);
     }
 
-    public ArrayList<String> getHeldEventList() {return heldEventList;}
+    public ArrayList<String> getHeldEventList() {return (ArrayList<String>) userData.get("heldEventList");}
 
-    public String getFacilityId() {return facilityId;}
-    public void setFacilityId(String facilityId) {this.facilityId = facilityId;}
+    public String getFacilityId() {return (String) userData.get("facilityId");}
+    public void setFacilityId(String facilityId) { userData.put("facilityId", facilityId); }
 
 
     // Admin-specific methods
@@ -334,6 +283,10 @@ public class User {
                 });
     }
 
+    /**
+     * Allows the admin to delete a facility.
+     * @param facilityId ID of the facility to remove.
+     */
     public void deleteFacility(String facilityId) {
         // Get a reference to the facility document
         CollectionReference facilitiesRef = FirebaseFirestore.getInstance().collection("facilities");
@@ -351,47 +304,50 @@ public class User {
 
 
     // Getters and setters for all roles of users
-    public HashMap<String, Boolean> getNotificationSettings() {return notificationSettings;}
+    public HashMap<String, Boolean> getNotificationSettings() {return (HashMap<String, Boolean>) userData.get("notificationSettings");}
 
-    public String getUserId() { return userId; }
+    public String getUserId() {return userId;}
 
-    public String getRole() { return role; }
-    public void setRole(String role) { this.role = role; }
+    public String getRole() {return (String) userData.get("role");}
+    public void setRole(String role) { userData.put("role", role); }
 
     public String getFirstName() {
+        String firstName = (String) userData.get("firstName");
         if (firstName == null) {
             return " ";
         }
         return firstName;
     }
-    public void setFirstName(String firstName) { this.firstName = firstName; }
+    public void setFirstName(String firstName) { userData.put("firstName", firstName); }
 
     public String getLastName() {
+        String lastName = (String) userData.get("lastName");
         if (lastName == null) {
             return " ";
         }
         return lastName;
     }
-    public void setLastName(String lastName) {
-        this.lastName = lastName; }
+    public void setLastName(String lastName) { userData.put("lastName", lastName); }
 
     public String getEmail() {
+        String email = (String) userData.get("email");
         if (email == null) {
             return " ";
         }
         return email;
     }
-    public void setEmail(String email) { this.email = email; }
+    public void setEmail(String email) { userData.put("email", email); }
 
     public String getPhoneNumber() {
+        String phoneNumber = (String) userData.get("phoneNumber");
         if (phoneNumber == null) {
             return " ";
         }
         return phoneNumber;
     }
-    public void setPhoneNumber(String phoneNumber) { this.phoneNumber = phoneNumber; }
+    public void setPhoneNumber(String phoneNumber) { userData.put("phoneNumber", phoneNumber); }
 
-    public String getProfileImage() {return profileImage;}
-    public void setProfileImage(String profileImage) {this.profileImage = profileImage;}
+    public String getProfileImage() {return (String) userData.get("profileImage");}
+    public void setProfileImage(String profileImage) { userData.put("profileImage", profileImage); }
 
 }
