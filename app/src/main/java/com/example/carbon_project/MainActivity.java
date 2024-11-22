@@ -2,26 +2,49 @@ package com.example.carbon_project;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
+
 import androidx.appcompat.app.AppCompatActivity;
 
+import java.util.HashMap;
+import java.util.Locale;
+
+
 public class MainActivity extends AppCompatActivity {
+    User user;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.user_screen);
 
-        User organizer = new Organizer("O001", "Team","Carbon", "team.carbon@example.com", "123-456-7890", null);
+        // Apply the device's android ID as the user ID
+        String userId = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
 
+        user = new User(userId);
+
+        user.loadFromFirestore(new User.DataLoadedCallback() {
+            @Override
+            public void onDataLoaded(HashMap<String, Object> userData) {
+                // Display the UI after the data is loaded
+                setUpScreen();
+            }
+
+            @Override
+            public void onError(String error) {
+                // Handle the error if the load fails
+                Toast.makeText(MainActivity.this, error, Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    public void setUpScreen() {
         Facility grandArena = new Facility("F001", "Grand Arena", "123 Main St, Downtown",1000,"A Luxary Hotel");
         Facility downtownHall = new Facility("F002", "Downtown Hall", "456 Elm St, City Center", 500 , "A Beautiful Penthouse overlooking the NYC");
-
-
-
-        User activeUser = organizer;
 
         // References to screen elements
         TextView userNameTextView = findViewById(R.id.userName);
@@ -34,24 +57,24 @@ public class MainActivity extends AppCompatActivity {
         Button deleteUserButton = findViewById(R.id.deleteUserButton);
 
         // user data on user_screen
-        userNameTextView.setText(activeUser.getFullName());
-        userEmailTextView.setText(activeUser.getEmail());
-        userPhoneTextView.setText(activeUser.getPhoneNumber());
+        userNameTextView.setText(user.getFullName());
+        userEmailTextView.setText(user.getEmail());
+        userPhoneTextView.setText(user.getPhoneNumber());
 
         // set profile image if available; otherwise, use initials
-        if (activeUser.getProfileImageUrl() == null || activeUser.getProfileImageUrl().isEmpty()) {
-            String initials = activeUser.getInitials();
+        if (user.getProfileImage() == null || user.getProfileImage().isEmpty()) {
+            String initials = user.getInitials();
             initialsTextView.setText(initials);
             initialsTextView.setVisibility(TextView.VISIBLE);
             profileImageView.setImageResource(R.drawable.profile_placeholder);
         } else {
             initialsTextView.setVisibility(TextView.GONE);
-            int imageResource = getResources().getIdentifier(activeUser.getProfileImageUrl(), "drawable", getPackageName());
+            int imageResource = getResources().getIdentifier(user.getProfileImage(), "drawable", getPackageName());
             profileImageView.setImageResource(imageResource);
         }
 
         // Handle role-based actions
-        if (activeUser instanceof Organizer) {
+        if (user.getRole().toLowerCase(Locale.ROOT).equals("organizer")) {
             createFacilityButton.setVisibility(Button.VISIBLE);
             createEventButton.setVisibility(Button.VISIBLE); // Show Create Event button for Organizer
 
@@ -71,7 +94,7 @@ public class MainActivity extends AppCompatActivity {
             createEventButton.setVisibility(Button.GONE); // Hide Create Event button for non-Organizers
         }
 
-        if (activeUser instanceof Admin) {
+        if (user.getRole().toLowerCase(Locale.ROOT).equals("admin")) {
             deleteUserButton.setVisibility(Button.VISIBLE);
         } else {
             deleteUserButton.setVisibility(Button.GONE);

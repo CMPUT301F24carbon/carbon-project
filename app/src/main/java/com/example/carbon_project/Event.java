@@ -14,8 +14,8 @@ public class Event {
     private String location;
     private int capacity;
     private int waitingListLimit = 0; // Optional limit on waitingList size
-    private ArrayList<Entrant> waitingList = new ArrayList<>();
-    private ArrayList<Entrant> selectedList = new ArrayList<>();
+    private ArrayList<String> waitingList = new ArrayList<>();
+    private ArrayList<String> selectedList = new ArrayList<>();
     private boolean geolocationRequired;
     private String startDate;
     private String endDate;
@@ -81,10 +81,10 @@ public class Event {
     public void setWaitingListLimit(int waitingListLimit) { this.waitingListLimit = waitingListLimit; }
 
     // Getter for waitingList
-    public ArrayList<Entrant> getWaitingList() { return waitingList; }
+    public ArrayList<String> getWaitingList() { return waitingList; }
 
     // Getter for selectedList
-    public ArrayList<Entrant> getSelectedList() { return selectedList; }
+    public ArrayList<String> getSelectedList() { return selectedList; }
 
     // Getter and Setter for startDate
     public String getStartDate() { return startDate; }
@@ -110,7 +110,7 @@ public class Event {
      * Adds a new entrant to the waiting list.
      * @param entrant entrant to be added to the waiting list.
      */
-    public void addEntrant(Entrant entrant) {
+    public void addEntrant(String entrant) {
         if (waitingListLimit != 0 && waitingList.size() >= waitingListLimit) {
             // notify entrant that waiting list is full
         } else {
@@ -122,7 +122,7 @@ public class Event {
      * Removes an entrant from the waitingList or, if already selected, removes the entrant from the selectedList instead.
      * @param entrant entrant to be removed.
      */
-    public void removeEntrant(Entrant entrant) {
+    public void removeEntrant(String entrant) {
         if (!waitingList.remove(entrant)) {
             selectedList.remove(entrant);
         }
