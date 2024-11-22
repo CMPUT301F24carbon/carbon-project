@@ -11,7 +11,7 @@ public class Facility  {
     private String location;
     private int capacity;
     private String description;
-    private ArrayList<Event> facilityEvents;
+    private ArrayList<String> facilityEvents;
 
     /**
      * Constructor to initialize the facility.
@@ -105,7 +105,7 @@ public class Facility  {
      * Returns the list of events associated with this Facility
      * @return an ArrayList<Event> of Events associated with this Facility
      */
-    public ArrayList<Event> getEvents() {
+    public ArrayList<String> getEvents() {
         return facilityEvents;
     }
 
@@ -113,7 +113,7 @@ public class Facility  {
      * Adds an event to the Facility's list
      * @param event the Event to be added to the list
      */
-    public void addEvent(Event event) {
+    public void addEvent(String event) {
         facilityEvents.add(event);
     }
 }

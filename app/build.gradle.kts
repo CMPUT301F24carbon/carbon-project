@@ -38,16 +38,19 @@ dependencies {
 
     implementation(libs.constraintlayout)
 
+    // Dependencies for Firestore
     implementation(platform("com.google.firebase:firebase-bom:33.5.1"))
+    implementation("com.google.firebase:firebase-firestore")
+
+    // Dependencies for testers
     implementation(libs.ext.junit)
     implementation(libs.androidx.espresso.core)
-
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.espresso:espresso-core:3.4.0")
     androidTestImplementation("androidx.test:rules:1.4.0")
     androidTestImplementation("androidx.test:runner:1.4.0")
 
-    // Libraries for QR scanning and generating
+    // Dependencies for QR scanning and generating
     implementation(libs.zxing.embedded)
     implementation(libs.zxing.core)
 
