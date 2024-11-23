@@ -80,7 +80,7 @@ public class CreateFacilityActivity extends AppCompatActivity {
         }
 
         // Create new facility and add it to the facility manager
-        Facility newFacility = new Facility(generateUniqueId(), facilityName, facilityLocation, capacity, facilityDescription);
+        Facility newFacility = new Facility(facilityName, facilityLocation, capacity, facilityDescription);
         FacilityManager.getInstance().addFacility(newFacility);
 
         // Navigate to FacilityListActivity and display success message
@@ -90,14 +90,6 @@ public class CreateFacilityActivity extends AppCompatActivity {
 
         // Clear input fields
         clearInputs();
-    }
-
-    /**
-     * Generates a unique identifier for a new facility using UUID.
-     * @return A unique facility ID string.
-     */
-    private String generateUniqueId() {
-        return "FAC" + UUID.randomUUID().toString();
     }
 
     /**

@@ -84,8 +84,8 @@ public class CreateEventActivity extends AppCompatActivity {
 
         // Test data for facilities if none exist (for testing purposes)
         if (facilities.isEmpty()) {
-            facilities.add(new Facility("F001", "Grand Arena", "123 Main St", 1000, "Luxury hotel"));
-            facilities.add(new Facility("F002", "Downtown Hall", "456 Elm St", 500, "Penthouse in NYC"));
+            facilities.add(new Facility("Grand Arena", "123 Main St", 1000, "Luxury hotel"));
+            facilities.add(new Facility("Downtown Hall", "456 Elm St", 500, "Penthouse in NYC"));
         }
 
         for (Facility facility : facilities) {
@@ -144,7 +144,7 @@ public class CreateEventActivity extends AppCompatActivity {
         boolean geolocationRequired = geolocationCheckbox.isChecked();
         String eventId = generateUniqueId();
 
-        Event newEvent = new Event(eventId, eventName, selectedFacilityName, eventCapacity, geolocationRequired, eventStartDate, eventEndDate, 0, null);
+        Event newEvent = new Event(eventName, selectedFacilityName, eventCapacity, geolocationRequired, eventStartDate, eventEndDate, 0, null);
         EventManager.getInstance().addEvent(newEvent);
 
         Intent resultIntent = new Intent(this, EventListActivity.class);

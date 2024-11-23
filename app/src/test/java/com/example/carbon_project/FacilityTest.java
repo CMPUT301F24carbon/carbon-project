@@ -18,7 +18,7 @@ public class FacilityTest {
      */
     @Before
     public void setUp() {
-        facility = new Facility("FAC001", "Conference Room", "New York", 50, "A large conference room with projectors.");
+        facility = new Facility("Conference Room", "New York", 50, "A large conference room with projectors.");
     }
 
     /**
@@ -80,7 +80,7 @@ public class FacilityTest {
     @Test
     public void testFacilityWithEmptyFields() {
         // Create a facility with empty name
-        Facility emptyFacility = new Facility("FAC002", "", "Los Angeles", 0, "");
+        Facility emptyFacility = new Facility("", "Los Angeles", 0, "");
         assertTrue(emptyFacility.getName().isEmpty());
         assertEquals("Los Angeles", emptyFacility.getLocation());
         assertEquals(0, emptyFacility.getCapacity());

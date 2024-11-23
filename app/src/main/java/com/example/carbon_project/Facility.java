@@ -1,119 +1,171 @@
 package com.example.carbon_project;
 
+import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.FirebaseFirestore;
+
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.UUID;
+
+// The methods you should know how to use are:
+// 0. Facility(facilityId)  Create an empty facility to load from Firestore
+// 0. Facility(...)         Create a new facility with all details
+// 1. loadFromFirestore     Load facility data from Firestore and update the hash map
+// 2. uploadToFirestore     Upload the hash map to Firestore
+// 4. addEvent              Adds an event to the facility
+// 5. removeEvent           Removes an event from the facility
+// 6. getters and setters
+
+// =============================================================================
+// Any modification in Facility class should notify me first.
+// If you have any questions / requirements, please contact me @V615 on discord.
+// =============================================================================
+
+// How to create a new Facility:
+// Facility facility = new Facility(String name, String location, int capacity, String description);
+
+// How to create a facility to load from Firestore:
+// Facility facility = new Facility(facilityId);
+// and then load facility data
+
+// How to load facility data:
+//facility.loadFromFirestore(new Facility.DataLoadedCallback() {
+//    @Override
+//    public void onDataLoaded(HashMap<String, Object> facilityData) {  // You can also use the facilityData HashMap to get the event details
+//        // Your code here
+//        callYourMethod();
+//        facility.uploadToFirestore();
+//    }
+//
+//    // The following method is not mandatory
+//    @Override
+//    public void onError(String error) {
+//        // Handle the error message if the load fails
+//        // Change MainActivity to the activity that you want to display the toast message
+//        Toast.makeText(MainActivity.this, error, Toast.LENGTH_SHORT).show();
+//    }
+//});
 
 /**
  * Class represents a Facility; which belong to an organizer.
  */
 public class Facility  {
+    HashMap<String, Object> facilityData;
     private String facilityId;
-    private String name;
-    private String location;
-    private int capacity;
-    private String description;
-    private ArrayList<String> facilityEvents;
 
     /**
      * Constructor to initialize the facility.
      * @param facilityId Unique identifier for the facility.
+     */
+    public Facility(String facilityId) {
+        this.facilityId = facilityId;
+        facilityData = new HashMap<>();
+    }
+
+    /**
+     * Constructor to initialize the facility.
      * @param name Name of the facility.
      * @param location Location of the facility.
      * @param capacity Capacity of the facility.
      * @param description Description of the facility.
      */
-    public Facility(String facilityId, String name, String location, int capacity, String description) {
-        this.facilityId = facilityId;
-        this.name = name;
-        this.location = location;
-        this.capacity = capacity;
-        this.description = description;
+    public Facility(String name, String location, int capacity, String description) {
+        facilityId = UUID.randomUUID().toString();
+
+        facilityData = new HashMap<>();
+        facilityData.put("name", name);
+        facilityData.put("location", location);
+        facilityData.put("capacity", capacity);
+        facilityData.put("description", description);
+        facilityData.put("facilityEvents", new ArrayList<>());
     }
 
     /**
-     * Returns the unique identifier for the facility.
-     * @return The facilityID.
+     * Callback interface for loading facility data.
      */
-    public String getFacilityId() {
-        return facilityId;
+    public interface DataLoadedCallback {
+        void onDataLoaded(HashMap<String, Object> facilityData);
+        void onError(String error);
     }
 
     /**
-     * Returns the name of the facility.
-     * @return The name of the facility.
+     * Loads facility data from Firestore.
+     * @param callback Callback to handle the loaded data.
      */
-    public String getName() {
-        return name;
+    public void loadFromFirestore(final DataLoadedCallback callback) {
+        CollectionReference facilitiesRef = FirebaseFirestore.getInstance().collection("facilities");
+        DocumentReference facilityRef = facilitiesRef.document(facilityId);
+
+        facilityRef.get()
+                .addOnSuccessListener(documentSnapshot -> {
+                    if (documentSnapshot.exists()) {
+                        // Retrieve the user data from the document
+                        HashMap<String, Object> firestoreData = (HashMap<String, Object>) documentSnapshot.getData();
+                        if (firestoreData != null) {
+                            facilityData.putAll(firestoreData);
+                            System.out.println("Facility " + getName() + " successfully loaded.");
+                            callback.onDataLoaded(facilityData);
+                        }
+                    } else {
+                        System.out.println("Facility with ID " + facilityId + " does not exist.");
+                        callback.onError("Event does not exist");
+                    }
+                })
+                .addOnFailureListener(e -> {
+                    System.err.println("Error loading facility data: " + e.getMessage());
+                    callback.onError("Failed to load facility data, please check your internet connection");
+                });
     }
 
-    /**
-     * Sets the name of the facility.
-     * @param name The name of the facility.
-     */
-    public void setName(String name) {
-        this.name = name;
-    }
+    public void uploadToFirestore() {
+        CollectionReference facilitiesRef = FirebaseFirestore.getInstance().collection("facilities");
+        DocumentReference facilityRef = facilitiesRef.document(facilityId);
 
-    /**
-     * Returns the location of the facility.
-     * @return The location of the facility.
-     */
-    public String getLocation() {
-        return location;
-    }
-
-    /**
-     * Sets the location of the facility.
-     * @param location The location of the facility.
-     */
-    public void setLocation(String location) {
-        this.location = location;
-    }
-
-    /**
-     * Returns the capacity of the facility.
-     * @return The capacity of the facility.
-     */
-    public int getCapacity() {
-        return capacity;
-    }
-
-    /**
-     * Sets the capacity of the facility.
-     * @param capacity The capacity of the facility.
-     */
-    public void setCapacity(int capacity) {
-        this.capacity = capacity;
-    }
-
-    /**
-     * Returns the description of the facility.
-     * @return The description of the facility.
-     */
-    public String getDescription() {
-        return description;
-    }
-
-    /**
-     * Sets the description of the facility.
-     * @param description The description of the facility.
-     */
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    /**
-     * Returns the list of events associated with this Facility
-     * @return an ArrayList<Event> of Events associated with this Facility
-     */
-    public ArrayList<String> getEvents() {
-        return facilityEvents;
+        // Update the facility data to Firestore
+        facilityRef.set(facilityData)
+                .addOnSuccessListener(aVoid -> {
+                    System.out.println("Facility with ID " + facilityId + " successfully updated.");
+                })
+                .addOnFailureListener(e -> {
+                    System.err.println("Error updating facility: " + e.getMessage());
+                });
     }
 
     /**
      * Adds an event to the Facility's list
-     * @param event the Event to be added to the list
+     * @param eventId The ID of the event to be added
      */
-    public void addEvent(String event) {
-        facilityEvents.add(event);
+    public void addEvent(String eventId) {
+        ArrayList<String> facilityEvents = (ArrayList<String>) facilityData.get("facilityEvents");
+        facilityEvents.add(eventId);
     }
+
+    /**
+     * Removes an event from the Facility's list
+     * @param eventId The ID of the event to be removed
+     */
+    public void removeEvent(String eventId) {
+        ArrayList<String> facilityEvents = (ArrayList<String>) facilityData.get("facilityEvents");
+        facilityEvents.remove(eventId);
+    }
+
+
+    // Getters and Setters
+    public String getFacilityId() {return facilityId;}
+
+    public ArrayList<String> getFacilityEvents() {return (ArrayList<String>) facilityData.get("facilityEvents");}
+
+    public String getName() {return (String) facilityData.get("name");}
+    public void setName(String name) {facilityData.put("name", name);}
+
+    public String getLocation() {return (String) facilityData.get("location");}
+    public void setLocation(String location) {facilityData.put("location", location);}
+
+    public int getCapacity() {return (int) facilityData.get("capacity");}
+    public void setCapacity(int capacity) {facilityData.put("capacity", capacity);}
+
+    public String getDescription() {return (String) facilityData.get("description");}
+    public void setDescription(String description) {facilityData.put("description", description);}
+
 }

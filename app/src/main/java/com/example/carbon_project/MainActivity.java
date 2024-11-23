@@ -17,6 +17,7 @@ import java.util.Locale;
 public class MainActivity extends AppCompatActivity {
     User user;
     Event event;
+    Facility facility;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -27,7 +28,8 @@ public class MainActivity extends AppCompatActivity {
         String userId = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
 
         user = new User(userId);
-        event = new Event("E001", "Workshop", "Community Center", 50, false, "2023-11-10", "2023-11-11", 0, null);
+        event = new Event("Workshop", "Community Center", 50, false, "2023-11-10", "2023-11-11", 0, null);
+        facility = new Facility("Grand Arena", "123 Main St, Downtown",1000,"A Luxary Hotel");
 
         user.loadFromFirestore(new User.DataLoadedCallback() {
             @Override
@@ -36,6 +38,7 @@ public class MainActivity extends AppCompatActivity {
                 setUpScreen();
                 user.uploadToFirestore();
                 event.uploadToFirestore();
+                facility.uploadToFirestore();
             }
 
             @Override
@@ -49,9 +52,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void setUpScreen() {
-        Facility grandArena = new Facility("F001", "Grand Arena", "123 Main St, Downtown",1000,"A Luxary Hotel");
-        Facility downtownHall = new Facility("F002", "Downtown Hall", "456 Elm St, City Center", 500 , "A Beautiful Penthouse overlooking the NYC");
-
         // References to screen elements
         TextView userNameTextView = findViewById(R.id.userName);
         TextView userEmailTextView = findViewById(R.id.userEmail);
@@ -72,7 +72,7 @@ public class MainActivity extends AppCompatActivity {
             String initials = user.getInitials();
             initialsTextView.setText(initials);
             initialsTextView.setVisibility(TextView.VISIBLE);
-            profileImageView.setImageURI(event.getQRCodeUri());
+            profileImageView.setImageBitmap(event.getQRCodeBitmap());
         } else {
             initialsTextView.setVisibility(TextView.GONE);
             int imageResource = getResources().getIdentifier(user.getProfileImageUri(), "drawable", getPackageName());
