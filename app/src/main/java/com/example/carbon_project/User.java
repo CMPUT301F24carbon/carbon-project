@@ -1,5 +1,7 @@
 package com.example.carbon_project;
 
+import android.net.Uri;
+
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -34,11 +36,12 @@ import java.util.HashMap;
 // =============================================================================
 
 // How to load user data:
-// user.loadFromFirestore(new User.DataLoadedCallback() {
+//user.loadFromFirestore(new User.DataLoadedCallback() {
 //    @Override
-//    public void onDataLoaded(HashMap<String, Object> userData) {
-//         // Your code here
+//    public void onDataLoaded(HashMap<String, Object> userData) {  // You can also use the userData HashMap to get the user details
+//        // Your code here
 //         callYourMethod();
+//         user.uploadToFirestore();
 //    }
 //
 //    // The following method is not necessary
@@ -56,7 +59,7 @@ import java.util.HashMap;
  */
 public class User {
     // The user data is stored in the userData HashMap, which includes the following keys:
-    // "role", "firstName", "lastName", "email", "phoneNumber", "profileImage", "notificationSettings"
+    // "role", "firstName", "lastName", "email", "phoneNumber", "profileImageUri", "notificationSettings"
     // For entrants, the following keys are also available:
     // "joinedEventList"
     // For organizers, the following keys are also available:
@@ -74,12 +77,12 @@ public class User {
         this.userId = userId;
 
         userData = new HashMap<>();
-        userData.put("role", "entrant");        // The default role is "entrant", load from firestore if needed
+        userData.put("role", "Entrant");        // The default role is "entrant", load from firestore if needed
         userData.put("firstName", null);
         userData.put("lastName", null);
         userData.put("email", null);
         userData.put("phoneNumber", null);
-        userData.put("profileImage", null);
+        userData.put("profileImageUri", null);
         userData.put("notificationSettings", new HashMap<>());
     }
 
@@ -93,6 +96,7 @@ public class User {
 
     /**
      * Loads user data from Firestore.
+     * @param callback Callback to handle the loaded data.
      */
     public void loadFromFirestore(final DataLoadedCallback callback) {
         CollectionReference usersRef = FirebaseFirestore.getInstance().collection("users");
@@ -103,7 +107,7 @@ public class User {
                     if (documentSnapshot.exists()) {
                         // Retrieve the user data from the document
                         HashMap<String, Object> firestoreData = (HashMap<String, Object>) documentSnapshot.getData();
-                        if (userData != null) {
+                        if (firestoreData != null) {
                             userData.putAll(firestoreData);
                             System.out.println(getRole() + " " + getFullName() + " successfully loaded.");
                             callback.onDataLoaded(userData);
@@ -347,7 +351,7 @@ public class User {
     }
     public void setPhoneNumber(String phoneNumber) { userData.put("phoneNumber", phoneNumber); }
 
-    public String getProfileImage() {return (String) userData.get("profileImage");}
-    public void setProfileImage(String profileImage) { userData.put("profileImage", profileImage); }
+    public String getProfileImageUri() {return (String) userData.get("profileImageUri");}
+    public void setProfileImageUri(String profileImageUri) { userData.put("profileImageUri", profileImageUri); }
 
 }
