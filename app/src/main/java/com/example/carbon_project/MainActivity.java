@@ -72,9 +72,7 @@ public class MainActivity extends AppCompatActivity {
             String initials = user.getInitials();
             initialsTextView.setText(initials);
             initialsTextView.setVisibility(TextView.VISIBLE);
-            System.out.println("HERE");
-            System.out.println(event.getQRCodeUri());
-            profileImageView.setImageURI(event.getQRCodeUri());
+            profileImageView.setImageBitmap(event.getQRCodeBitmap());
         } else {
             initialsTextView.setVisibility(TextView.GONE);
             int imageResource = getResources().getIdentifier(user.getProfileImageUri(), "drawable", getPackageName());
