@@ -144,7 +144,7 @@ public class CreateEventActivity extends AppCompatActivity {
         boolean geolocationRequired = geolocationCheckbox.isChecked();
         String eventId = generateUniqueId();
 
-        Event newEvent = new Event(eventId, eventName, selectedFacilityName, eventCapacity, geolocationRequired, eventStartDate, eventEndDate);
+        Event newEvent = new Event(eventId, eventName, selectedFacilityName, eventCapacity, geolocationRequired, eventStartDate, eventEndDate, 0, null);
         EventManager.getInstance().addEvent(newEvent);
 
         Intent resultIntent = new Intent(this, EventListActivity.class);

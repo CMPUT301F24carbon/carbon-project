@@ -12,7 +12,7 @@ import org.junit.Test;
  */
 public class EventTest {
 
-    private Event eventWithDates;
+    private Event event;
     private Event eventWithWaitingListLimit;
 
     /**
@@ -21,8 +21,8 @@ public class EventTest {
      */
     @Before
     public void setUp() {
-        eventWithDates = new Event("E001", "Conference", "City Hall", 300, true, "2023-11-01", "2023-11-03");
-        eventWithWaitingListLimit = new Event("E002", "Workshop", "Community Center", 50, false, 10, "2023-11-10", "2023-11-11");
+        event = new Event("E002", "Workshop", "Community Center", 50, false, "2023-11-10", "2023-11-11", 0, null);
+        eventWithWaitingListLimit = new Event("E002", "Workshop", "Community Center", 50, false, "2023-11-10", "2023-11-11", 10, null);
     }
 
     /**
@@ -30,13 +30,13 @@ public class EventTest {
      */
     @Test
     public void testEventWithDates() {
-        assertEquals("E001", eventWithDates.getEventId());
-        assertEquals("Conference", eventWithDates.getName());
-        assertEquals("City Hall", eventWithDates.getLocation());
-        assertEquals(300, eventWithDates.getCapacity());
-        assertTrue(eventWithDates.isGeolocationRequired());
-        assertEquals("2023-11-01", eventWithDates.getStartDate());
-        assertEquals("2023-11-03", eventWithDates.getEndDate());
+        assertEquals("E001", event.getEventId());
+        assertEquals("Conference", event.getName());
+        assertEquals("City Hall", event.getLocation());
+        assertEquals(300, event.getCapacity());
+        assertTrue(event.isGeolocationRequired());
+        assertEquals("2023-11-01", event.getStartDate());
+        assertEquals("2023-11-03", event.getEndDate());
     }
 
     /**
@@ -59,8 +59,8 @@ public class EventTest {
      */
     @Test
     public void testSetEventId() {
-        eventWithDates.setEventId("E003");
-        assertEquals("E003", eventWithDates.getEventId());
+        event.setEventId("E003");
+        assertEquals("E003", event.getEventId());
     }
 
     /**
@@ -68,8 +68,8 @@ public class EventTest {
      */
     @Test
     public void testSetName() {
-        eventWithDates.setName("Updated Conference");
-        assertEquals("Updated Conference", eventWithDates.getName());
+        event.setName("Updated Conference");
+        assertEquals("Updated Conference", event.getName());
     }
 
     /**
@@ -77,8 +77,8 @@ public class EventTest {
      */
     @Test
     public void testSetLocation() {
-        eventWithDates.setLocation("New Venue");
-        assertEquals("New Venue", eventWithDates.getLocation());
+        event.setLocation("New Venue");
+        assertEquals("New Venue", event.getLocation());
     }
 
     /**
@@ -86,8 +86,8 @@ public class EventTest {
      */
     @Test
     public void testSetCapacity() {
-        eventWithDates.setCapacity(500);
-        assertEquals(500, eventWithDates.getCapacity());
+        event.setCapacity(500);
+        assertEquals(500, event.getCapacity());
     }
 
     /**
@@ -95,8 +95,8 @@ public class EventTest {
      */
     @Test
     public void testSetGeolocationRequired() {
-        eventWithDates.setGeolocationRequired(false);
-        assertFalse(eventWithDates.isGeolocationRequired());
+        event.setGeolocationRequired(false);
+        assertFalse(event.isGeolocationRequired());
     }
 
     /**
@@ -104,8 +104,8 @@ public class EventTest {
      */
     @Test
     public void testSetStartDate() {
-        eventWithDates.setStartDate("2023-12-01");
-        assertEquals("2023-12-01", eventWithDates.getStartDate());
+        event.setStartDate("2023-12-01");
+        assertEquals("2023-12-01", event.getStartDate());
     }
 
     /**
@@ -113,8 +113,8 @@ public class EventTest {
      */
     @Test
     public void testSetEndDate() {
-        eventWithDates.setEndDate("2023-12-02");
-        assertEquals("2023-12-02", eventWithDates.getEndDate());
+        event.setEndDate("2023-12-02");
+        assertEquals("2023-12-02", event.getEndDate());
     }
 
     /**
@@ -122,7 +122,7 @@ public class EventTest {
      */
     @Test
     public void testSetWaitingListLimit() {
-        eventWithDates.setWaitingListLimit(20);
-        assertEquals(20, eventWithDates.getWaitingListLimit());
+        event.setWaitingListLimit(20);
+        assertEquals(20, event.getWaitingListLimit());
     }
 }

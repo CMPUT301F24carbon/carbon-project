@@ -16,6 +16,7 @@ import java.util.Locale;
 
 public class MainActivity extends AppCompatActivity {
     User user;
+    Event event;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -26,12 +27,15 @@ public class MainActivity extends AppCompatActivity {
         String userId = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
 
         user = new User(userId);
+        event = new Event("E001", "Workshop", "Community Center", 50, false, "2023-11-10", "2023-11-11", 0, null);
 
         user.loadFromFirestore(new User.DataLoadedCallback() {
             @Override
             public void onDataLoaded(HashMap<String, Object> userData) {
                 // Display the UI after the data is loaded
                 setUpScreen();
+                user.uploadToFirestore();
+                event.uploadToFirestore();
             }
 
             @Override
@@ -40,6 +44,8 @@ public class MainActivity extends AppCompatActivity {
                 Toast.makeText(MainActivity.this, error, Toast.LENGTH_SHORT).show();
             }
         });
+
+
     }
 
     public void setUpScreen() {
@@ -62,14 +68,14 @@ public class MainActivity extends AppCompatActivity {
         userPhoneTextView.setText(user.getPhoneNumber());
 
         // set profile image if available; otherwise, use initials
-        if (user.getProfileImage() == null || user.getProfileImage().isEmpty()) {
+        if (user.getProfileImageUri() == null || user.getProfileImageUri().isEmpty()) {
             String initials = user.getInitials();
             initialsTextView.setText(initials);
             initialsTextView.setVisibility(TextView.VISIBLE);
-            profileImageView.setImageResource(R.drawable.profile_placeholder);
+            profileImageView.setImageURI(event.getQRCodeUri());
         } else {
             initialsTextView.setVisibility(TextView.GONE);
-            int imageResource = getResources().getIdentifier(user.getProfileImage(), "drawable", getPackageName());
+            int imageResource = getResources().getIdentifier(user.getProfileImageUri(), "drawable", getPackageName());
             profileImageView.setImageResource(imageResource);
         }
 
