@@ -1,7 +1,5 @@
 package com.example.carbon_project;
 
-import android.net.Uri;
-
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -11,8 +9,8 @@ import java.util.HashMap;
 
 // The methods you should know how to use are:
 // 0. User(userId)          You only need to pass in the userId i.e. device ID
-// 1. loadFromFirestore     Load user data from Firestore and update the instance variables
-// 2. uploadToFirestore     Upload the instance variables to Firestore
+// 1. loadFromFirestore     Load user data from Firestore and update the hash map
+// 2. uploadToFirestore     Upload the hash map to Firestore
 // 3. handleNotification    Handle notification settings, store it in a hashmap
 // 4. getFullName           Get the user's full name
 // 5. getInitials           Get the users initials
@@ -35,6 +33,9 @@ import java.util.HashMap;
 // If you have any questions / requirements, please contact me @V615 on discord.
 // =============================================================================
 
+// How to create a user:
+// User user = new User(userId);
+
 // How to load user data:
 //user.loadFromFirestore(new User.DataLoadedCallback() {
 //    @Override
@@ -44,7 +45,7 @@ import java.util.HashMap;
 //         user.uploadToFirestore();
 //    }
 //
-//    // The following method is not necessary
+//    // The following method is not mandatory
 //    @Override
 //    public void onError(String error) {
 //        // Handle the error message if the load fails

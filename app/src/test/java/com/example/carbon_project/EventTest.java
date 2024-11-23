@@ -21,8 +21,8 @@ public class EventTest {
      */
     @Before
     public void setUp() {
-        event = new Event("E002", "Workshop", "Community Center", 50, false, "2023-11-10", "2023-11-11", 0, null);
-        eventWithWaitingListLimit = new Event("E002", "Workshop", "Community Center", 50, false, "2023-11-10", "2023-11-11", 10, null);
+        event = new Event("Workshop", "Community Center", 50, false, "2023-11-10", "2023-11-11", 0, null);
+        eventWithWaitingListLimit = new Event("Workshop", "Community Center", 50, false, "2023-11-10", "2023-11-11", 10, null);
     }
 
     /**
