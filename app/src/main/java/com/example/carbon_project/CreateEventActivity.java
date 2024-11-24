@@ -12,16 +12,18 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.AppCompatImageView;
+
+import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.UUID;
 
 /**
  * CreateEventActivity is an activity for creating new events. It provides
@@ -34,18 +36,26 @@ public class CreateEventActivity extends AppCompatActivity {
     private EditText eventCapacityInput;
     private EditText eventStartDateInput;
     private EditText eventEndDateInput;
+    private EditText eventDescriptionInput;
     private CheckBox geolocationCheckbox;
     private Button publishButton;
     private Button backButton;
     private Spinner eventLocationSpinner;
-    private AppCompatImageView eventImageView;
+    private ImageView eventImageView;
     private String selectedFacilityName;
+    private FirebaseFirestore db;
+    private CollectionReference eventsRef;
 
     private static final int PICK_IMAGE_REQUEST = 1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        // Initialize Firestore
+        db = FirebaseFirestore.getInstance();
+        eventsRef = db.collection("events");
+
         setContentView(R.layout.create_event);
 
         // Initialize UI elements
@@ -66,6 +76,7 @@ public class CreateEventActivity extends AppCompatActivity {
         eventCapacityInput = findViewById(R.id.eventCapacityInput);
         eventStartDateInput = findViewById(R.id.eventStartDateInput);
         eventEndDateInput = findViewById(R.id.eventEndDateInput);
+        eventDescriptionInput = findViewById(R.id.eventDescriptionInput);
         geolocationCheckbox = findViewById(R.id.eventCheckbox);
         publishButton = findViewById(R.id.publishButton);
         backButton = findViewById(R.id.backButton);
@@ -123,7 +134,6 @@ public class CreateEventActivity extends AppCompatActivity {
     private void setupButtonListeners() {
         publishButton.setOnClickListener(v -> createEvent());
         backButton.setOnClickListener(v -> finish());
-        eventImageView.setOnClickListener(v -> openGallery());
     }
 
     /**
@@ -134,6 +144,7 @@ public class CreateEventActivity extends AppCompatActivity {
         String eventCapacityStr = eventCapacityInput.getText().toString().trim();
         String eventStartDate = eventStartDateInput.getText().toString().trim();
         String eventEndDate = eventEndDateInput.getText().toString().trim();
+        String eventDescription = eventDescriptionInput.getText().toString().trim();
 
         // Input validation
         if (!validateInputs(eventName, eventCapacityStr, eventStartDate, eventEndDate)) {
@@ -142,16 +153,17 @@ public class CreateEventActivity extends AppCompatActivity {
 
         int eventCapacity = Integer.parseInt(eventCapacityStr);
         boolean geolocationRequired = geolocationCheckbox.isChecked();
-        String eventId = generateUniqueId();
 
-        Event newEvent = new Event(eventName, selectedFacilityName, eventCapacity, geolocationRequired, eventStartDate, eventEndDate, 0, null);
-        EventManager.getInstance().addEvent(newEvent);
+        Event newEvent = new Event(eventName, selectedFacilityName, eventCapacity, geolocationRequired, eventStartDate, eventEndDate, eventDescription, 0, null);
 
+        // Use the uploadToFirestore method from Event class to upload the event data
+        newEvent.uploadToFirestore();  // Upload event data to Firestore
+
+        // After uploading, navigate to EventListActivity
         Intent resultIntent = new Intent(this, EventListActivity.class);
+        clearInputs();
         startActivity(resultIntent);
         Toast.makeText(this, "Event created successfully!", Toast.LENGTH_SHORT).show();
-
-        clearInputs();
     }
 
     /**
@@ -176,13 +188,6 @@ public class CreateEventActivity extends AppCompatActivity {
         }
 
         return true;
-    }
-
-    /**
-     * Generates a unique identifier for the event.
-     */
-    private String generateUniqueId() {
-        return "EVT" + UUID.randomUUID().toString();
     }
 
     /**
@@ -255,3 +260,4 @@ public class CreateEventActivity extends AppCompatActivity {
         }
     }
 }
+

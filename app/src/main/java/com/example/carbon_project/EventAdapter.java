@@ -10,20 +10,19 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
 
-/**
- * EventAdapter is a RecyclerView.Adapter that binds Event data to the views
- * in the event_list_item layout. It is used to display a list of events in a RecyclerView.
- */
 public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHolder> {
 
     private ArrayList<Event> events;
+    private OnEventClickListener onEventClickListener;
 
     /**
      * Constructs a new EventAdapter with the given list of events.
      * @param events The list of events to display.
+     * @param onEventClickListener Listener to handle event item clicks.
      */
-    public EventAdapter(ArrayList<Event> events) {
+    public EventAdapter(ArrayList<Event> events, OnEventClickListener onEventClickListener) {
         this.events = events;
+        this.onEventClickListener = onEventClickListener;
     }
 
     @NonNull
@@ -43,6 +42,10 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHol
         holder.eventCapacityTextView.setText("Capacity: " + currentEvent.getCapacity());
         holder.eventStartDateTextView.setText("Start Date: " + currentEvent.getStartDate());
         holder.eventEndDateTextView.setText("End Date: " + currentEvent.getEndDate());
+        //holder.eventDescriptionTextView.setText("Description: " + currentEvent.getDescription());
+
+        // Set the onClickListener for the event item
+        holder.itemView.setOnClickListener(v -> onEventClickListener.onEventClick(currentEvent));
     }
 
     @Override
@@ -59,11 +62,10 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHol
         TextView eventNameTextView;
         TextView eventLocationTextView;
         TextView eventStatusTextView;
-
-        // New TextViews for capacity, start date, and end date
         TextView eventCapacityTextView;
         TextView eventStartDateTextView;
         TextView eventEndDateTextView;
+        TextView eventDescriptionTextView;
 
         /**
          * Constructs a new EventViewHolder and binds the views.
@@ -77,6 +79,12 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHol
             eventCapacityTextView = itemView.findViewById(R.id.textView_capacity);
             eventStartDateTextView = itemView.findViewById(R.id.textView_start_date);
             eventEndDateTextView = itemView.findViewById(R.id.textView_end_date);
+            //eventDescriptionTextView = itemView.findViewById(R.id.textView_description);
         }
+    }
+
+    // Define the interface for item click handling
+    public interface OnEventClickListener {
+        void onEventClick(Event event);
     }
 }

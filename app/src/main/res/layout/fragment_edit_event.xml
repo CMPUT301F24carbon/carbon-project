@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="16dp"
+    tools:context=".EditEventFragment">
+
+    <!-- Event Name -->
+    <TextView
+        android:id="@+id/textViewEventName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Event Name"
+        android:textSize="18sp"
+        android:textColor="@android:color/black"
+        android:layout_marginBottom="8dp"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <EditText
+        android:id="@+id/editEventName"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:hint="Enter event name"
+        android:inputType="text"
+        android:layout_marginBottom="16dp"
+        app:layout_constraintTop_toBottomOf="@id/textViewEventName"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <!-- Start Date -->
+    <TextView
+        android:id="@+id/textViewStartDate"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Start Date"
+        android:textSize="16sp"
+        android:textColor="@android:color/black"
+        android:layout_marginTop="16dp"
+        app:layout_constraintTop_toBottomOf="@id/editEventName"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <EditText
+        android:id="@+id/editEventStartDate"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:hint="Select start date"
+        android:inputType="none"
+        android:focusable="false"
+        android:clickable="true"
+        android:layout_marginBottom="16dp"
+        app:layout_constraintTop_toBottomOf="@id/textViewStartDate"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <!-- End Date -->
+    <TextView
+        android:id="@+id/textViewEndDate"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="End Date"
+        android:textSize="16sp"
+        android:textColor="@android:color/black"
+        app:layout_constraintTop_toBottomOf="@id/editEventStartDate"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <EditText
+        android:id="@+id/editEventEndDate"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:hint="Select end date"
+        android:inputType="none"
+        android:focusable="false"
+        android:clickable="true"
+        android:layout_marginBottom="16dp"
+        app:layout_constraintTop_toBottomOf="@id/textViewEndDate"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <!-- Capacity -->
+    <TextView
+        android:id="@+id/textViewCapacity"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Capacity"
+        android:textSize="16sp"
+        android:textColor="@android:color/black"
+        app:layout_constraintTop_toBottomOf="@id/editEventEndDate"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <EditText
+        android:id="@+id/editEventCapacity"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:hint="Enter capacity"
+        android:inputType="number"
+        android:layout_marginBottom="16dp"
+        app:layout_constraintTop_toBottomOf="@id/textViewCapacity"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <!-- Event Description -->
+    <TextView
+        android:id="@+id/textViewEventDescription"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Description"
+        android:textSize="16sp"
+        android:textColor="@android:color/black"
+        app:layout_constraintTop_toBottomOf="@id/editEventCapacity"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <EditText
+        android:id="@+id/editEventDescription"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:hint="Enter description"
+        android:inputType="textMultiLine"
+        android:layout_marginBottom="16dp"
+        app:layout_constraintTop_toBottomOf="@id/textViewEventDescription"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
