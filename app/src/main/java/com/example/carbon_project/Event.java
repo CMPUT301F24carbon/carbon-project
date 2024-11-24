@@ -96,7 +96,7 @@ public class Event {
      * @param endDate End Date of the event.
      * @param waitingListLimit Max size for the waitingList.
      */
-    public Event(String name, String location, int capacity, boolean geolocationRequired, String startDate, String endDate, int waitingListLimit, String posterUri) {
+    public Event(String name, String location, int capacity, boolean geolocationRequired, String startDate, String endDate, String Description, int waitingListLimit, String posterUri) {
         eventId = UUID.randomUUID().toString();
 
         eventData = new HashMap<>();
@@ -106,6 +106,7 @@ public class Event {
         eventData.put("geolocationRequired", geolocationRequired);
         eventData.put("startDate", startDate);
         eventData.put("endDate", endDate);
+        eventData.put("description", Description);
         eventData.put("waitingListLimit", waitingListLimit);
         eventData.put("posterUri", posterUri);
         eventData.put("qrCodeHash", getQRCodeHash());
@@ -289,7 +290,18 @@ public class Event {
     public String getLocation() { return (String) eventData.get("location"); }
     public void setLocation(String location) { eventData.put("location", location); }
 
-    public int getCapacity() { return (int) eventData.get("capacity"); }
+    public int getCapacity() {
+        // Safely handle the capacity field
+        Object capacity = this.eventData.get("capacity");
+
+        if (capacity instanceof Long) {
+            return ((Long) capacity).intValue();
+        } else if (capacity instanceof Integer) {
+            return (Integer) capacity;
+        } else {
+            return 0;  // Default value if type is unexpected
+        }
+    }
     public void setCapacity(int capacity) { eventData.put("capacity", capacity); }
 
     public boolean isGeolocationRequired() { return (boolean) eventData.get("geolocationRequired"); }
@@ -303,4 +315,9 @@ public class Event {
 
     public String getEndDate() { return (String) eventData.get("endDate"); }
     public void setEndDate(String endDate) { eventData.put("endDate", endDate); }
+
+    public void setEventData(HashMap<String, Object> eventData) {
+        this.eventData = eventData;
+    }
+
 }

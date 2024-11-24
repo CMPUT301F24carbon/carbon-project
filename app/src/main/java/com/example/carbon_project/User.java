@@ -103,6 +103,31 @@ public class User {
         CollectionReference usersRef = FirebaseFirestore.getInstance().collection("users");
         DocumentReference userRef = usersRef.document(userId);
 
+        // Validate role-specific fields
+        String role = getRole();
+        switch (role) {
+            case "Entrant":
+                if (!userData.containsKey("joinedEventList")) {
+                    userData.put("joinedEventList", new ArrayList<>());
+                }
+                break;
+            case "Organizer":
+                if (!userData.containsKey("facilityId")) {
+                    userData.put("facilityId", null);
+                }
+                if (!userData.containsKey("heldEventList")) {
+                    userData.put("heldEventList", new ArrayList<>());
+                }
+                break;
+            case "Admin":
+                // Admin does not need additional fields, but you can add validations here if necessary.
+                break;
+            default:
+                System.err.println("Invalid role: " + role);
+                return;
+        }
+
+
         userRef.get()
                 .addOnSuccessListener(documentSnapshot -> {
                     if (documentSnapshot.exists()) {
@@ -354,5 +379,35 @@ public class User {
 
     public String getProfileImageUri() {return (String) userData.get("profileImageUri");}
     public void setProfileImageUri(String profileImageUri) { userData.put("profileImageUri", profileImageUri); }
+
+
+    /**
+     * Factory method to create a User object based on the role.
+     * @param userId Unique identifier for the user.
+     * @param role   Role of the user ("Entrant", "Organizer", "Admin").
+     * @return Initialized User object.
+     */
+    public static User createUser(String userId, String role) {
+        User user = new User(userId);
+        user.setRole(role);
+
+        switch (role) {
+            case "Entrant":
+                user.userData.put("joinedEventList", new ArrayList<>());
+                break;
+            case "Organizer":
+                user.userData.put("facilityId", null);
+                user.userData.put("heldEventList", new ArrayList<>());
+                break;
+            case "Admin":
+                // Admin does not need additional fields.
+                break;
+            default:
+                throw new IllegalArgumentException("Invalid role: " + role);
+        }
+
+        return user;
+    }
+
 
 }

@@ -16,7 +16,7 @@ import java.util.Locale;
 
 public class MainActivity extends AppCompatActivity {
     User user;
-    Event event;
+    //Event event;
     Facility facility;
 
     @Override
@@ -28,17 +28,28 @@ public class MainActivity extends AppCompatActivity {
         String userId = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
 
         user = new User(userId);
-        event = new Event("Workshop", "Community Center", 50, false, "2023-11-10", "2023-11-11", 0, null);
+        //event = new Event("Workshop", "Community Center", 50, false, "2023-11-10", "2023-11-11","", 0, null);
         facility = new Facility("Grand Arena", "123 Main St, Downtown",1000,"A Luxary Hotel");
+
+        // Organizer
+        String facilityId = facility.getFacilityId();
+        User organizer = User.createUser(userId, "Organizer");
+        organizer.setFirstName("Gagan");
+        organizer.setLastName("Cheema");
+        organizer.setEmail("Gagan.Cheema@example.com");
+        organizer.setPhoneNumber("123-456-7890");
+        organizer.becomeOrganizer(facilityId);
+        organizer.uploadToFirestore();
+
 
         user.loadFromFirestore(new User.DataLoadedCallback() {
             @Override
             public void onDataLoaded(HashMap<String, Object> userData) {
                 // Display the UI after the data is loaded
                 setUpScreen();
-                user.uploadToFirestore();
-                event.uploadToFirestore();
-                facility.uploadToFirestore();
+                //user.uploadToFirestore();
+                //event.uploadToFirestore();
+                //facility.uploadToFirestore();
             }
 
             @Override
@@ -72,7 +83,7 @@ public class MainActivity extends AppCompatActivity {
             String initials = user.getInitials();
             initialsTextView.setText(initials);
             initialsTextView.setVisibility(TextView.VISIBLE);
-            profileImageView.setImageBitmap(event.getQRCodeBitmap());
+            //profileImageView.setImageBitmap(event.getQRCodeBitmap());
         } else {
             initialsTextView.setVisibility(TextView.GONE);
             int imageResource = getResources().getIdentifier(user.getProfileImageUri(), "drawable", getPackageName());
