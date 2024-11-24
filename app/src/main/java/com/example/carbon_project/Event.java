@@ -290,7 +290,18 @@ public class Event {
     public String getLocation() { return (String) eventData.get("location"); }
     public void setLocation(String location) { eventData.put("location", location); }
 
-    public int getCapacity() { return (int) eventData.get("capacity"); }
+    public int getCapacity() {
+        // Safely handle the capacity field
+        Object capacity = this.eventData.get("capacity");
+
+        if (capacity instanceof Long) {
+            return ((Long) capacity).intValue();
+        } else if (capacity instanceof Integer) {
+            return (Integer) capacity;
+        } else {
+            return 0;  // Default value if type is unexpected
+        }
+    }
     public void setCapacity(int capacity) { eventData.put("capacity", capacity); }
 
     public boolean isGeolocationRequired() { return (boolean) eventData.get("geolocationRequired"); }

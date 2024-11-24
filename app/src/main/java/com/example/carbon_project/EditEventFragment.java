@@ -32,9 +32,8 @@ public class EditEventFragment extends DialogFragment {
     private Event eventToEdit;
     private int position = -1;
 
-    public void setEventToEdit(Event event, int position) {
+    public void setEventToEdit(Event event) {
         this.eventToEdit = event;
-        this.position = position;
     }
 
     @Override
@@ -51,6 +50,8 @@ public class EditEventFragment extends DialogFragment {
     @Override
     public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
         View view = getLayoutInflater().inflate(R.layout.fragment_edit_event, null);
+        listener.updateEvent(eventToEdit, position);  // position should no longer be -1
+
 
         // Initialize views
         editEventName = view.findViewById(R.id.editEventName);
@@ -146,7 +147,7 @@ public class EditEventFragment extends DialogFragment {
         DatePickerDialog datePickerDialog = new DatePickerDialog(
                 requireContext(),
                 (view, year1, monthOfYear, dayOfMonth) -> {
-                    String selectedDate = (monthOfYear + 1) + "-" + dayOfMonth + "-" + year1;
+                    String selectedDate =  year1 + "-" + (monthOfYear + 1) + "-" + dayOfMonth;
                     dateEditText.setText(selectedDate);
                 },
                 year, month, day
@@ -186,5 +187,9 @@ public class EditEventFragment extends DialogFragment {
         if (isAdded() && getContext() != null) {
             Toast.makeText(getContext(), message, Toast.LENGTH_SHORT).show();
         }
+    }
+
+    public void setPosition(int position) {
+        this.position = position;
     }
 }

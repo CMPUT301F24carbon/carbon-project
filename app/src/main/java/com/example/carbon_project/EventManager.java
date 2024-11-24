@@ -1,5 +1,7 @@
 package com.example.carbon_project;
 
+import android.util.Log;
+
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 
@@ -64,8 +66,10 @@ public class EventManager {
                     Event event = document.toObject(Event.class);
                     events.add(event);
                 }
+                Log.d("EventManager", "Fetched events: " + events.size());
                 onComplete.onComplete(true, events);
             } else {
+                Log.e("EventManager", "Error fetching events: " + task.getException());
                 onComplete.onComplete(false, null);
             }
         });
