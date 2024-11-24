@@ -316,6 +316,14 @@ public class Event {
     public String getEndDate() { return (String) eventData.get("endDate"); }
     public void setEndDate(String endDate) { eventData.put("endDate", endDate); }
 
+    public String getDescription(){
+        return (String) eventData.get("Description");
+    }
+
+    public void setDescription(String description){
+        eventData.put("Description", description);
+    }
+
     public void setEventData(HashMap<String, Object> eventData) {
         this.eventData = eventData;
     }

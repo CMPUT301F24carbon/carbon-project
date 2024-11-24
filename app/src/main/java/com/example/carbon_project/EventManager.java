@@ -36,24 +36,6 @@ public class EventManager {
     }
 
     /**
-     * Adds a new event to the events list.
-     *
-     * @param event The event to be added.
-     */
-    public void addEvent(Event event) {
-        events.add(event);
-    }
-
-    /**
-     * Returns the list of events.
-     *
-     * @return The list of events.
-     */
-    public ArrayList<Event> getEvents() {
-        return events;
-    }
-
-    /**
      * Fetches events from Firestore and updates the local list.
      *
      * @param onComplete A callback to handle completion, providing success status and the list of events.

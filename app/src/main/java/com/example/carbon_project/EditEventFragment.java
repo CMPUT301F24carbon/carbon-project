@@ -66,7 +66,7 @@ public class EditEventFragment extends DialogFragment {
             editCapacity.setText(String.valueOf(eventToEdit.getCapacity()));
             editEventStartDate.setText(eventToEdit.getStartDate());
             editEventEndDate.setText(eventToEdit.getEndDate());
-            //editEventDescription.setText(eventToEdit.getDescription());
+            editEventDescription.setText(eventToEdit.getDescription());
         }
 
         // DatePickerDialog for Start Date
@@ -101,7 +101,7 @@ public class EditEventFragment extends DialogFragment {
                         eventToEdit.setCapacity(capacity);
                         eventToEdit.setStartDate(startDate);
                         eventToEdit.setEndDate(endDate);
-                        //eventToEdit.setDescription(description);
+                        eventToEdit.setDescription(description);
                         listener.updateEvent(eventToEdit, position);
 
                         // Call the Firestore update method
