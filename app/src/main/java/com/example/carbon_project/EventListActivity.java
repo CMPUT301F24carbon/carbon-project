@@ -25,11 +25,16 @@ import com.google.firebase.firestore.Query;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-public class EventListActivity extends AppCompatActivity implements EventAdapter.OnEventClickListener, EditEventFragment.EditEventDialogListener {
+public class EventListActivity extends NavigationMenu implements EventAdapter.OnEventClickListener, EditEventFragment.EditEventDialogListener {
 
     private RecyclerView eventRecyclerView;
     private EventAdapter eventAdapter;
     private ArrayList<Event> events = new ArrayList<>();
+
+    @Override
+    protected int getLayoutResourceId() {
+        return R.layout.activity_event_list;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
