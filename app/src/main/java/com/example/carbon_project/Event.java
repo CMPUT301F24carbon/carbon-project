@@ -76,13 +76,17 @@ public class Event {
     // "waitingList", "selectedList", "cancelledList"
     private HashMap<String, Object> eventData;
     String eventId;
+    String userId;
+
+
 
     /**
      * Constructor for creating an Event with start and end dates.
      * @param eventId Unique identifier for the event.
      */
-    public Event(String eventId) {
+    public Event(String eventId, String userId) {
         this.eventId = eventId;
+        this.userId = userId;
         eventData = new HashMap<>();
     }
 
@@ -160,6 +164,8 @@ public class Event {
         CollectionReference eventsRef = FirebaseFirestore.getInstance().collection("events");
         DocumentReference eventRef = eventsRef.document(eventId);
 
+        eventData.put("userId", userId);
+
         // Update the event data to Firestore
         eventRef.set(eventData)
                 .addOnSuccessListener(aVoid -> {
@@ -169,6 +175,10 @@ public class Event {
                     System.err.println("Error updating event: " + e.getMessage());
                 });
     }
+
+    // Getter and Setter for userId
+    public String getUserId() { return userId; }
+    public void setUserId(String userId) { this.userId = userId; }
 
     /**
      * Randomly selects users from the waitingList and moves them into the selectedList of Entrants.

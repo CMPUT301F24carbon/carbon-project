@@ -4,6 +4,7 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
@@ -19,6 +20,7 @@ import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.Query;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -48,18 +50,32 @@ public class EventListActivity extends AppCompatActivity implements EventAdapter
     }
 
     private void fetchEvents() {
+        String userId = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
+
+        if (userId == null || userId.isEmpty()) {
+            Log.e("fetchEvents", "Invalid userId (ANDROID_ID is empty)");
+            return;
+        }
+
+        // Reference to the Firestore "events" collection
         CollectionReference eventsRef = FirebaseFirestore.getInstance().collection("events");
 
-        eventsRef.get().addOnSuccessListener(queryDocumentSnapshots -> {
+        // Query to retrieve only events associated with the given userId (ANDROID_ID)
+        Query query = eventsRef.whereEqualTo("userId", userId);
+
+        query.get().addOnSuccessListener(queryDocumentSnapshots -> {
             events.clear();  // Clear any existing events
 
+            if (queryDocumentSnapshots.isEmpty()) {
+                Log.e("fetchEvents", "No events found for userId (ANDROID_ID): " + userId);
+            }
+
             for (DocumentSnapshot document : queryDocumentSnapshots) {
-                String eventId = document.getId();
-                Event event = new Event(eventId);
+                String eventId = document.getId();  // Retrieve the event ID
+                Event event = new Event(eventId, userId);  // Pass the userId (ANDROID_ID) when creating the Event object
                 event.loadFromFirestore(new Event.DataLoadedCallback() {
                     @Override
                     public void onDataLoaded(HashMap<String, Object> eventData) {
-                        // Add the event to the list and notify the adapter about the change
                         runOnUiThread(() -> {
                             events.add(event);
                             eventAdapter.notifyItemInserted(events.size() - 1);  // Notify RecyclerView about new item
@@ -76,10 +92,13 @@ public class EventListActivity extends AppCompatActivity implements EventAdapter
             }
         }).addOnFailureListener(e -> {
             runOnUiThread(() -> {
-                Toast.makeText(this, "Failed to retrieve events.", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "Failed to retrieve events. Error: " + e.getMessage(), Toast.LENGTH_SHORT).show();
             });
+            Log.e("fetchEvents", "Error fetching events: " + e.getMessage());
         });
     }
+
+
 
     private void setupSwipeToDelete() {
         ItemTouchHelper itemTouchHelper = new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT) {
