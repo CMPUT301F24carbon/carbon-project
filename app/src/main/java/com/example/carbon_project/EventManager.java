@@ -1,9 +1,6 @@
 package com.example.carbon_project;
 
-import android.util.Log;
-
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.QueryDocumentSnapshot;
 
 import java.util.ArrayList;
 
@@ -33,28 +30,6 @@ public class EventManager {
             instance = new EventManager();
         }
         return instance;
-    }
-
-    /**
-     * Fetches events from Firestore and updates the local list.
-     *
-     * @param onComplete A callback to handle completion, providing success status and the list of events.
-     */
-    public void fetchEvents(OnCompleteListener<ArrayList<Event>> onComplete) {
-        db.collection("events").get().addOnCompleteListener(task -> {
-            if (task.isSuccessful()) {
-                events.clear();
-                for (QueryDocumentSnapshot document : task.getResult()) {
-                    Event event = document.toObject(Event.class);
-                    events.add(event);
-                }
-                Log.d("EventManager", "Fetched events: " + events.size());
-                onComplete.onComplete(true, events);
-            } else {
-                Log.e("EventManager", "Error fetching events: " + task.getException());
-                onComplete.onComplete(false, null);
-            }
-        });
     }
 
     /**

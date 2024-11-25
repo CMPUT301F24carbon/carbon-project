@@ -6,6 +6,7 @@ import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.provider.Settings;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -155,9 +156,13 @@ public class CreateEventActivity extends AppCompatActivity {
         boolean geolocationRequired = geolocationCheckbox.isChecked();
 
         Event newEvent = new Event(eventName, selectedFacilityName, eventCapacity, geolocationRequired, eventStartDate, eventEndDate, eventDescription, 0, null);
+        String userId = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
 
+
+        newEvent.setUserId(userId);
         // Use the uploadToFirestore method from Event class to upload the event data
-        newEvent.uploadToFirestore();  // Upload event data to Firestore
+        newEvent.uploadToFirestore();
+
 
         // After uploading, navigate to EventListActivity
         Intent resultIntent = new Intent(this, EventListActivity.class);
