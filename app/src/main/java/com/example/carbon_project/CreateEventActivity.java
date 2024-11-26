@@ -31,7 +31,7 @@ import java.util.Calendar;
  * functionalities for inputting event details, selecting event dates, uploading
  * an event image, and validating inputs before creating and publishing the event.
  */
-public class CreateEventActivity extends AppCompatActivity {
+public class CreateEventActivity extends NavigationMenu {
 
     private EditText eventNameInput;
     private EditText eventCapacityInput;
@@ -50,14 +50,17 @@ public class CreateEventActivity extends AppCompatActivity {
     private static final int PICK_IMAGE_REQUEST = 1;
 
     @Override
+    protected int getLayoutResourceId() {
+        return R.layout.create_event;
+    }
+
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         // Initialize Firestore
         db = FirebaseFirestore.getInstance();
         eventsRef = db.collection("events");
-
-        setContentView(R.layout.create_event);
 
         // Initialize UI elements
         initializeUI();

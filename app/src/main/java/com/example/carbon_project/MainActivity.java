@@ -14,15 +14,19 @@ import java.util.HashMap;
 import java.util.Locale;
 
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends NavigationMenu {
     User user;
     //Event event;
     Facility facility;
 
     @Override
+    protected int getLayoutResourceId() {
+        return R.layout.user_screen;
+    }
+
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.user_screen);
 
         // Apply the device's android ID as the user ID
         String userId = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
