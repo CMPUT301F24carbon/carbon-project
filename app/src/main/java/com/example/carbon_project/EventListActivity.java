@@ -7,6 +7,7 @@ import android.graphics.Paint;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
@@ -20,7 +21,9 @@ import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentSnapshot;
@@ -30,7 +33,7 @@ import com.google.firebase.firestore.Query;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-public class EventListActivity extends NavigationMenu implements EventAdapter.OnEventClickListener, EditEventFragment.EditEventDialogListener {
+public class EventListActivity extends AppCompatActivity implements EventAdapter.OnEventClickListener, EditEventFragment.EditEventDialogListener {
 
     private RecyclerView eventRecyclerView;
     private EventAdapter eventAdapter;
@@ -38,14 +41,37 @@ public class EventListActivity extends NavigationMenu implements EventAdapter.On
     private ArrayList<Event> events = new ArrayList<>();
 
     @Override
-    protected int getLayoutResourceId() {
-        return R.layout.activity_event_list;
-    }
-
-    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_event_list);  // Ensure this layout contains your RecyclerView
+
+        // Bottom navigation view
+        BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_navigation);
+        bottomNavigationView.setSelectedItemId(R.id.navigation_event_list);
+        bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                if (item.getItemId() == R.id.navigation_event_list) {
+                    return true;
+                }
+                if (item.getItemId() == R.id.navigation_add_circle) {
+                    startActivity(new Intent(getApplicationContext(), CreateEventActivity.class));
+                    overridePendingTransition(0, 0);
+                    return true;
+                }
+                if (item.getItemId() == R.id.navigation_person) {
+                    startActivity(new Intent(getApplicationContext(), MainActivity.class));
+                    overridePendingTransition(0, 0);
+                    return true;
+                }
+                if (item.getItemId() == R.id.navigation_facility_list) {
+                    startActivity(new Intent(getApplicationContext(), FacilityListActivity.class));
+                    overridePendingTransition(0, 0);
+                    return true;
+                }
+                return false;
+            }
+        });
 
         eventRecyclerView = findViewById(R.id.recyclerView_event_list);
         eventRecyclerView.setLayoutManager(new LinearLayoutManager(this));
@@ -119,6 +145,7 @@ public class EventListActivity extends NavigationMenu implements EventAdapter.On
             Log.e("fetchEvents", "Error fetching events: " + e.getMessage());
         });
     }
+
 
     private void setupSwipeToDelete() {
         ItemTouchHelper itemTouchHelper = new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT) {
