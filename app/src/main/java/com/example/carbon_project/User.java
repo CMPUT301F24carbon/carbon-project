@@ -376,6 +376,7 @@ public class User {
                     for (QueryDocumentSnapshot document : querySnapshot) {
                         // Create a Map to store the document data
                         HashMap<String, Object> documentData = new HashMap<>(document.getData());
+                        documentData.put("id", document.getId());
                         documentsList.add(documentData);
                     }
                     System.out.println("List " + collectionName + " successfully loaded.");
