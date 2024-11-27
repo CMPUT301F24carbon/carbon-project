@@ -58,6 +58,11 @@ public class EventListActivity extends AppCompatActivity implements EventAdapter
                     overridePendingTransition(0, 0);
                     return true;
                 }
+                if (item.getItemId() == R.id.navigation_facility_list) {
+                    startActivity(new Intent(getApplicationContext(), FacilityListActivity.class));
+                    overridePendingTransition(0, 0);
+                    return true;
+                }
                 return false;
             }
         });
