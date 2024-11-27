@@ -39,6 +39,7 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHol
         holder.eventCapacityTextView.setText("Capacity: " + currentEvent.getCapacity());
         holder.eventStartDateTextView.setText("Start Date: " + currentEvent.getStartDate());
         holder.eventEndDateTextView.setText("End Date: " + currentEvent.getEndDate());
+        holder.eventDescriptionTextView.setText(currentEvent.getDescription());
 
         // Set the onClickListener for the event item
         holder.itemView.setOnClickListener(v -> onEventClickListener.onEventClick(currentEvent));
@@ -56,6 +57,7 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHol
         TextView eventCapacityTextView;
         TextView eventStartDateTextView;
         TextView eventEndDateTextView;
+        TextView eventDescriptionTextView;
 
         public EventViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -64,6 +66,7 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHol
             eventCapacityTextView = itemView.findViewById(R.id.textView_capacity);
             eventStartDateTextView = itemView.findViewById(R.id.textView_start_date);
             eventEndDateTextView = itemView.findViewById(R.id.textView_end_date);
+            eventDescriptionTextView = itemView.findViewById(R.id.textView_description);
         }
     }
 
