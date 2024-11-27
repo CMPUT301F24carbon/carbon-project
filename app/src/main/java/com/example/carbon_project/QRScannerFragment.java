@@ -28,12 +28,8 @@ public class QRScannerFragment extends DialogFragment {
                     Toast.makeText(getActivity(), "Invalid QR code", Toast.LENGTH_SHORT).show();
                 } else {
                     String scannedMessage = result.getContents();
-                    // Process the scanned message
-                    // Process the scanned message
-                    // Process the scanned message
-                    // Process the scanned message
-                    // Process the scanned message
-                    // Process the scanned message
+                    requireActivity().getSupportFragmentManager().popBackStack();
+                    ((EventListActivity) requireActivity()).handleQRCodeResult(scannedMessage);
                 }
             });
 

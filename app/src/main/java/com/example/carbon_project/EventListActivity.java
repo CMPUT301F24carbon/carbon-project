@@ -216,14 +216,9 @@ public class EventListActivity extends NavigationMenu implements EventAdapter.On
         fragmentTransaction.commit();
     }
 
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (resultCode == RESULT_OK && data != null) {
-            String qrResult = data.getStringExtra("qr_result");
-            // Handle the scanned QR code result
-            Toast.makeText(this, "Scanned QR: " + qrResult, Toast.LENGTH_LONG).show();
-        }
+    public void handleQRCodeResult(String result) {
+        //TODO check for valid result open the event
+        Toast.makeText(this, "Scanned QR Code: " + result, Toast.LENGTH_LONG).show();
     }
 
     @Override
