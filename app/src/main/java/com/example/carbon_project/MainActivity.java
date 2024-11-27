@@ -29,7 +29,7 @@ public class MainActivity extends AppCompatActivity {
 
         user = new User(userId);
         //event = new Event("Workshop", "Community Center", 50, false, "2023-11-10", "2023-11-11","", 0, null);
-        facility = new Facility("Grand Arena", "123 Main St, Downtown",1000,"A Luxary Hotel");
+        facility = new Facility("Grand Arena", "123 Main St, Downtown",1000,"A Luxury Hotel");
 
         // Organizer
         String facilityId = facility.getFacilityId();
@@ -41,6 +41,8 @@ public class MainActivity extends AppCompatActivity {
         organizer.becomeOrganizer(facilityId);
         organizer.uploadToFirestore();
 
+        Intent intent = new Intent(MainActivity.this, AdminListActivity.class);
+        startActivity(intent);
 
         user.loadFromFirestore(new User.DataLoadedCallback() {
             @Override
