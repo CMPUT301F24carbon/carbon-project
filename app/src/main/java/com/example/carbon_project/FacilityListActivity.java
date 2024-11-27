@@ -40,6 +40,9 @@ public class FacilityListActivity extends AppCompatActivity {
                     overridePendingTransition(0, 0);
                     return true;
                 }
+                if (item.getItemId() == R.id.navigation_facility_list) {
+                    return true;
+                }
                 if (item.getItemId() == R.id.navigation_add_circle) {
                     startActivity(new Intent(getApplicationContext(), CreateEventActivity.class));
                     overridePendingTransition(0, 0);
@@ -48,9 +51,6 @@ public class FacilityListActivity extends AppCompatActivity {
                 if (item.getItemId() == R.id.navigation_person) {
                     startActivity(new Intent(getApplicationContext(), MainActivity.class));
                     overridePendingTransition(0, 0);
-                    return true;
-                }
-                if (item.getItemId() == R.id.navigation_facility_list) {
                     return true;
                 }
                 return false;

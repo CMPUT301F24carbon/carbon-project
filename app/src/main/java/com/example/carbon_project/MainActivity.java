@@ -76,13 +76,6 @@ public class MainActivity extends AppCompatActivity {
         // Bottom navigation view
         BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_navigation);
         bottomNavigationView.setSelectedItemId(R.id.navigation_person);
-
-//        // Display button for facility list if user is an admin
-//        Menu menu = bottomNavigationView.getMenu();
-//        if (!"admin".equals(user.getRole().toLowerCase(Locale.ROOT))) {
-//            menu.findItem(R.id.navigation_facility_list).setVisible(false);
-//        }
-
         bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
