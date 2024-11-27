@@ -1,5 +1,6 @@
 package com.example.carbon_project;
 
+import android.content.Intent;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
@@ -10,12 +11,16 @@ import android.view.View;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentSnapshot;
@@ -29,6 +34,7 @@ public class EventListActivity extends NavigationMenu implements EventAdapter.On
 
     private RecyclerView eventRecyclerView;
     private EventAdapter eventAdapter;
+    private FloatingActionButton fab;
     private ArrayList<Event> events = new ArrayList<>();
 
     @Override
@@ -52,7 +58,18 @@ public class EventListActivity extends NavigationMenu implements EventAdapter.On
 
         // Fetch events from Firestore
         fetchEvents();
+
+        fab = findViewById(R.id.qr_scan_button);
+
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                openScanner();
+            }
+        });
     }
+
+
 
     private void fetchEvents() {
         String userId = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
@@ -102,8 +119,6 @@ public class EventListActivity extends NavigationMenu implements EventAdapter.On
             Log.e("fetchEvents", "Error fetching events: " + e.getMessage());
         });
     }
-
-
 
     private void setupSwipeToDelete() {
         ItemTouchHelper itemTouchHelper = new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT) {
@@ -188,6 +203,27 @@ public class EventListActivity extends NavigationMenu implements EventAdapter.On
                     // Optional: Scroll to the restored item
                     eventRecyclerView.scrollToPosition(position);
                 }).show();
+    }
+
+    private void openScanner(){
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        QRScannerFragment scanner = new QRScannerFragment();
+
+        // Add the fragment to the container and add to back stack for back button handling
+        fragmentTransaction.replace(R.id.fragment_container, scanner);
+        fragmentTransaction.addToBackStack(null);
+        fragmentTransaction.commit();
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode == RESULT_OK && data != null) {
+            String qrResult = data.getStringExtra("qr_result");
+            // Handle the scanned QR code result
+            Toast.makeText(this, "Scanned QR: " + qrResult, Toast.LENGTH_LONG).show();
+        }
     }
 
     @Override

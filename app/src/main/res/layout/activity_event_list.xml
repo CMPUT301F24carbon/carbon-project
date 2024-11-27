@@ -39,6 +39,12 @@
             app:layout_constraintBottom_toBottomOf="@+id/recyclerView_event_list"
             app:layout_constraintStart_toStartOf="@+id/recyclerView_event_list"
             app:srcCompat="@drawable/ic_add_circle" />
+
+        <FrameLayout
+            android:id="@+id/fragment_container"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:visibility="gone" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <!-- Bottom Navigation Bar -->
