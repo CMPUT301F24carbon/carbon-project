@@ -38,6 +38,9 @@ dependencies {
 
     implementation(libs.constraintlayout)
 
+    // Dependencies for navigation bar
+    implementation("com.google.android.material:material:1.9.0")
+
     // Dependencies for Firestore
     implementation(platform("com.google.firebase:firebase-bom:33.5.1"))
     implementation("com.google.firebase:firebase-firestore")
