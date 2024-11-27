@@ -3,30 +3,31 @@ package com.example.carbon_project;
 import android.content.Intent;
 import android.os.Bundle;
 import android.provider.Settings;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import java.util.HashMap;
 import java.util.Locale;
 
 
-public class MainActivity extends NavigationMenu {
+public class MainActivity extends AppCompatActivity {
     User user;
     //Event event;
     Facility facility;
 
     @Override
-    protected int getLayoutResourceId() {
-        return R.layout.user_screen;
-    }
-
-    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setContentView(R.layout.user_screen);
 
         // Apply the device's android ID as the user ID
         String userId = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
@@ -36,11 +37,20 @@ public class MainActivity extends NavigationMenu {
         facility = new Facility("Grand Arena", "123 Main St, Downtown",1000,"A Luxary Hotel");
 
         // Organizer
+//        String facilityId = facility.getFacilityId();
+//        User organizer = User.createUser(userId, "Organizer");
+//        organizer.setFirstName("Gagan");
+//        organizer.setLastName("Cheema");
+//        organizer.setEmail("Gagan.Cheema@example.com");
+//        organizer.setPhoneNumber("123-456-7890");
+//        organizer.becomeOrganizer(facilityId);
+//        organizer.uploadToFirestore();
+
         String facilityId = facility.getFacilityId();
-        User organizer = User.createUser(userId, "Organizer");
-        organizer.setFirstName("Gagan");
-        organizer.setLastName("Cheema");
-        organizer.setEmail("Gagan.Cheema@example.com");
+        User organizer = User.createUser(userId, "Admin");
+        organizer.setFirstName("Akash");
+        organizer.setLastName("Brar");
+        organizer.setEmail("Akash.Brar@example.com");
         organizer.setPhoneNumber("123-456-7890");
         organizer.becomeOrganizer(facilityId);
         organizer.uploadToFirestore();
@@ -63,6 +73,40 @@ public class MainActivity extends NavigationMenu {
             }
         });
 
+        // Bottom navigation view
+        BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_navigation);
+        bottomNavigationView.setSelectedItemId(R.id.navigation_person);
+
+//        // Display button for facility list if user is an admin
+//        Menu menu = bottomNavigationView.getMenu();
+//        if (!"admin".equals(user.getRole().toLowerCase(Locale.ROOT))) {
+//            menu.findItem(R.id.navigation_facility_list).setVisible(false);
+//        }
+
+        bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                if (item.getItemId() == R.id.navigation_event_list) {
+                    startActivity(new Intent(getApplicationContext(), EventListActivity.class));
+                    overridePendingTransition(0, 0);
+                    return true;
+                }
+                if (item.getItemId() == R.id.navigation_add_circle) {
+                    startActivity(new Intent(getApplicationContext(), CreateEventActivity.class));
+                    overridePendingTransition(0, 0);
+                    return true;
+                }
+                if (item.getItemId() == R.id.navigation_person) {
+                    return true;
+                }
+                if (item.getItemId() == R.id.navigation_facility_list) {
+                    startActivity(new Intent(getApplicationContext(), FacilityListActivity.class));
+                    overridePendingTransition(0, 0);
+                    return true;
+                }
+                return false;
+            }
+        });
 
     }
 

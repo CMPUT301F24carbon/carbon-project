@@ -7,6 +7,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.provider.Settings;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -17,8 +18,10 @@ import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 
@@ -31,7 +34,7 @@ import java.util.Calendar;
  * functionalities for inputting event details, selecting event dates, uploading
  * an event image, and validating inputs before creating and publishing the event.
  */
-public class CreateEventActivity extends NavigationMenu {
+public class CreateEventActivity extends AppCompatActivity {
 
     private EditText eventNameInput;
     private EditText eventCapacityInput;
@@ -50,13 +53,32 @@ public class CreateEventActivity extends NavigationMenu {
     private static final int PICK_IMAGE_REQUEST = 1;
 
     @Override
-    protected int getLayoutResourceId() {
-        return R.layout.create_event;
-    }
-
-    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setContentView(R.layout.create_event);
+
+        // Bottom navigation view
+        BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_navigation);
+        bottomNavigationView.setSelectedItemId(R.id.navigation_add_circle);
+        bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                if (item.getItemId() == R.id.navigation_event_list) {
+                    startActivity(new Intent(getApplicationContext(), EventListActivity.class));
+                    overridePendingTransition(0, 0);
+                    return true;
+                }
+                if (item.getItemId() == R.id.navigation_add_circle) {
+                    return true;
+                }
+                if (item.getItemId() == R.id.navigation_person) {
+                    startActivity(new Intent(getApplicationContext(), MainActivity.class));
+                    overridePendingTransition(0, 0);
+                    return true;
+                }
+                return false;
+            }
+        });
 
         // Initialize Firestore
         db = FirebaseFirestore.getInstance();

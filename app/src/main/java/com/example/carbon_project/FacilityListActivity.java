@@ -1,11 +1,16 @@
 package com.example.carbon_project;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.view.MenuItem;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import java.util.ArrayList;
 
@@ -23,6 +28,34 @@ public class FacilityListActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_facility_list);
+
+        // Bottom navigation view
+        BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_navigation);
+        bottomNavigationView.setSelectedItemId(R.id.navigation_facility_list);
+        bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                if (item.getItemId() == R.id.navigation_event_list) {
+                    startActivity(new Intent(getApplicationContext(), EventListActivity.class));
+                    overridePendingTransition(0, 0);
+                    return true;
+                }
+                if (item.getItemId() == R.id.navigation_add_circle) {
+                    startActivity(new Intent(getApplicationContext(), CreateEventActivity.class));
+                    overridePendingTransition(0, 0);
+                    return true;
+                }
+                if (item.getItemId() == R.id.navigation_person) {
+                    startActivity(new Intent(getApplicationContext(), MainActivity.class));
+                    overridePendingTransition(0, 0);
+                    return true;
+                }
+                if (item.getItemId() == R.id.navigation_facility_list) {
+                    return true;
+                }
+                return false;
+            }
+        });
 
         // Initialize RecyclerView
         facilityRecyclerView = findViewById(R.id.facilityRecyclerView);
