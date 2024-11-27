@@ -327,11 +327,10 @@ public class Event {
     public void setEndDate(String endDate) { eventData.put("endDate", endDate); }
 
     public String getDescription(){
-        return (String) eventData.get("Description");
+        return (String) eventData.get("description");
     }
-
     public void setDescription(String description){
-        eventData.put("Description", description);
+        eventData.put("description", description);
     }
 
     public void setEventData(HashMap<String, Object> eventData) {

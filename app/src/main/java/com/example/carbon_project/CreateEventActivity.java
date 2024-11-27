@@ -263,6 +263,7 @@ public class CreateEventActivity extends AppCompatActivity {
         eventCapacityInput.setText("");
         eventStartDateInput.setText("");
         eventEndDateInput.setText("");
+        eventDescriptionInput.setText("");
         eventLocationSpinner.setSelection(0);
         geolocationCheckbox.setChecked(false);
     }
