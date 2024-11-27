@@ -12,11 +12,11 @@ import androidx.activity.result.ActivityResultLauncher;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.app.ActivityCompat;
-import androidx.fragment.app.Fragment;
+import androidx.fragment.app.DialogFragment;
 import com.journeyapps.barcodescanner.ScanContract;
 import com.journeyapps.barcodescanner.ScanOptions;
 
-public class QRScannerFragment extends Fragment {
+public class QRScannerFragment extends DialogFragment {
 
     private static final int CAMERA_PERMISSION_REQUEST_CODE = 101;
 
@@ -28,12 +28,8 @@ public class QRScannerFragment extends Fragment {
                     Toast.makeText(getActivity(), "Invalid QR code", Toast.LENGTH_SHORT).show();
                 } else {
                     String scannedMessage = result.getContents();
-                    // Process the scanned message
-                    // Process the scanned message
-                    // Process the scanned message
-                    // Process the scanned message
-                    // Process the scanned message
-                    // Process the scanned message
+                    requireActivity().getSupportFragmentManager().popBackStack();
+                    ((EventListActivity) requireActivity()).handleQRCodeResult(scannedMessage);
                 }
             });
 

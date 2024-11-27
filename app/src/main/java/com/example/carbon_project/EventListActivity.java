@@ -12,12 +12,17 @@ import android.view.View;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.firestore.CollectionReference;
@@ -32,6 +37,7 @@ public class EventListActivity extends AppCompatActivity implements EventAdapter
 
     private RecyclerView eventRecyclerView;
     private EventAdapter eventAdapter;
+    private FloatingActionButton fab;
     private ArrayList<Event> events = new ArrayList<>();
 
     @Override
@@ -78,7 +84,18 @@ public class EventListActivity extends AppCompatActivity implements EventAdapter
 
         // Fetch events from Firestore
         fetchEvents();
+
+        fab = findViewById(R.id.qr_scan_button);
+
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                openScanner();
+            }
+        });
     }
+
+
 
     private void fetchEvents() {
         String userId = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
@@ -213,6 +230,22 @@ public class EventListActivity extends AppCompatActivity implements EventAdapter
                     // Optional: Scroll to the restored item
                     eventRecyclerView.scrollToPosition(position);
                 }).show();
+    }
+
+    private void openScanner(){
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        QRScannerFragment scanner = new QRScannerFragment();
+
+        // Add the fragment to the container and add to back stack for back button handling
+        fragmentTransaction.replace(R.id.fragment_container, scanner);
+        fragmentTransaction.addToBackStack(null);
+        fragmentTransaction.commit();
+    }
+
+    public void handleQRCodeResult(String result) {
+        //TODO check for valid result open the event
+        Toast.makeText(this, "Scanned QR Code: " + result, Toast.LENGTH_LONG).show();
     }
 
     @Override
