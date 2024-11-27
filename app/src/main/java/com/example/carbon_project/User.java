@@ -3,6 +3,7 @@ package com.example.carbon_project;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -26,6 +27,7 @@ import java.util.HashMap;
 // 12. deleteEvent          Allows the admin to delete an event
 // 13. deleteUser           Allows the admin to delete a user
 // 14. deleteFacility       Allows the admin to delete a facility
+// 15. loadList             Load a collection of items from Firestore
 // 15. getters and setters for all users
 
 // =============================================================================
@@ -41,8 +43,8 @@ import java.util.HashMap;
 //    @Override
 //    public void onDataLoaded(HashMap<String, Object> userData) {  // You can also use the userData HashMap to get the user details
 //        // Your code here
-//         callYourMethod();
-//         user.uploadToFirestore();
+//        callYourMethod();
+//        user.uploadToFirestore();
 //    }
 //
 //    // The following method is not mandatory
@@ -53,6 +55,23 @@ import java.util.HashMap;
 //        Toast.makeText(MainActivity.this, error, Toast.LENGTH_SHORT).show();
 //    }
 //});
+
+// How to load the collection as a list from Firestore:
+//collectionName is the name of Firestore collection you need to load, i.e. "users", "events", "facilities"
+//user.loadList(collectionName, new User.ListLoadedCallback(),  {
+//    @Override
+//    public void onListLoaded(ArrayList<HashMap<String, Object>> documentsList) {
+//        // Your code here
+//        callYourMethod();
+//    }
+//
+//    // The following method is not mandatory
+//    @Override
+//    public void onError(String error) {
+//        // Handle the error message if the load fails
+//        // Change MainActivity to the activity that you want to display the toast message
+//        Toast.makeText(MainActivity.this, error, Toast.LENGTH_SHORT).show();
+//    }
 
 
 /**
@@ -236,6 +255,7 @@ public class User {
     public void becomeOrganizer(String facilityId) {
         setRole("organizer");
         setFacilityId(facilityId);
+        userData.put("heldEventList", new ArrayList<>());
 
         uploadToFirestore();
     }
@@ -276,7 +296,7 @@ public class User {
 
     // Admin-specific methods
     /**
-     * Allows the admin to delete an event.
+     * Allows the admin / organizer to delete an event.
      * @param eventId ID of the event to delete.
      */
     public void deleteEvent(String eventId) {
@@ -329,6 +349,41 @@ public class User {
                 })
                 .addOnFailureListener(e -> {
                     System.err.println("Error deleting facility: " + e.getMessage());
+                });
+    }
+
+    /**
+     * Callback interface for loading a list of items.
+     */
+    public interface ListLoadedCallback {
+        void onListLoaded(ArrayList<HashMap<String, Object>> documentsList);
+        void onError(String error);
+    }
+
+    /**
+     * Return a list of the items in the required collection of Firestore.
+     *  @param collectionName The name of the collection to show.
+     * @param callback Callback to handle the loaded data.
+     */
+    public void loadList(String collectionName, final ListLoadedCallback callback) {
+        // Get a reference to the facility document
+        CollectionReference facilitiesRef = FirebaseFirestore.getInstance().collection(collectionName);
+
+        ArrayList<HashMap<String, Object>> documentsList = new ArrayList<>();
+        facilitiesRef.get()
+                .addOnSuccessListener(querySnapshot  -> {
+                    // Loop through the documents and add them to the list
+                    for (QueryDocumentSnapshot document : querySnapshot) {
+                        // Create a Map to store the document data
+                        HashMap<String, Object> documentData = new HashMap<>(document.getData());
+                        documentsList.add(documentData);
+                    }
+                    System.out.println("List " + collectionName + " successfully loaded.");
+                    callback.onListLoaded(documentsList);
+                })
+                .addOnFailureListener(e -> {
+                    System.err.println("Error loading list: " + e);
+                    callback.onError("Failed to load list, please check your internet connection");
                 });
     }
 
