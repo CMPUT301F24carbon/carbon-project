@@ -1,4 +1,4 @@
-package com.example.carbon_project;
+package com.example.carbon_project.View;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -12,6 +12,8 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
 
+import com.example.carbon_project.Model.Facility;
+import com.example.carbon_project.R;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -27,7 +29,7 @@ public class EditFacilityFragment extends DialogFragment {
 
     private EditText editFacilityName, editFacilityLocation, editFacilityCapacity;
     private EditFacilityDialogListener listener;
-    private Facility facilityToEdit;
+    private com.example.carbon_project.Model.Facility facilityToEdit;
     private int position = -1;
 
     public void setFacilityToEdit(Facility facility) {

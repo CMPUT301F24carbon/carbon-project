@@ -1,4 +1,4 @@
-package com.example.carbon_project;
+package com.example.carbon_project.Controller;
 
 import android.os.Bundle;
 import android.widget.Button;
@@ -7,6 +7,8 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.carbon_project.Model.Facility;
+import com.example.carbon_project.R;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -59,7 +61,7 @@ public class CreateFacilityActivity extends AppCompatActivity {
         }
 
         String facilityId = UUID.randomUUID().toString();
-        // Create a new Facility object
+
         Facility facility = new Facility(facilityId, facilityName, facilityLocation, facilityCapacity, organizerId);
 
         // Save the facility to Firestore

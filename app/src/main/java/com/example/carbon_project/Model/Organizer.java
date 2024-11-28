@@ -1,13 +1,14 @@
-package com.example.carbon_project;
+package com.example.carbon_project.Model;
 
 import com.google.firebase.firestore.FirebaseFirestore;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-public class Organizer extends User {
-    private List<String> createdEvents; // Event IDs of events created by this organizer
+public class Organizer extends User implements Serializable {
+    private List<String> createdEvents;
     private List<String> facilityIds;
 
     public Organizer(String userId, String name, String email, String phoneNumber) {
@@ -28,7 +29,7 @@ public class Organizer extends User {
 
     // Convert Organizer object to a Map for Firestore storage
     public Map<String, Object> toMap() {
-        Map<String, Object> map = super.toMap();  // Use the User class' toMap method
+        Map<String, Object> map = super.toMap();
         map.put("createdEvents", createdEvents);
         return map;
     }
@@ -36,15 +37,13 @@ public class Organizer extends User {
     // Save the Organizer to Firestore
     public void saveToFirestore() {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
-        db.collection("users")  // Store under the "users" collection
-                .document(getUserId())  // Document ID is the user ID
-                .set(toMap())  // Save the data as a map
+        db.collection("users")
+                .document(getUserId())
+                .set(toMap())
                 .addOnSuccessListener(aVoid -> {
-                    // Handle success
                     System.out.println("Organizer saved successfully");
                 })
                 .addOnFailureListener(e -> {
-                    // Handle failure
                     System.out.println("Error saving organizer: " + e.getMessage());
                 });
     }

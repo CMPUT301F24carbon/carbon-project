@@ -1,4 +1,4 @@
-package com.example.carbon_project;
+package com.example.carbon_project.Controller;
 
 import android.os.Bundle;
 import android.provider.Settings;
@@ -8,6 +8,7 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.carbon_project.R;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 

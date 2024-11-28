@@ -1,4 +1,4 @@
-package com.example.carbon_project;
+package com.example.carbon_project.Model;
 
 import android.util.Log;
 
@@ -70,6 +70,14 @@ public class Event {
 
     public void setGeolocationRequired(boolean geolocationRequired) {
         this.geolocationRequired = geolocationRequired;
+    }
+
+    public List<Entrant> getEnrolledList() {
+        return enrolledList;
+    }
+
+    public void setEnrolledList(List<Entrant> enrolledList) {
+        this.enrolledList = enrolledList;
     }
 
     public String getStartDate() {

@@ -1,4 +1,4 @@
-package com.example.carbon_project;
+package com.example.carbon_project.Controller;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -6,7 +6,8 @@ import android.widget.ListView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-//
+import com.example.carbon_project.R;
+
 
 public class EventListActivity extends AppCompatActivity {
     private ListView eventListView;
@@ -20,7 +21,6 @@ public class EventListActivity extends AppCompatActivity {
         loadEvents();
 
         eventListView.setOnItemClickListener((parent, view, position, id) -> {
-            // Navigate to EventDetailsActivity with event details
             Intent intent = new Intent(this, EventDetailsActivity.class);
             intent.putExtra("event_id", id);
             startActivity(intent);

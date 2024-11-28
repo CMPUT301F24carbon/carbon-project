@@ -1,4 +1,6 @@
-package com.example.carbon_project;
+package com.example.carbon_project.Model;
+
+import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.io.Serializable;
 import java.util.HashMap;
@@ -39,6 +41,19 @@ public class User implements Serializable {
     public boolean isEntrant() { return role.equals("entrant"); }
     public boolean isOrganizer() { return role.equals("organizer"); }
     public boolean isAdmin() { return role.equals("admin"); }
+
+    public void saveToFirestore() {
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        db.collection("users")
+                .document(getUserId())
+                .set(toMap())
+                .addOnSuccessListener(aVoid -> {
+                    System.out.println("Entrant saved successfully");
+                })
+                .addOnFailureListener(e -> {
+                    System.out.println("Error saving entrant: " + e.getMessage());
+                });
+    }
 
     // Convert User object to a Map for Firestore storage
     public Map<String, Object> toMap() {

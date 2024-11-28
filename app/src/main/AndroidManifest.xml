@@ -13,7 +13,7 @@
         android:theme="@style/Theme.Carbonproject"
         tools:targetApi="31">
         <activity
-            android:name="com.example.carbon_project.MainActivity"
+            android:name="com.example.carbon_project.Controller.MainActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -21,18 +21,18 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name="com.example.carbon_project.OrganizerDashboardActivity" />
-        <activity android:name="com.example.carbon_project.OrganizerCreateFacilityActivity" />
-        <activity android:name="com.example.carbon_project.OrganizerFacilitiesActivity" />
-        <activity android:name="com.example.carbon_project.CreateEventActivity" />
-        <activity android:name="com.example.carbon_project.ViewEventsActivity" />
-        <activity android:name="com.example.carbon_project.ProfileActivity" />
-        <activity android:name="com.example.carbon_project.AdminDashboardActivity" />
-        <activity android:name="com.example.carbon_project.EventManagementActivity" />
-        <activity android:name="com.example.carbon_project.EventListActivity" />
-        <activity android:name="com.example.carbon_project.EventDetailsActivity" />
-        <activity android:name="com.example.carbon_project.EntrantDashboardActivity" />
-        <activity android:name="com.example.carbon_project.EntrantEventsListActivity" />
+        <activity android:name="com.example.carbon_project.Controller.OrganizerDashboardActivity" />
+        <activity android:name="com.example.carbon_project.Controller.OrganizerCreateFacilityActivity" />
+        <activity android:name="com.example.carbon_project.Controller.OrganizerFacilitiesActivity" />
+        <activity android:name="com.example.carbon_project.Controller.CreateEventActivity" />
+        <activity android:name="com.example.carbon_project.Controller.ViewEventsActivity" />
+        <activity android:name="com.example.carbon_project.Controller.AdminDashboardActivity" />
+        <activity android:name="com.example.carbon_project.Controller.EventManagementActivity" />
+        <activity android:name="com.example.carbon_project.Controller.EventListActivity" />
+        <activity android:name="com.example.carbon_project.Controller.EventDetailsActivity" />
+        <activity android:name="com.example.carbon_project.Controller.EntrantDashboardActivity" />
+        <activity android:name="com.example.carbon_project.Controller.EntrantEventsListActivity" />
+        <activity android:name="com.example.carbon_project.Controller.ProfileActivity" />
 
     </application>
 

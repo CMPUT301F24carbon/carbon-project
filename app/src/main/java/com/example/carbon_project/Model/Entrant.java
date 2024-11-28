@@ -1,4 +1,4 @@
-package com.example.carbon_project;
+package com.example.carbon_project.Model;
 
 import com.google.firebase.firestore.FirebaseFirestore;
 
@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.Map;
 
 public class Entrant extends User implements Serializable {
-    private List<String> joinedEvents; // Event IDs of joined waiting lists
+    private List<String> joinedEvents;
 
     public Entrant(String userId, String name, String email, String phoneNumber) {
         super(userId, name, email, phoneNumber, "entrant");

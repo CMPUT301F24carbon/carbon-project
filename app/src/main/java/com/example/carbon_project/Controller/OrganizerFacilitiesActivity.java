@@ -1,4 +1,4 @@
-package com.example.carbon_project;
+package com.example.carbon_project.Controller;
 
 import android.app.AlertDialog;
 import android.graphics.Canvas;
@@ -15,6 +15,11 @@ import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.carbon_project.Model.Facility;
+import com.example.carbon_project.Model.Organizer;
+import com.example.carbon_project.R;
+import com.example.carbon_project.View.EditFacilityFragment;
+import com.example.carbon_project.View.FacilityAdapter;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
@@ -127,7 +132,6 @@ public class OrganizerFacilitiesActivity extends AppCompatActivity implements Ed
     private void deleteFacilityAndAssociatedEvents(Facility facility, int position) {
         String facilityId = facility.getFacilityId();
 
-        // Step 1: Delete associated events
         db.collection("events")
                 .whereEqualTo("facility.facilityId", facilityId)
                 .get()
@@ -139,7 +143,6 @@ public class OrganizerFacilitiesActivity extends AppCompatActivity implements Ed
                                 );
                     }
 
-                    // Step 2: Delete the facility
                     db.collection("facilities")
                             .document(facilityId)
                             .delete()

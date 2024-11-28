@@ -1,4 +1,4 @@
-package com.example.carbon_project;
+package com.example.carbon_project.Controller;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -9,6 +9,9 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.carbon_project.Model.Entrant;
+import com.example.carbon_project.R;
+import com.example.carbon_project.View.EventsAdapter;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 
@@ -66,7 +69,7 @@ public class EntrantEventsListActivity extends AppCompatActivity {
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
                         for (QueryDocumentSnapshot document : task.getResult()) {
-                            String eventId = document.getId(); // Get the event ID
+                            String eventId = document.getId();
                             String eventName = document.getString("name");
                             String eventDescription = document.getString("description");
                             String eventText = eventName + " - " + eventDescription;

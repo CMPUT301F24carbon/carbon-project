@@ -1,4 +1,4 @@
-package com.example.carbon_project;
+package com.example.carbon_project.View;
 
 
 import android.view.LayoutInflater;
@@ -8,6 +8,9 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.example.carbon_project.Model.Facility;
+import com.example.carbon_project.R;
 
 import java.util.List;
 public class FacilityAdapter extends RecyclerView.Adapter<FacilityAdapter.FacilityViewHolder> {
