@@ -1,19 +1,39 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/main"
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MainActivity">
+    android:orientation="vertical"
+    android:padding="16dp"
+    android:gravity="center">
 
     <TextView
+        android:id="@+id/dashboard_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Hello World!"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        android:text="Main Dashboard"
+        android:textSize="20sp"
+        android:textStyle="normal"
+        android:gravity="center_horizontal"
+        android:layout_marginBottom="32dp" />
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+    <Button
+        android:id="@+id/entrant_button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Entrant"
+        android:layout_marginBottom="16dp" />
+
+    <Button
+        android:id="@+id/organizer_button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Organizer"
+        android:layout_marginBottom="16dp" />
+
+    <Button
+        android:id="@+id/admin_button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Admin" />
+</LinearLayout>
