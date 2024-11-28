@@ -1,4 +1,4 @@
-package com.example.carbon_project;
+package com.example.carbon_project.Controller;
 
 import android.content.Intent;
 import android.net.Uri;
@@ -15,6 +15,11 @@ import android.widget.Toast;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.carbon_project.Model.Admin;
+import com.example.carbon_project.Model.Entrant;
+import com.example.carbon_project.Model.Organizer;
+import com.example.carbon_project.Model.User;
+import com.example.carbon_project.R;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
@@ -28,7 +33,6 @@ public class ProfileActivity extends AppCompatActivity {
     private TextView initialsBadge;
     private Button uploadPictureButton, removePictureButton, saveProfileButton;
     private FirebaseFirestore db;
-    private Entrant entrant;
     private User activeType;
 
     @Override
@@ -49,15 +53,31 @@ public class ProfileActivity extends AppCompatActivity {
         // Initialize Firebase Firestore
         db = FirebaseFirestore.getInstance();
 
-        // Get the Entrant object from the Intent
-        entrant = (Entrant) getIntent().getSerializableExtra("entrantObject");
+        // Get the user object from the Intent
+        User user = (User) getIntent().getSerializableExtra("userObject");
 
-        if (entrant != null) {
-            loadProfile(entrant.getUserId());
-            activeType = entrant;
+        if (user != null) {
+            if (user instanceof Entrant) {
+                Entrant entrant = (Entrant) user;
+                loadProfile(entrant.getUserId());
+                activeType = entrant;
+            }
+            else if (user instanceof Organizer) {
+                Organizer organizer = (Organizer) user;
+                loadProfile(organizer.getUserId());
+                activeType = organizer;
+            }
+            else if (user instanceof Admin) {
+                Admin admin = (Admin) user;
+                loadProfile(admin.getUserId());
+                activeType = admin;
+            } else {
+                Toast.makeText(this, "Unknown user type!", Toast.LENGTH_SHORT).show();
+            }
         } else {
-            Toast.makeText(this, "Entrant data not found!", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "User data not found!", Toast.LENGTH_SHORT).show();
         }
+
 
         // Set listeners for upload/remove/save
         uploadPictureButton.setOnClickListener(v -> uploadProfilePicture());
@@ -152,14 +172,13 @@ public class ProfileActivity extends AppCompatActivity {
         if (requestCode == REQUEST_CODE_PICK_IMAGE && resultCode == RESULT_OK && data != null && data.getData() != null) {
             Uri selectedImageUri = data.getData();
 
-            // Log the selected URI
             Log.d("ProfileActivity", "Selected Image URI: " + selectedImageUri);
 
             FirebaseStorage storage = FirebaseStorage.getInstance();
-            StorageReference storageRef = storage.getReference().child("profile_pictures/" + entrant.getUserId() + ".jpg");
+            StorageReference storageRef = storage.getReference().child("profile_pictures/" + activeType.getUserId() + ".jpg");
 
             // Ensure valid userId
-            if (entrant.getUserId() == null) {
+            if (activeType.getUserId() == null) {
                 Toast.makeText(this, "User ID is null. Cannot upload picture.", Toast.LENGTH_SHORT).show();
                 return;
             }
@@ -170,7 +189,7 @@ public class ProfileActivity extends AppCompatActivity {
                         storageRef.getDownloadUrl()
                                 .addOnSuccessListener(uri -> {
                                     String profilePictureUrl = uri.toString();
-                                    db.collection("users").document(entrant.getUserId())
+                                    db.collection("users").document(activeType.getUserId())
                                             .update("profilePictureUrl", profilePictureUrl)
                                             .addOnSuccessListener(aVoid -> {
                                                 Toast.makeText(this, "Profile picture updated successfully!", Toast.LENGTH_SHORT).show();

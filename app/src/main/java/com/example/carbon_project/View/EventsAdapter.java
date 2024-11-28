@@ -1,4 +1,4 @@
-package com.example.carbon_project;
+package com.example.carbon_project.View;
 
 import android.content.Context;
 import android.view.LayoutInflater;

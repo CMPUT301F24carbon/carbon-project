@@ -12,7 +12,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Admin Dashboard"
-        android:textSize="20sp"
+        android:textSize="24sp"
         android:textStyle="normal"
         android:layout_marginBottom="32dp"
         android:gravity="center" />
@@ -28,5 +28,13 @@
         android:id="@+id/manage_events_button"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Manage Events" />
+        android:text="Manage Events"
+        android:layout_marginBottom="16dp" />
+
+    <Button
+        android:id="@+id/my_profile_button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="My Profile"
+        android:layout_marginBottom="16dp" />
 </LinearLayout>

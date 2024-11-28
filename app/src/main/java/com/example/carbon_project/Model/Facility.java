@@ -1,4 +1,4 @@
-package com.example.carbon_project;
+package com.example.carbon_project.Model;
 
 import java.io.Serializable;
 import java.util.HashMap;

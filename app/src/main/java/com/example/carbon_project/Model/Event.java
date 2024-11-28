@@ -1,4 +1,4 @@
-package com.example.carbon_project;
+package com.example.carbon_project.Model;
 
 import android.util.Log;
 
@@ -26,7 +26,7 @@ public class Event {
     private Facility facility;
     private List<Entrant> waitingList;
     private List<Entrant> selectedList;
-    private List<String> canceledList;
+    private List<Entrant> canceledList;
     private List<Entrant> enrolledList;
 
     // Constructor
@@ -44,10 +44,11 @@ public class Event {
         this.facility = facility;
         this.waitingList = new ArrayList<>();
         this.selectedList = new ArrayList<>();
-        this.canceledList = new ArrayList<String>();
+        this.canceledList = new ArrayList<>();
+        this.enrolledList = new ArrayList<>();
     }
 
-    public Event(String eventId, String name, String description, String organizerId, int capacity, List<Entrant> waitingList, List<Entrant> selectedList, List<String> canceledList, boolean geolocationRequired, String startDate, String endDate, String eventPosterUrl, String qrCodeUrl) {
+    public Event(String eventId, String name, String description, String organizerId, int capacity, List<Entrant> waitingList, List<Entrant> selectedList, List<String> canceledList, List<Entrant> enrolledList, boolean geolocationRequired, String startDate, String endDate, String eventPosterUrl, String qrCodeUrl) {
         this.eventId = eventId;
         this.name = name;
         this.description = description;
@@ -60,7 +61,7 @@ public class Event {
         this.qrCodeUrl = qrCodeUrl;
         this.waitingList = waitingList;
         this.selectedList = selectedList;
-        this.canceledList = canceledList;
+        this.enrolledList = enrolledList;
     }
 
     public boolean isGeolocationRequired() {
@@ -69,6 +70,14 @@ public class Event {
 
     public void setGeolocationRequired(boolean geolocationRequired) {
         this.geolocationRequired = geolocationRequired;
+    }
+
+    public List<Entrant> getEnrolledList() {
+        return enrolledList;
+    }
+
+    public void setEnrolledList(List<Entrant> enrolledList) {
+        this.enrolledList = enrolledList;
     }
 
     public String getStartDate() {
@@ -167,18 +176,18 @@ public class Event {
         this.selectedList = selectedList;
     }
 
-    public void setCanceledList(List<String> canceledList) {
+    public void setCanceledList(List<Entrant> canceledList) {
         this.canceledList = canceledList;
     }
 
     // Getters and Setters
-    public List<String> getCanceledList() { return canceledList; }
+    public List<Entrant> getCanceledList() { return canceledList; }
 
     // Add to canceled list
-    public void cancelAttendance(String entrantId) {
-        if (selectedList.contains(entrantId)) {
-            selectedList.remove(entrantId);
-            canceledList.add(entrantId);
+    public void cancelAttendance(Entrant entrant) {
+        if (selectedList.contains(entrant)) {
+            selectedList.remove(entrant);
+            canceledList.add(entrant);
         }
     }
 
@@ -244,7 +253,7 @@ public class Event {
         map.put("eventPosterUrl", eventPosterUrl);
         map.put("qrCodeUrl", qrCodeUrl);
         map.put("eventStatus", eventStatus);
-        map.put("facility", facility != null ? facility.toMap() : null);  // Store facility data or null
+        map.put("facility", facility != null ? facility.toMap() : null);
 
         return map;
     }

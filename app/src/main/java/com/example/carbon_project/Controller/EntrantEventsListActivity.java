@@ -1,4 +1,4 @@
-package com.example.carbon_project;
+package com.example.carbon_project.Controller;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -9,6 +9,9 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.carbon_project.Model.Entrant;
+import com.example.carbon_project.R;
+import com.example.carbon_project.View.EventsAdapter;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 
@@ -48,12 +51,10 @@ public class EntrantEventsListActivity extends AppCompatActivity {
         // Fetch events from the database
         fetchEventsFromDatabase();
 
-        // Set click listener for ListView items
         eventsListView.setOnItemClickListener((AdapterView<?> parent, View view, int position, long id) -> {
             String selectedEvent = eventsList.get(position);
             String eventId = eventIds.get(position);
 
-            // Pass the event details, Entrant object, and event ID to EventDetailsActivity
             Intent intent = new Intent(EntrantEventsListActivity.this, EventDetailsActivity.class);
             intent.putExtra("eventDetails", selectedEvent);
             intent.putExtra("entrantObject", entrant);
@@ -68,7 +69,7 @@ public class EntrantEventsListActivity extends AppCompatActivity {
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
                         for (QueryDocumentSnapshot document : task.getResult()) {
-                            String eventId = document.getId(); // Get the event ID
+                            String eventId = document.getId();
                             String eventName = document.getString("name");
                             String eventDescription = document.getString("description");
                             String eventText = eventName + " - " + eventDescription;

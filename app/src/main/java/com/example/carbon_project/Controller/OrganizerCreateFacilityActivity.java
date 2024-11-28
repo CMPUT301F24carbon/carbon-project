@@ -1,4 +1,4 @@
-package com.example.carbon_project;
+package com.example.carbon_project.Controller;
 
 import android.os.Bundle;
 import android.provider.Settings;
@@ -8,6 +8,8 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.carbon_project.Model.Facility;
+import com.example.carbon_project.R;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.UUID;
@@ -36,20 +38,16 @@ public class OrganizerCreateFacilityActivity extends AppCompatActivity {
         capacityEditText = findViewById(R.id.capacity_edit_text);
         createFacilityButton = findViewById(R.id.create_facility_button);
 
-        // Set up the button click listener
         createFacilityButton.setOnClickListener(v -> {
             // Get the input values
             String facilityName = facilityNameEditText.getText().toString().trim();
             String location = locationEditText.getText().toString().trim();
             int capacity = Integer.parseInt(capacityEditText.getText().toString().trim());
 
-            // Create a Facility object
+            // Create a Facility object & Save
             String facilityId = UUID.randomUUID().toString();
             organizerId = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
-
             Facility newFacility = new Facility(facilityId, facilityName, location, capacity, organizerId);
-
-            // Save facility to Firestore
             saveFacilityToDatabase(newFacility);
         });
     }
@@ -59,12 +57,10 @@ public class OrganizerCreateFacilityActivity extends AppCompatActivity {
                 .document(facility.getFacilityId())
                 .set(facility)
                 .addOnSuccessListener(aVoid -> {
-                    // Facility saved successfully
                     Toast.makeText(OrganizerCreateFacilityActivity.this, "Facility created successfully!", Toast.LENGTH_SHORT).show();
-                    finish(); // Close the activity
+                    finish();
                 })
                 .addOnFailureListener(e -> {
-                    // Error occurred while saving
                     Toast.makeText(OrganizerCreateFacilityActivity.this, "Error creating facility.", Toast.LENGTH_SHORT).show();
                 });
     }

@@ -1,4 +1,4 @@
-package com.example.carbon_project;
+package com.example.carbon_project.Controller;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -7,9 +7,11 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.carbon_project.Model.Entrant;
+import com.example.carbon_project.R;
+
 public class EntrantDashboardActivity extends AppCompatActivity {
 
-    private Entrant entrant;
     private Button viewEventsButton, myProfileButton;
 
     @Override
@@ -17,7 +19,7 @@ public class EntrantDashboardActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_entrant_dashboard);
 
-        entrant = (Entrant) getIntent().getSerializableExtra("entrantObject");
+        Entrant entrant = (Entrant) getIntent().getSerializableExtra("userObject");
 
         if (entrant == null) {
             Toast.makeText(this, "Entrant data is missing!", Toast.LENGTH_SHORT).show();
@@ -29,13 +31,13 @@ public class EntrantDashboardActivity extends AppCompatActivity {
 
         viewEventsButton.setOnClickListener(v -> {
             Intent intent = new Intent(EntrantDashboardActivity.this, EntrantEventsListActivity.class);
-            intent.putExtra("entrantObject", entrant);
+            intent.putExtra("entrant", entrant);
             startActivity(intent);
         });
 
         myProfileButton.setOnClickListener(v -> {
             Intent intent = new Intent(EntrantDashboardActivity.this, ProfileActivity.class);
-            intent.putExtra("entrantObject", entrant);
+            intent.putExtra("userObject", entrant);
             startActivity(intent);
         });
     }
