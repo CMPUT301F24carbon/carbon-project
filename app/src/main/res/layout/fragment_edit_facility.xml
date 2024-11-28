@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="16dp">
+
+    <EditText
+        android:id="@+id/editFacilityName"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Facility Name"
+        android:inputType="text"
+        android:maxLines="1"
+        android:layout_marginBottom="16dp" />
+
+    <EditText
+        android:id="@+id/editFacilityLocation"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Facility Location"
+        android:inputType="text"
+        android:maxLines="1"
+        android:layout_marginBottom="16dp" />
+
+    <EditText
+        android:id="@+id/editFacilityCapacity"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Capacity"
+        android:inputType="number"
+        android:maxLines="1" />
+</LinearLayout>

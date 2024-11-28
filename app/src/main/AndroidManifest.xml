@@ -13,19 +13,26 @@
         android:theme="@style/Theme.Carbonproject"
         tools:targetApi="31">
         <activity
-            android:name=".MainActivity"
-            android:exported="true"
-            android:label="@string/app_name">
+            android:name="com.example.carbon_project.Controller.MainActivity"
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".CreateFacilityActivity" />
-        <activity android:name=".FacilityListActivity" />
-        <activity android:name=".CreateEventActivity" />
-        <activity android:name=".EventListActivity" />
-        <activity android:name=".AdminListActivity" />
+        <activity android:name="com.example.carbon_project.Controller.OrganizerDashboardActivity" />
+        <activity android:name="com.example.carbon_project.Controller.OrganizerCreateFacilityActivity" />
+        <activity android:name="com.example.carbon_project.Controller.OrganizerFacilitiesActivity" />
+        <activity android:name="com.example.carbon_project.Controller.CreateEventActivity" />
+        <activity android:name="com.example.carbon_project.Controller.ViewEventsActivity" />
+        <activity android:name="com.example.carbon_project.Controller.AdminDashboardActivity" />
+        <activity android:name="com.example.carbon_project.Controller.EventManagementActivity" />
+        <activity android:name="com.example.carbon_project.Controller.EventListActivity" />
+        <activity android:name="com.example.carbon_project.Controller.EventDetailsActivity" />
+        <activity android:name="com.example.carbon_project.Controller.EntrantDashboardActivity" />
+        <activity android:name="com.example.carbon_project.Controller.EntrantEventsListActivity" />
+        <activity android:name="com.example.carbon_project.Controller.ProfileActivity" />
 
     </application>
 
@@ -36,5 +43,7 @@
     <uses-permission android:name="android.permission.INTERNET"/>
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
 
+    <!-- Permission to access personal storage to upload image -->
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
 
 </manifest>

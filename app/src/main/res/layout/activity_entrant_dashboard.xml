@@ -4,36 +4,29 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:padding="16dp"
-    android:gravity="center">
+    android:gravity="center"
+    android:padding="16dp">
 
     <TextView
-        android:id="@+id/dashboard_title"
+        android:id="@+id/entrant_dashboard_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Main Dashboard"
+        android:text="Entrant Dashboard"
         android:textSize="24sp"
         android:textStyle="normal"
-        android:gravity="center_horizontal"
-        android:layout_marginBottom="32dp" />
+        android:layout_marginBottom="32dp"
+        android:gravity="center" />
 
     <Button
-        android:id="@+id/entrant_button"
+        android:id="@+id/view_events_button"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Entrant"
+        android:text="View Events"
         android:layout_marginBottom="16dp" />
 
     <Button
-        android:id="@+id/organizer_button"
+        android:id="@+id/my_profile_button"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Organizer"
-        android:layout_marginBottom="16dp" />
-
-    <Button
-        android:id="@+id/admin_button"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Admin" />
+        android:text="My Profile" />
 </LinearLayout>
