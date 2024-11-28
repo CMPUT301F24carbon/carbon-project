@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:gravity="center_horizontal"
+    android:padding="16dp">
+
+    <TextView
+        android:id="@+id/entrant_dashboard_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Entrant Dashboard"
+        android:textSize="20sp"
+        android:textStyle="normal"
+        android:layout_marginBottom="32dp"
+        android:gravity="center" />
+
+    <Button
+        android:id="@+id/view_events_button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="View Events"
+        android:layout_marginBottom="16dp" />
+
+    <Button
+        android:id="@+id/my_profile_button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="My Profile" />
+</LinearLayout>

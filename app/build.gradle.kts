@@ -9,7 +9,7 @@ android {
 
     defaultConfig {
         applicationId = "com.example.carbon_project"
-        minSdk = 24
+        minSdk = 28
         targetSdk = 34
         versionCode = 1
         versionName = "1.0"
@@ -27,34 +27,33 @@ android {
         }
     }
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_1_8
-        targetCompatibility = JavaVersion.VERSION_1_8
+        sourceCompatibility = JavaVersion.VERSION_11
+        targetCompatibility = JavaVersion.VERSION_11
     }
 }
 
 dependencies {
+
+    // Firebase dependencies
+    implementation(platform("com.google.firebase:firebase-bom:33.6.0"))
+
+    implementation("com.squareup.picasso:picasso:2.71828")
+
+
+
     implementation(libs.appcompat)
     implementation(libs.material)
-
+//    implementation(libs.activity)
     implementation(libs.constraintlayout)
-
-    // Dependencies for navigation bar
-    implementation("com.google.android.material:material:1.9.0")
-
-    // Dependencies for Firestore
-    implementation(platform("com.google.firebase:firebase-bom:33.5.1"))
-    implementation("com.google.firebase:firebase-firestore")
-
-    // Dependencies for testers
-    implementation(libs.ext.junit)
-    implementation(libs.androidx.espresso.core)
-    testImplementation("junit:junit:4.13.2")
-    androidTestImplementation("androidx.test.espresso:espresso-core:3.4.0")
-    androidTestImplementation("androidx.test:rules:1.4.0")
-    androidTestImplementation("androidx.test:runner:1.4.0")
-
-    // Dependencies for QR scanning and generating
-    implementation(libs.zxing.embedded)
-    implementation(libs.zxing.core)
-
+    implementation(libs.firebase.firestore)
+    implementation(libs.firebase.auth)
+    implementation(libs.firebase.storage)
+    /*    implementation(libs.car.ui.lib)
+        implementation(libs.firebase.firestore)
+        implementation(libs.firebase.auth)
+        implementation(libs.firebase.storage)
+        implementation(libs.recyclerview)*/
+    testImplementation(libs.junit)
+    androidTestImplementation(libs.ext.junit)
+    androidTestImplementation(libs.espresso.core)
 }

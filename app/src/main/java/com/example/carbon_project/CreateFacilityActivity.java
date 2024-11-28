@@ -1,104 +1,82 @@
 package com.example.carbon_project;
 
-import android.content.Intent;
 import android.os.Bundle;
-import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.FieldValue;
+import com.google.firebase.firestore.FirebaseFirestore;
+
 import java.util.UUID;
 
-/**
- * CreateFacilityActivity is an activity that allows users to create a new facility.
- * It includes input fields for facility details and buttons to create the facility
- * or return to the previous screen.
- */
 public class CreateFacilityActivity extends AppCompatActivity {
-
-    private EditText facilityNameInput;
-    private EditText locationInput;
-    private EditText capacityInput;
-    private EditText descriptionInput;
-    private Button createFacilityButton;
-    private Button backButton;
+    private EditText etFacilityName, etFacilityLocation, etFacilityCapacity;
+    private Button btnCreateFacility;
+    private FirebaseFirestore db;
+    private String organizerId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.create_facility);
+        setContentView(R.layout.activity_create_facility);
+
+        // Initialize Firestore and FirebaseAuth
+        db = FirebaseFirestore.getInstance();
+        FirebaseAuth auth = FirebaseAuth.getInstance();
+        organizerId = auth.getCurrentUser().getUid();
 
         // Initialize UI elements
-        facilityNameInput = findViewById(R.id.facilityNameInput);
-        locationInput = findViewById(R.id.locationInput);
-        capacityInput = findViewById(R.id.capacityInput);
-        descriptionInput = findViewById(R.id.descriptionInput);
-        createFacilityButton = findViewById(R.id.createFacilityButton);
-        backButton = findViewById(R.id.backButton);
+        etFacilityName = findViewById(R.id.etFacilityName);
+        etFacilityLocation = findViewById(R.id.etFacilityLocation);
+        etFacilityCapacity = findViewById(R.id.etFacilityCapacity);
+        btnCreateFacility = findViewById(R.id.btnCreateFacility);
 
-        // Set up button listeners
-        createFacilityButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                createFacility();
-            }
-        });
-
-        backButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                finish();
-            }
-        });
+        // Set up button click listener
+        btnCreateFacility.setOnClickListener(v -> createFacility());
     }
 
-    /**
-     * Gathers input data, validates it, and creates a new facility.
-     * Displays a message if any fields are incomplete or invalid.
-     */
     private void createFacility() {
-        String facilityName = facilityNameInput.getText().toString().trim();
-        String facilityLocation = locationInput.getText().toString().trim();
-        String facilityCapacity = capacityInput.getText().toString().trim();
-        String facilityDescription = descriptionInput.getText().toString().trim();
+        String facilityName = etFacilityName.getText().toString().trim();
+        String facilityLocation = etFacilityLocation.getText().toString().trim();
+        int facilityCapacity;
 
-        // Validate input fields
-        if (facilityName.isEmpty() || facilityLocation.isEmpty() || facilityCapacity.isEmpty() || facilityDescription.isEmpty()) {
-            Toast.makeText(this, "Please fill in all fields.", Toast.LENGTH_SHORT).show();
-            return;
-        }
-
-        // Handle number format exception
-        int capacity;
+        // Input validation
         try {
-            capacity = Integer.parseInt(facilityCapacity);
+            facilityCapacity = Integer.parseInt(etFacilityCapacity.getText().toString().trim());
         } catch (NumberFormatException e) {
-            Toast.makeText(this, "Please enter a valid number for capacity.", Toast.LENGTH_SHORT).show();
+            etFacilityCapacity.setError("Please enter a valid capacity");
             return;
         }
 
-        // Create new facility and add it to the facility manager
-        Facility newFacility = new Facility(facilityName, facilityLocation, capacity, facilityDescription);
-        FacilityManager.getInstance().addFacility(newFacility);
+        // Check if any input is missing
+        if (facilityName.isEmpty() || facilityLocation.isEmpty() || facilityCapacity <= 0) {
+            Toast.makeText(this, "All fields are required and capacity must be greater than 0", Toast.LENGTH_SHORT).show();
+            return;
+        }
 
-        // Navigate to FacilityListActivity and display success message
-        Intent resultIntent = new Intent(this, FacilityListActivity.class);
-        startActivity(resultIntent);
-        Toast.makeText(this, "Facility created successfully!", Toast.LENGTH_SHORT).show();
+        String facilityId = UUID.randomUUID().toString();
+        // Create a new Facility object
+        Facility facility = new Facility(facilityId, facilityName, facilityLocation, facilityCapacity, organizerId);
 
-        // Clear input fields
-        clearInputs();
-    }
-
-    /**
-     * Clears all input fields in the activity, resetting them to their default state.
-     */
-    private void clearInputs() {
-        facilityNameInput.setText("");
-        locationInput.setText("");
-        capacityInput.setText("");
-        descriptionInput.setText("");
+        // Save the facility to Firestore
+        db.collection("facilities").document(facilityId).set(facility)
+                .addOnSuccessListener(aVoid -> {
+                    db.collection("organizers").document(organizerId)
+                            .update("facilityIds", FieldValue.arrayUnion(facilityId))
+                            .addOnSuccessListener(aVoid1 -> {
+                                Toast.makeText(CreateFacilityActivity.this, "Facility created successfully", Toast.LENGTH_SHORT).show();
+                                finish();
+                            })
+                            .addOnFailureListener(e -> {
+                                Toast.makeText(CreateFacilityActivity.this, "Error adding facility to organizer: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                            });
+                })
+                .addOnFailureListener(e -> {
+                    Toast.makeText(CreateFacilityActivity.this, "Error creating facility: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                });
     }
 }
