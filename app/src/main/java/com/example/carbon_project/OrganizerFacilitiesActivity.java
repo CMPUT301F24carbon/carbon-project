@@ -15,7 +15,7 @@ import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.google.android.material.snackbar.Snackbar;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.List;
@@ -39,7 +39,6 @@ public class OrganizerFacilitiesActivity extends AppCompatActivity implements Ed
         facilitiesRecyclerView = findViewById(R.id.rvFacilities);
         facilitiesRecyclerView.setLayoutManager(new LinearLayoutManager(this));
 
-        // Initialize Firebase Firestore
         db = FirebaseFirestore.getInstance();
 
         Organizer organizer = (Organizer) getIntent().getSerializableExtra("organizer");
@@ -60,15 +59,11 @@ public class OrganizerFacilitiesActivity extends AppCompatActivity implements Ed
                     facilitiesRecyclerView.setAdapter(facilityAdapter);
 
                     // Set onClickListener for item click
-                    facilityAdapter.setOnItemClickListener(new FacilityAdapter.OnItemClickListener() {
-                        @Override
-                        public void onItemClick(Facility facility, int position) {
-                            // Open the EditFacilityFragment on item click
-                            EditFacilityFragment editFacilityFragment = new EditFacilityFragment();
-                            editFacilityFragment.setFacilityToEdit(facility);
-                            editFacilityFragment.setPosition(position);
-                            editFacilityFragment.show(getSupportFragmentManager(), "editFacility");
-                        }
+                    facilityAdapter.setOnItemClickListener((facility, position) -> {
+                        EditFacilityFragment editFacilityFragment = new EditFacilityFragment();
+                        editFacilityFragment.setFacilityToEdit(facility);
+                        editFacilityFragment.setPosition(position);
+                        editFacilityFragment.show(getSupportFragmentManager(), "editFacility");
                     });
 
                     // Set up swipe-to-delete
@@ -92,14 +87,10 @@ public class OrganizerFacilitiesActivity extends AppCompatActivity implements Ed
                 int position = viewHolder.getAdapterPosition();
                 Facility facilityToDelete = facilityList.get(position);
 
-                // Show confirmation dialog before deleting
                 new AlertDialog.Builder(OrganizerFacilitiesActivity.this)
                         .setTitle("Delete Facility")
-                        .setMessage("Are you sure you want to delete this facility?")
-                        .setPositiveButton("Confirm", (dialog, which) -> {
-                            // Facility confirmed for deletion
-                            checkIfFacilityIsInUse(facilityToDelete, position);
-                        })
+                        .setMessage("Are you sure you want to delete this facility and all its associated events?")
+                        .setPositiveButton("Confirm", (dialog, which) -> deleteFacilityAndAssociatedEvents(facilityToDelete, position))
                         .setNegativeButton("Cancel", (dialog, which) -> facilityAdapter.notifyItemChanged(position))
                         .show();
             }
@@ -119,7 +110,6 @@ public class OrganizerFacilitiesActivity extends AppCompatActivity implements Ed
                         c.drawRect((float) itemView.getRight() + dX, (float) itemView.getTop(),
                                 (float) itemView.getRight(), (float) itemView.getBottom(), paint);
 
-                        // Paint for the "Delete" text
                         Paint textPaint = new Paint();
                         textPaint.setColor(Color.WHITE);
                         textPaint.setTextSize(40);
@@ -134,83 +124,41 @@ public class OrganizerFacilitiesActivity extends AppCompatActivity implements Ed
         itemTouchHelper.attachToRecyclerView(facilitiesRecyclerView);
     }
 
-    private void checkIfFacilityIsInUse(Facility facility, int position) {
-        String facilityId = facility.getFacilityId();  // Assuming facility has a unique ID
+    private void deleteFacilityAndAssociatedEvents(Facility facility, int position) {
+        String facilityId = facility.getFacilityId();
 
+        // Step 1: Delete associated events
         db.collection("events")
-                .whereEqualTo("facility.facilityId", facilityId) // Query using the embedded facilityId
+                .whereEqualTo("facility.facilityId", facilityId)
                 .get()
                 .addOnSuccessListener(queryDocumentSnapshots -> {
-                    if (!queryDocumentSnapshots.isEmpty()) {
-                        // Facility is being used in an event, show a message
-                        Toast.makeText(OrganizerFacilitiesActivity.this, "Cannot delete this facility, it is being used for an event.", Toast.LENGTH_SHORT).show();
-                        facilityAdapter.notifyDataSetChanged();
-                    } else {
-                        deleteFacility(facility, position);
+                    for (DocumentSnapshot document : queryDocumentSnapshots) {
+                        db.collection("events").document(document.getId()).delete()
+                                .addOnFailureListener(e ->
+                                        Toast.makeText(OrganizerFacilitiesActivity.this, "Error deleting event: " + e.getMessage(), Toast.LENGTH_SHORT).show()
+                                );
                     }
+
+                    // Step 2: Delete the facility
+                    db.collection("facilities")
+                            .document(facilityId)
+                            .delete()
+                            .addOnSuccessListener(aVoid -> {
+                                facilityList.remove(position);
+                                facilityAdapter.notifyItemRemoved(position);
+                                Toast.makeText(OrganizerFacilitiesActivity.this, "Facility and associated events deleted successfully", Toast.LENGTH_SHORT).show();
+                            })
+                            .addOnFailureListener(e ->
+                                    Toast.makeText(OrganizerFacilitiesActivity.this, "Error deleting facility: " + e.getMessage(), Toast.LENGTH_SHORT).show()
+                            );
                 })
-                .addOnFailureListener(e -> {
-                    Toast.makeText(OrganizerFacilitiesActivity.this, "Error checking facility usage", Toast.LENGTH_SHORT).show();
-                });
-    }
-
-    private void deleteFacility(Facility facility, int position) {
-        db.collection("facilities")
-                .document(facility.getFacilityId()) // Assuming facility has a unique ID
-                .delete()
-                .addOnSuccessListener(aVoid -> {
-                    // Facility deleted, remove it from the list
-                    facilityList.remove(position);
-                    facilityAdapter.notifyItemRemoved(position);
-                    Toast.makeText(OrganizerFacilitiesActivity.this, "Facility deleted successfully", Toast.LENGTH_SHORT).show();
-
-                    // Show the undo Snackbar
-                    showUndoSnackbar(facility, position);
-                })
-                .addOnFailureListener(e -> {
-                    Toast.makeText(OrganizerFacilitiesActivity.this, "Error deleting facility", Toast.LENGTH_SHORT).show();
-                });
-    }
-
-    private void showUndoSnackbar(Facility facility, int position) {
-        // Store the deleted facility in a separate variable for undo
-        lastDeletedFacility = facility;
-        lastDeletedPosition = position;
-
-        Snackbar.make(facilitiesRecyclerView, "Facility deleted", Snackbar.LENGTH_LONG)
-                .setAction("UNDO", v -> {
-                    // Only add the facility back once
-                    if (lastDeletedFacility != null && lastDeletedPosition >= 0) {
-                        // Re-add the facility to the Firestore database
-                        restoreFacility(lastDeletedFacility, lastDeletedPosition);
-                    }
-                }).show();
-    }
-
-    private void restoreFacility(Facility facility, int position) {
-        // Update the Firestore document with the deleted facility
-        db.collection("facilities")
-                .document(facility.getFacilityId()) // Assuming facility has a unique ID
-                .set(facility) // Restore the facility in Firestore
-                .addOnSuccessListener(aVoid -> {
-                    // Update the view
-                    facilityList.add(position, facility);
-                    facilityAdapter.notifyItemInserted(position);
-
-                    // Clear the lastDeletedFacility and position to prevent duplicate additions
-                    lastDeletedFacility = null;
-                    lastDeletedPosition = -1;
-
-                    Toast.makeText(OrganizerFacilitiesActivity.this, "Facility restored", Toast.LENGTH_SHORT).show();
-                })
-                .addOnFailureListener(e -> {
-                    Toast.makeText(OrganizerFacilitiesActivity.this, "Error restoring facility", Toast.LENGTH_SHORT).show();
-                });
+                .addOnFailureListener(e ->
+                        Toast.makeText(OrganizerFacilitiesActivity.this, "Error fetching associated events: " + e.getMessage(), Toast.LENGTH_SHORT).show()
+                );
     }
 
     @Override
     public void updateFacility(Facility facility, int position) {
-        // Update the facility in the list
         facilityList.set(position, facility);
         facilityAdapter.notifyItemChanged(position);
     }

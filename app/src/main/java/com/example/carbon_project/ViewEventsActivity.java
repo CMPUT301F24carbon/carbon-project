@@ -26,10 +26,8 @@ public class ViewEventsActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_view_events);
 
-        // Initialize Firestore
         db = FirebaseFirestore.getInstance();
 
-        // Initialize the ListView and events list
         eventsListView = findViewById(R.id.events_list_view);
         eventsList = new ArrayList<>();
 
@@ -56,10 +54,7 @@ public class ViewEventsActivity extends AppCompatActivity {
                             String eventDescription = document.getString("description");
                             String eventText = eventName + " - " + eventDescription;
 
-                            // Add the event to the list
                             eventsList.add(eventText);
-
-                            // Notify the adapter that data has changed
                             adapter.notifyDataSetChanged();
                         }
                     } else {

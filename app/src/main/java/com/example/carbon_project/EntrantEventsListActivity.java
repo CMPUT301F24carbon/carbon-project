@@ -48,12 +48,10 @@ public class EntrantEventsListActivity extends AppCompatActivity {
         // Fetch events from the database
         fetchEventsFromDatabase();
 
-        // Set click listener for ListView items
         eventsListView.setOnItemClickListener((AdapterView<?> parent, View view, int position, long id) -> {
             String selectedEvent = eventsList.get(position);
             String eventId = eventIds.get(position);
 
-            // Pass the event details, Entrant object, and event ID to EventDetailsActivity
             Intent intent = new Intent(EntrantEventsListActivity.this, EventDetailsActivity.class);
             intent.putExtra("eventDetails", selectedEvent);
             intent.putExtra("entrantObject", entrant);

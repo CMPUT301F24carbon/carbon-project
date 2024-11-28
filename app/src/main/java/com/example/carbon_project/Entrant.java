@@ -15,7 +15,6 @@ public class Entrant extends User implements Serializable {
         this.joinedEvents = new ArrayList<>();
     }
 
-    // Convert Entrant object to a Map for Firestore storage
     @Override
     public Map<String, Object> toMap() {
         Map<String, Object> map = super.toMap();
@@ -23,7 +22,6 @@ public class Entrant extends User implements Serializable {
         return map;
     }
 
-    // Save the Entrant to Firestore
     public void saveToFirestore() {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         db.collection("users")

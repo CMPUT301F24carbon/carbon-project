@@ -121,7 +121,6 @@ public class EditFacilityFragment extends DialogFragment {
     }
 
     private void updateFacilityInFirestore(Facility facility) {
-        // Firestore reference to the specific document
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         CollectionReference facilitiesRef = db.collection("facilities");
 

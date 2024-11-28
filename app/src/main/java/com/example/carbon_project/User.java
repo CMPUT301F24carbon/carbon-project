@@ -8,18 +8,17 @@ public class User implements Serializable {
     private String userId;
     private String name;
     private String email;
-    private String phoneNumber; // optional
-    private String profilePictureUrl; // optional
-    private String role; // "entrant", "organizer", "admin"
+    private String phoneNumber;
+    private String profilePictureUrl;
+    private String role;
 
-    // Constructor
     public User(String userId, String name, String email, String phoneNumber, String role) {
         this.userId = userId;
         this.name = name;
         this.email = email;
         this.phoneNumber = phoneNumber;
         this.role = role;
-        this.profilePictureUrl = null; // default
+        this.profilePictureUrl = null;
     }
 
     // Getters and Setters
