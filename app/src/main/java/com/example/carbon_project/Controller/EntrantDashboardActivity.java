@@ -12,7 +12,7 @@ import com.example.carbon_project.R;
 
 public class EntrantDashboardActivity extends AppCompatActivity {
 
-    private Button viewEventsButton, myProfileButton;
+    private Button viewEventsButton, myProfileButton, joinEventButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -27,6 +27,7 @@ public class EntrantDashboardActivity extends AppCompatActivity {
         }
 
         viewEventsButton = findViewById(R.id.view_events_button);
+        joinEventButton = findViewById(R.id.join_event_button);
         myProfileButton = findViewById(R.id.my_profile_button);
 
         viewEventsButton.setOnClickListener(v -> {
@@ -37,6 +38,12 @@ public class EntrantDashboardActivity extends AppCompatActivity {
 
         myProfileButton.setOnClickListener(v -> {
             Intent intent = new Intent(EntrantDashboardActivity.this, ProfileActivity.class);
+            intent.putExtra("userObject", entrant);
+            startActivity(intent);
+        });
+
+        joinEventButton.setOnClickListener(v -> {
+            Intent intent = new Intent(EntrantDashboardActivity.this, EntrantJoinEventActivity.class);
             intent.putExtra("userObject", entrant);
             startActivity(intent);
         });

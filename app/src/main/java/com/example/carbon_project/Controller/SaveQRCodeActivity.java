@@ -1,6 +1,5 @@
 package com.example.carbon_project.Controller;
 
-import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -19,12 +18,11 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
-public class QRCodeActivity extends AppCompatActivity {
+public class SaveQRCodeActivity extends AppCompatActivity {
 
     private ImageView qrCodeImageView;
     private Button saveButton;
 
-    @SuppressLint("MissingInflatedId")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -49,7 +47,7 @@ public class QRCodeActivity extends AppCompatActivity {
                 if (qrCodeByteArray != null) {
                     saveQRCodeToFile(qrCodeByteArray);
                 } else {
-                    Toast.makeText(QRCodeActivity.this, "No QR code to save", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(SaveQRCodeActivity.this, "No QR code to save", Toast.LENGTH_SHORT).show();
                 }
             }
         });
@@ -74,7 +72,7 @@ public class QRCodeActivity extends AppCompatActivity {
         }
 
         // Return to the organizer dashboard
-        Intent intent = new Intent(QRCodeActivity.this, OrganizerDashboardActivity.class);
+        Intent intent = new Intent(SaveQRCodeActivity.this, OrganizerDashboardActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(intent);
     }

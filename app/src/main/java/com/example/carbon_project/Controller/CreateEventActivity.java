@@ -183,8 +183,8 @@ public class CreateEventActivity extends AppCompatActivity {
                 .addOnSuccessListener(aVoid -> {
                     Toast.makeText(CreateEventActivity.this, "Event created successfully", Toast.LENGTH_SHORT).show();
                     // Navigate to the QR code activity
-                    Intent intent = new Intent(CreateEventActivity.this, QRCodeActivity.class);
-                    intent.putExtra("qrCodeByteArray", qrCode); // Pass the byte array
+                    Intent intent = new Intent(CreateEventActivity.this, SaveQRCodeActivity.class);
+                    intent.putExtra("qrCodeByteArray", qrCode);     // Pass the byte array
                     startActivity(intent);
                 })
                 .addOnFailureListener(e -> {
