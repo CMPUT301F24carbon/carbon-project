@@ -9,6 +9,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.carbon_project.Model.Event;
 import com.example.carbon_project.Model.Facility;
+import com.example.carbon_project.Model.User;
 import com.example.carbon_project.R;
 
 import java.util.List;
@@ -29,7 +30,7 @@ public class AdminRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.
     @Override
     public int getItemViewType(int position) {
         Object item = data.get(position);
-        if (item instanceof String) {
+        if (item instanceof User) {
             return VIEW_TYPE_USER;
         } else if (item instanceof Event) {
             return VIEW_TYPE_EVENT;
@@ -60,7 +61,7 @@ public class AdminRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
         Object item = data.get(position);
         if (holder instanceof UserViewHolder) {
-            ((UserViewHolder) holder).bind((String) item);
+            ((UserViewHolder) holder).bind((User) item);
         } else if (holder instanceof EventViewHolder) {
             ((EventViewHolder) holder).bind((Event) item);
         } else if (holder instanceof FacilityViewHolder) {
@@ -74,15 +75,28 @@ public class AdminRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.
     }
 
     static class UserViewHolder extends RecyclerView.ViewHolder {
-        private final TextView textView;
+        TextView name;
+        TextView email;
+        TextView phone;
+
 
         public UserViewHolder(@NonNull View itemView) {
             super(itemView);
-            textView = itemView.findViewById(R.id.item_text);
+            name = itemView.findViewById(R.id.name);
+            email = itemView.findViewById(R.id.email);
+            phone = itemView.findViewById(R.id.phone);
         }
 
-        public void bind(String item) {
-            textView.setText(item);
+        public void bind(User item) {
+            name.setText(item.getName());
+            email.setText(item.getEmail());
+            if (item.getPhoneNumber() != null || !item.getPhoneNumber().isEmpty()) {
+                phone.setVisibility(View.VISIBLE);
+                phone.setText(item.getPhoneNumber());
+            }
+            else {
+                phone.setVisibility(View.INVISIBLE);
+            }
         }
     }
 

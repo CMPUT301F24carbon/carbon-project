@@ -23,6 +23,15 @@ public class User implements Serializable {
         this.profilePictureUrl = null;
     }
 
+    public User(String userId, String name, String email, String phoneNumber, String role, String profilePictureUrl) {
+        this.userId = userId;
+        this.name = name;
+        this.email = email;
+        this.phoneNumber = phoneNumber;
+        this.role = role;
+        this.profilePictureUrl = profilePictureUrl;
+    }
+
     // Getters and Setters
     public String getUserId() { return userId; }
     public void setUserId(String userId) { this.userId = userId; }
