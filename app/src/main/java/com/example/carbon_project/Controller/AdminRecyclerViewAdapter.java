@@ -88,6 +88,7 @@ public class AdminRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.
 
     static class EventViewHolder extends RecyclerView.ViewHolder {
         TextView eventNameTextView;
+        TextView eventDescriptionView;
         TextView eventFacilityTextView;
         TextView eventCapacityTextView;
         TextView eventStartDateTextView;
@@ -96,6 +97,7 @@ public class AdminRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.
         public EventViewHolder(@NonNull View itemView) {
             super(itemView);
             eventNameTextView = itemView.findViewById(R.id.textView_event_name);
+            eventDescriptionView = itemView.findViewById(R.id.textView_description);
             eventFacilityTextView = itemView.findViewById(R.id.textView_facility_name);
             eventCapacityTextView = itemView.findViewById(R.id.textView_capacity);
             eventStartDateTextView = itemView.findViewById(R.id.textView_start_date);
@@ -104,6 +106,7 @@ public class AdminRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.
 
         public void bind(Event item) {
             eventNameTextView.setText(item.getName());
+            eventDescriptionView.setText(item.getDescription());
             eventFacilityTextView.setText(item.getFacility().getName());
             eventCapacityTextView.setText(String.valueOf(item.getCapacity()));
             eventStartDateTextView.setText(item.getStartDate());
