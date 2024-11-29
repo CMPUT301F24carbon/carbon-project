@@ -45,6 +45,7 @@ dependencies {
     // Dependencies for testers
     implementation(libs.ext.junit)
     implementation(libs.androidx.espresso.core)
+    implementation(libs.firebase.crashlytics.buildtools)
     testImplementation(libs.junit)
     androidTestImplementation(libs.espresso.core)
     androidTestImplementation(libs.androidx.rules)
