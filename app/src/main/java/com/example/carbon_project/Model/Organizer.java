@@ -11,8 +11,8 @@ public class Organizer extends User implements Serializable {
     private List<String> createdEvents;
     private List<String> facilityIds;
 
-    public Organizer(String userId, String name, String email, String phoneNumber) {
-        super(userId, name, email, phoneNumber, "organizer");
+    public Organizer(String userId, String name, String email, String phoneNumber, boolean allowNotifications) {
+        super(userId, name, email, phoneNumber, "organizer", allowNotifications);
         this.createdEvents = new ArrayList<>();
         this.facilityIds = new ArrayList<>();
     }
@@ -47,4 +47,5 @@ public class Organizer extends User implements Serializable {
                     System.out.println("Error saving organizer: " + e.getMessage());
                 });
     }
+
 }

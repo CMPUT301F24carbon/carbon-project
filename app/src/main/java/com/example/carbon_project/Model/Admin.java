@@ -6,8 +6,8 @@ import java.io.Serializable;
 import java.util.Map;
 
 public class Admin extends User implements Serializable {
-    public Admin(String userId, String name, String email, String phoneNumber) {
-        super(userId, name, email, phoneNumber, "admin");
+    public Admin(String userId, String name, String email, String phoneNumber, boolean allowNotifications) {
+        super(userId, name, email, phoneNumber, "admin", allowNotifications);
     }
 
     @Override

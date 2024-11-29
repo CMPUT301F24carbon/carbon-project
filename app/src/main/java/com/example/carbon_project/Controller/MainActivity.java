@@ -213,7 +213,7 @@ public class MainActivity extends AppCompatActivity {
 
         String deviceId = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
 
-        User gagan = new User(deviceId, "Yingwen Liu", "pleasepass@example.com", "123-456-789", "Organizer");
+        User gagan = new User(deviceId, "Yingwen Liu", "pleasepass@example.com", "123-456-789", "Organizer", true);
 
         findViewById(R.id.entrant_button).setOnClickListener(view -> createUser(gagan, Entrant.class));
         findViewById(R.id.organizer_button).setOnClickListener(view -> createUser(gagan, Organizer.class));
@@ -224,11 +224,11 @@ public class MainActivity extends AppCompatActivity {
         User userInstance;
 
         if (userType == Entrant.class) {
-            userInstance = new Entrant(user.getUserId(), user.getName(), user.getEmail(), user.getPhoneNumber());
+            userInstance = new Entrant(user.getUserId(), user.getName(), user.getEmail(), user.getPhoneNumber(), user.getNotifications());
         } else if (userType == Organizer.class) {
-            userInstance = new Organizer(user.getUserId(), user.getName(), user.getEmail(), user.getPhoneNumber());
+            userInstance = new Organizer(user.getUserId(), user.getName(), user.getEmail(), user.getPhoneNumber(), user.getNotifications());
         } else if (userType == Admin.class) {
-            userInstance = new Admin(user.getUserId(), user.getName(), user.getEmail(), user.getPhoneNumber());
+            userInstance = new Admin(user.getUserId(), user.getName(), user.getEmail(), user.getPhoneNumber(), user.getNotifications());
         } else {
             throw new IllegalArgumentException("Unknown user type");
         }
