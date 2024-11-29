@@ -31,7 +31,7 @@ public class EntrantDashboardActivity extends AppCompatActivity {
 
         viewEventsButton.setOnClickListener(v -> {
             Intent intent = new Intent(EntrantDashboardActivity.this, EntrantEventsListActivity.class);
-            intent.putExtra("entrant", entrant);
+            intent.putExtra("userObject", entrant);
             startActivity(intent);
         });
 
