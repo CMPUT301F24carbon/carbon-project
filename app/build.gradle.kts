@@ -39,7 +39,8 @@ dependencies {
 
     implementation("com.squareup.picasso:picasso:2.71828")
 
-
+    // Navigation bar dependencies
+    implementation("com.google.android.material:material:1.9.0")
 
     implementation(libs.appcompat)
     implementation(libs.material)

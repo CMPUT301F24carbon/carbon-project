@@ -1,11 +1,13 @@
 package com.example.carbon_project.Controller;
 
 import android.app.AlertDialog;
+import android.content.Intent;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.os.Bundle;
 import android.provider.Settings;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
@@ -20,6 +22,7 @@ import com.example.carbon_project.Model.Organizer;
 import com.example.carbon_project.R;
 import com.example.carbon_project.View.EditFacilityFragment;
 import com.example.carbon_project.View.FacilityAdapter;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
@@ -78,6 +81,32 @@ public class OrganizerFacilitiesActivity extends AppCompatActivity implements Ed
                 .addOnFailureListener(e -> {
                     Toast.makeText(OrganizerFacilitiesActivity.this, "Error fetching facilities", Toast.LENGTH_SHORT).show();
                 });
+
+        // Back Button
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+        // Bottom navigation view
+        BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_navigation);
+        bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                if (item.getItemId() == R.id.navigation_home) {
+                    startActivity(new Intent(getApplicationContext(), MainActivity.class));
+                    overridePendingTransition(0, 0);
+                    return true;
+                }
+                return false;
+            }
+        });
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        if (item.getItemId() == android.R.id.home) {
+            onBackPressed(); // Go back to the previous screen
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     private void setupSwipeToDelete() {
