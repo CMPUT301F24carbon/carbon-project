@@ -180,6 +180,8 @@ public class Event {
         this.canceledList = canceledList;
     }
 
+    public Facility getFacility() { return this.facility; }
+
     // Getters and Setters
     public List<Entrant> getCanceledList() { return canceledList; }
 

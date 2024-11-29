@@ -245,7 +245,7 @@ public class MainActivity extends AppCompatActivity {
             intent = new Intent(MainActivity.this, OrganizerDashboardActivity.class);
             intent.putExtra("userObject", (Organizer) userInstance);
         } else if (userInstance instanceof Admin) {
-            intent = new Intent(MainActivity.this, AdminDashboardActivity.class);
+            intent = new Intent(MainActivity.this, AdminListActivity.class);
             intent.putExtra("userObject", (Admin) userInstance);
         } else {
             throw new IllegalArgumentException("Unknown user type");

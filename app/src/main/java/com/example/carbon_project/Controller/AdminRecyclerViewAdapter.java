@@ -1,4 +1,4 @@
-package com.example.carbon_project;
+package com.example.carbon_project.Controller;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -6,6 +6,11 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.example.carbon_project.Model.Event;
+import com.example.carbon_project.Model.Facility;
+import com.example.carbon_project.R;
+
 import java.util.List;
 
 public class AdminRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
@@ -42,10 +47,10 @@ public class AdminRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.
             View view = inflater.inflate(R.layout.user_item, parent, false);
             return new UserViewHolder(view);
         } else if (viewType == VIEW_TYPE_EVENT) {
-            View view = inflater.inflate(R.layout.event_list_item, parent, false);
+            View view = inflater.inflate(R.layout.event_item, parent, false);
             return new EventViewHolder(view);
         } else if (viewType == VIEW_TYPE_FACILITY) {
-            View view = inflater.inflate(R.layout.facility_item, parent, false);
+            View view = inflater.inflate(R.layout.item_facility, parent, false);
             return new FacilityViewHolder(view);
         }
         throw new IllegalArgumentException("Unsupported view type");
@@ -83,7 +88,7 @@ public class AdminRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.
 
     static class EventViewHolder extends RecyclerView.ViewHolder {
         TextView eventNameTextView;
-        TextView eventLocationTextView;
+        TextView eventFacilityTextView;
         TextView eventCapacityTextView;
         TextView eventStartDateTextView;
         TextView eventEndDateTextView;
@@ -91,7 +96,7 @@ public class AdminRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.
         public EventViewHolder(@NonNull View itemView) {
             super(itemView);
             eventNameTextView = itemView.findViewById(R.id.textView_event_name);
-            eventLocationTextView = itemView.findViewById(R.id.textView_facility_name);
+            eventFacilityTextView = itemView.findViewById(R.id.textView_facility_name);
             eventCapacityTextView = itemView.findViewById(R.id.textView_capacity);
             eventStartDateTextView = itemView.findViewById(R.id.textView_start_date);
             eventEndDateTextView = itemView.findViewById(R.id.textView_end_date);
@@ -99,8 +104,8 @@ public class AdminRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.
 
         public void bind(Event item) {
             eventNameTextView.setText(item.getName());
-            eventLocationTextView.setText(item.getLocation());
-            eventCapacityTextView.setText(item.getCapacity());
+            eventFacilityTextView.setText(item.getFacility().getName());
+            eventCapacityTextView.setText(String.valueOf(item.getCapacity()));
             eventStartDateTextView.setText(item.getStartDate());
             eventEndDateTextView.setText(item.getEndDate());
         }
@@ -110,21 +115,18 @@ public class AdminRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.
         TextView facilityName;
         TextView facilityLocation;
         TextView facilityCapacity;
-        TextView facilityDescription;
 
         public FacilityViewHolder(@NonNull View itemView) {
             super(itemView);
-            facilityName = itemView.findViewById(R.id.facilityName);
-            facilityLocation = itemView.findViewById(R.id.facilityLocation);
-            facilityCapacity = itemView.findViewById(R.id.facilityCapacity);
-            facilityDescription = itemView.findViewById(R.id.facilityDescription);
+            facilityName = itemView.findViewById(R.id.tvFacilityName);
+            facilityLocation = itemView.findViewById(R.id.tvFacilityLocation);
+            facilityCapacity = itemView.findViewById(R.id.tvFacilityCapacity);
         }
 
         public void bind(Facility item) {
             facilityName.setText(item.getName());
             facilityLocation.setText(item.getLocation());
-            facilityCapacity.setText(item.getCapacity());
-            facilityDescription.setText(item.getDescription());
+            facilityCapacity.setText(String.valueOf(item.getCapacity()));
         }
     }
 }

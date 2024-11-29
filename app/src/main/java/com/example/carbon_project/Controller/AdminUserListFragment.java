@@ -1,4 +1,4 @@
-package com.example.carbon_project;
+package com.example.carbon_project.Controller;
 
 import android.os.Bundle;
 import androidx.annotation.NonNull;
@@ -10,23 +10,25 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.example.carbon_project.R;
+
 import java.util.ArrayList;
 import java.util.List;
 
-public class AdminFacilityListFragment extends Fragment {
+public class AdminUserListFragment extends Fragment{
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_admin_facility_list, container, false);
+        View view = inflater.inflate(R.layout.fragment_admin_user_list, container, false);
 
-        RecyclerView recyclerView = view.findViewById(R.id.recycler_view_tab3);
+        RecyclerView recyclerView = view.findViewById(R.id.recycler_view_tab1);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 
         List<Object> data = new ArrayList<>();
-        data.add(new Facility("Facility 1", "Anderossa", 150, "Test Facility"));
-        data.add(new Facility("Facility 2", "Anderossa", 150, "Test Facility"));
-        data.add(new Facility("Facility 3", "Anderossa", 150, "Test Facility"));
+        data.add("Tab1 Item 1");
+        data.add("Tab1 Item 2");
+        data.add("Tab1 Item 3");
 
         AdminRecyclerViewAdapter adapter = new AdminRecyclerViewAdapter(data);
         recyclerView.setAdapter(adapter);
