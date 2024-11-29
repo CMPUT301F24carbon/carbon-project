@@ -1,10 +1,8 @@
 package com.example.carbon_project.Controller;
 
 import android.app.DatePickerDialog;
-import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.provider.Settings;
-import android.util.Base64;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -20,11 +18,7 @@ import com.example.carbon_project.Model.Facility;
 import com.example.carbon_project.R;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.zxing.BarcodeFormat;
-import com.google.zxing.WriterException;
-import com.journeyapps.barcodescanner.BarcodeEncoder;
 
-import java.io.ByteArrayOutputStream;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -170,12 +164,12 @@ public class CreateEventActivity extends AppCompatActivity {
         Facility selectedFacility = facilityList.get(selectedFacilityPosition);
 
         String eventId = UUID.randomUUID().toString();
-        Bitmap qrBitmap = generateQRCodeForEvent(eventId);
-        String qrBitmapUri = bitmapToUri(qrBitmap);
+        //Bitmap qrBitmap = generateQRCodeForEvent(eventId);
+        //String qrBitmapUri = bitmapToUri(qrBitmap);
 
         // Event poster URL (assuming the organizer uploads an image)
         String eventPosterUrl = "default_poster_url";
-        Event event = new Event(eventId, eventName, eventDescription, organizerId, eventCapacity, geolocationRequired, tvStartDate.getText().toString(), tvEndDate.getText().toString(), eventPosterUrl, qrBitmapUri, selectedFacility);
+        Event event = new Event(eventId, eventName, eventDescription, organizerId, eventCapacity, geolocationRequired, tvStartDate.getText().toString(), tvEndDate.getText().toString(), eventPosterUrl, "qrBitmapUri", selectedFacility);
 
         // Save the event to Firestore
         db.collection("events").document(eventId).set(event.toMap())
@@ -189,7 +183,7 @@ public class CreateEventActivity extends AppCompatActivity {
     }
 
     // Generate a QR code Bitmap
-    private Bitmap generateQRCodeForEvent(String eventId) {
+   /* private Bitmap generateQRCodeForEvent(String eventId) {
         // Generate and return a QR code Bitmap
         try {
             BarcodeEncoder barcodeEncoder = new BarcodeEncoder();
@@ -198,13 +192,13 @@ public class CreateEventActivity extends AppCompatActivity {
             System.err.println("Error generating QR code: " + e.getMessage());
             return null;
         }
-    }
+    }*/
 
     // Turn a Bitmap into a base64-encoded Uri to be stored in Firestore
-    public static String bitmapToUri(Bitmap bitmap) {
+    /*public static String bitmapToUri(Bitmap bitmap) {
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
         bitmap.compress(Bitmap.CompressFormat.PNG, 100, byteArrayOutputStream); // Compress to PNG format
         byte[] byteArray = byteArrayOutputStream.toByteArray();
         return Base64.encodeToString(byteArray, Base64.DEFAULT);
-    }
+    }*/
 }
