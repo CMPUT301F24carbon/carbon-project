@@ -36,7 +36,7 @@ public class AdminEventListFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_admin_event_list, container, false);
 
-        // Initialize Firestore and FirebaseAuth
+        // Initialize Firestore
         db = FirebaseFirestore.getInstance();
         eventsRef = db.collection("events");
 
