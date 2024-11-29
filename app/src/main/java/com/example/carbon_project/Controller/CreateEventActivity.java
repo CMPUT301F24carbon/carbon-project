@@ -1,6 +1,7 @@
 package com.example.carbon_project.Controller;
 
 import android.app.DatePickerDialog;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.provider.Settings;
@@ -170,41 +171,47 @@ public class CreateEventActivity extends AppCompatActivity {
         Facility selectedFacility = facilityList.get(selectedFacilityPosition);
 
         String eventId = UUID.randomUUID().toString();
-        Bitmap qrBitmap = generateQRCodeForEvent(eventId);
-        String qrBitmapUri = bitmapToUri(qrBitmap);
+        byte[] qrCode = generateQRCodeForEvent(eventId);
+        String qrUri = byteArrayToUri(qrCode);
 
         // Event poster URL (assuming the organizer uploads an image)
         String eventPosterUrl = "default_poster_url";
-        Event event = new Event(eventId, eventName, eventDescription, organizerId, eventCapacity, geolocationRequired, tvStartDate.getText().toString(), tvEndDate.getText().toString(), eventPosterUrl, qrBitmapUri, selectedFacility);
+        Event event = new Event(eventId, eventName, eventDescription, organizerId, eventCapacity, geolocationRequired, tvStartDate.getText().toString(), tvEndDate.getText().toString(), eventPosterUrl, qrUri, selectedFacility);
 
         // Save the event to Firestore
         db.collection("events").document(eventId).set(event.toMap())
                 .addOnSuccessListener(aVoid -> {
                     Toast.makeText(CreateEventActivity.this, "Event created successfully", Toast.LENGTH_SHORT).show();
-                    finish();
+                    // Navigate to the QR code activity
+                    Intent intent = new Intent(CreateEventActivity.this, QRCodeActivity.class);
+                    intent.putExtra("qrCodeByteArray", qrCode); // Pass the byte array
+                    startActivity(intent);
                 })
                 .addOnFailureListener(e -> {
                     Toast.makeText(CreateEventActivity.this, "Error creating event: " + e.getMessage(), Toast.LENGTH_SHORT).show();
                 });
     }
 
-    // Generate a QR code Bitmap
-    private Bitmap generateQRCodeForEvent(String eventId) {
-        // Generate and return a QR code Bitmap
+    // Generate a QR code in byte array format
+    private byte[] generateQRCodeForEvent(String eventId) {
         try {
+            // Generate the QR code Bitmap
             BarcodeEncoder barcodeEncoder = new BarcodeEncoder();
-            return barcodeEncoder.encodeBitmap(eventId, BarcodeFormat.QR_CODE, 100, 100);
+            Bitmap bitmap = barcodeEncoder.encodeBitmap(eventId, BarcodeFormat.QR_CODE, 200, 200);
+
+            // Convert the Bitmap into a byte array
+            ByteArrayOutputStream stream = new ByteArrayOutputStream();
+            bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream);
+            return stream.toByteArray();
         } catch (WriterException e) {
             System.err.println("Error generating QR code: " + e.getMessage());
             return null;
         }
     }
 
-    // Turn a Bitmap into a base64-encoded Uri to be stored in Firestore
-    public static String bitmapToUri(Bitmap bitmap) {
-        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-        bitmap.compress(Bitmap.CompressFormat.PNG, 100, byteArrayOutputStream); // Compress to PNG format
-        byte[] byteArray = byteArrayOutputStream.toByteArray();
+    // Turn a Byte array into a base64-encoded Uri to be stored in Firestore
+    public String byteArrayToUri(byte[] byteArray) {
+        // Convert byte array to Base64 string
         return Base64.encodeToString(byteArray, Base64.DEFAULT);
     }
 }
