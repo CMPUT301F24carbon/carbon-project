@@ -73,13 +73,9 @@ import androidx.core.content.ContextCompat;
 
 import com.example.carbon_project.Model.Admin;
 import com.example.carbon_project.Model.Entrant;
-import com.example.carbon_project.Model.Notification;
 import com.example.carbon_project.Model.Organizer;
 import com.example.carbon_project.Model.User;
 import com.example.carbon_project.R;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /*
 
