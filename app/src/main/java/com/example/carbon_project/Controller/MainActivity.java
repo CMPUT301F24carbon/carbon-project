@@ -213,7 +213,7 @@ public class MainActivity extends AppCompatActivity {
 
         String deviceId = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
 
-        User gagan = new User(deviceId, "Yingwen Liu", "pleasepass@example.com", "123-456-789", "Organizer");
+        User gagan = new User(deviceId, "Akash Brar", "Akash.Brar@example.com", "123-456-789", "Entrant");
 
         findViewById(R.id.entrant_button).setOnClickListener(view -> createUser(gagan, Entrant.class));
         findViewById(R.id.organizer_button).setOnClickListener(view -> createUser(gagan, Organizer.class));
