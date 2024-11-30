@@ -52,7 +52,7 @@ public class EntrantEventsListActivity extends AppCompatActivity {
         eventsListView.setAdapter(adapter);
 
         // Fetch events from the database
-        fetchEventsFromDatabase();
+        fetchUserSpecificEvents(entrant.getUserId());
 
         eventsListView.setOnItemClickListener((AdapterView<?> parent, View view, int position, long id) -> {
             String selectedEvent = eventsList.get(position);
@@ -91,26 +91,60 @@ public class EntrantEventsListActivity extends AppCompatActivity {
         }
         return super.onOptionsItemSelected(item);
     }
+    private void fetchUserSpecificEvents(String userId) {
+        eventsList.clear();
+        eventIds.clear();
 
-    private void fetchEventsFromDatabase() {
+        // Fetch events where the user is in the enrolled list
         db.collection("events")
+                .whereArrayContains("enrolled", userId)
                 .get()
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
                         for (QueryDocumentSnapshot document : task.getResult()) {
-                            String eventId = document.getId();
-                            String eventName = document.getString("name");
-                            String eventDescription = document.getString("description");
-                            String eventText = eventName + " - " + eventDescription;
-
-
-                            eventsList.add(eventText);
-                            eventIds.add(eventId);
+                            addEventToList(document);
                         }
-                        adapter.notifyDataSetChanged();
+
+                        // Fetch events where the user is in the waiting list
+                        db.collection("events")
+                                .whereArrayContains("waitingList", userId)
+                                .get()
+                                .addOnCompleteListener(waitingTask -> {
+                                    if (waitingTask.isSuccessful()) {
+                                        for (QueryDocumentSnapshot document : waitingTask.getResult()) {
+                                            addEventToList(document);
+                                        }
+
+                                        // Update the adapter
+                                        adapter.notifyDataSetChanged();
+                                    } else {
+                                        Toast.makeText(EntrantEventsListActivity.this, "Failed to load waiting list events.", Toast.LENGTH_SHORT).show();
+                                    }
+                                });
                     } else {
-                        Toast.makeText(EntrantEventsListActivity.this, "Failed to load events.", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(EntrantEventsListActivity.this, "Failed to load enrolled events.", Toast.LENGTH_SHORT).show();
                     }
                 });
+    }
+
+    // Helper method to process each document and add to the list
+    private void addEventToList(QueryDocumentSnapshot document) {
+        String eventId = document.getId();
+        String eventName = document.getString("name");
+        String eventStartDate = document.getString("startDate");
+        String eventEndDate = document.getString("endDate");
+        String eventDescription = document.getString("description");
+        Long eventCapacity = document.getLong("capacity");
+
+        String eventText = eventName + "\n"
+                + eventDescription + "\n"
+                + eventStartDate + " to " + eventEndDate + "\n"
+                + "Capacity: " + eventCapacity;
+
+        // Avoid adding duplicate events
+        if (!eventIds.contains(eventId)) {
+            eventsList.add(eventText);
+            eventIds.add(eventId);
+        }
     }
 }
