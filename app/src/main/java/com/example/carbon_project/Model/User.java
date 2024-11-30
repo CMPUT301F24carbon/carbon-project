@@ -1,6 +1,9 @@
 package com.example.carbon_project.Model;
 
+import android.util.Log;
+
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.messaging.FirebaseMessaging;
 
 import java.io.Serializable;
 import java.util.HashMap;
@@ -14,6 +17,9 @@ public class User implements Serializable {
     private String profilePictureUrl;
     private String role;
 
+    //This is a token for notifications
+    private String fcm;
+
     public User(String userId, String name, String email, String phoneNumber, String role) {
         this.userId = userId;
         this.name = name;
@@ -21,6 +27,19 @@ public class User implements Serializable {
         this.phoneNumber = phoneNumber;
         this.role = role;
         this.profilePictureUrl = null;
+
+        //generates a token that tells firebase who to send notifications to
+        FirebaseMessaging.getInstance().getToken()
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        // Retrieve the FCM token
+                        this.fcm = task.getResult();
+                        this.saveToFirestore();
+                        Log.d("Success", this.fcm);
+                    } else {
+                        System.err.println("Failed to retrieve FCM token");
+                    }
+                });
     }
 
     // Getters and Setters
@@ -64,6 +83,9 @@ public class User implements Serializable {
         map.put("phoneNumber", phoneNumber);
         map.put("role", role);
         map.put("profilePictureUrl", profilePictureUrl);
+        map.put("fcm", fcm);
+
+
         return map;
     }
 }

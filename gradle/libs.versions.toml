@@ -17,6 +17,8 @@ firebaseFirestore = "25.1.1"
 firebaseAuth = "23.1.0"
 firebaseStorage = "21.0.1"
 firebaseCrashlyticsBuildtools = "3.0.2"
+firebaseMessaging = "23.1.1"
+firebaseFunctions = "20.1.0"
 
 [libraries]
 androidx-rules = { module = "androidx.test:rules", version.ref = "rules" }
@@ -36,6 +38,8 @@ firebase-firestore = { group = "com.google.firebase", name = "firebase-firestore
 firebase-auth = { group = "com.google.firebase", name = "firebase-auth", version.ref = "firebaseAuth" }
 firebase-storage = { group = "com.google.firebase", name = "firebase-storage", version.ref = "firebaseStorage" }
 firebase-crashlytics-buildtools = { group = "com.google.firebase", name = "firebase-crashlytics-buildtools", version.ref = "firebaseCrashlyticsBuildtools" }
+firebase-messaging = { group = "com.google.firebase", name = "firebase-messaging", version.ref = "firebaseMessaging" }
+firebase-functions = {group = "com.google.firebase", name = "firebase-functions", version.ref =  "firebaseFunctions"}
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
