@@ -10,8 +10,8 @@ import java.util.Map;
 public class Entrant extends User implements Serializable {
     private List<String> joinedEvents;
 
-    public Entrant(String userId, String name, String email, String phoneNumber, boolean allowNotifications) {
-        super(userId, name, email, phoneNumber, "entrant", allowNotifications);
+    public Entrant(String userId, String name, String email, String phoneNumber) {
+        super(userId, name, email, phoneNumber, "entrant");
         this.joinedEvents = new ArrayList<>();
     }
 

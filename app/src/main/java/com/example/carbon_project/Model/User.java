@@ -1,5 +1,7 @@
 package com.example.carbon_project.Model;
 
+import android.util.Log;
+
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.messaging.FirebaseMessaging;
 
@@ -17,16 +19,14 @@ public class User implements Serializable {
 
     //This is a token for notifications
     private String fcm;
-    private boolean allowNotifications;
 
-    public User(String userId, String name, String email, String phoneNumber, String role, boolean allowNotifications) {
+    public User(String userId, String name, String email, String phoneNumber, String role) {
         this.userId = userId;
         this.name = name;
         this.email = email;
         this.phoneNumber = phoneNumber;
         this.role = role;
         this.profilePictureUrl = null;
-        this.allowNotifications = allowNotifications;
 
         //generates a token that tells firebase who to send notifications to
         FirebaseMessaging.getInstance().getToken()
@@ -34,6 +34,8 @@ public class User implements Serializable {
                     if (task.isSuccessful()) {
                         // Retrieve the FCM token
                         this.fcm = task.getResult();
+                        this.saveToFirestore();
+                        Log.d("Success", this.fcm);
                     } else {
                         System.err.println("Failed to retrieve FCM token");
                     }
@@ -53,8 +55,6 @@ public class User implements Serializable {
     public void setProfilePictureUrl(String profilePictureUrl) { this.profilePictureUrl = profilePictureUrl; }
     public String getRole() { return role; }
     public void setRole(String role) { this.role = role; }
-    public boolean getNotifications() {return allowNotifications;}
-    public void setNotifications(boolean notifications) { this.allowNotifications = notifications;}
 
     // Role Check
     public boolean isEntrant() { return role.equals("entrant"); }
@@ -83,10 +83,8 @@ public class User implements Serializable {
         map.put("phoneNumber", phoneNumber);
         map.put("role", role);
         map.put("profilePictureUrl", profilePictureUrl);
-        map.put("notifications", allowNotifications);
-        if(allowNotifications){
-            map.put("fcm", fcm);
-        }
+        map.put("fcm", fcm);
+
 
         return map;
     }
