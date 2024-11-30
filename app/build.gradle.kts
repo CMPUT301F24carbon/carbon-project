@@ -38,6 +38,9 @@ dependencies {
     implementation(platform(libs.firebase.bom))
     implementation(libs.picasso)
 
+    // Navigation bar dependencies
+    implementation("com.google.android.material:material:1.9.0")
+    
     // Dependencies for QR scanning and generating
     implementation(libs.zxing.embedded)
     implementation(libs.zxing.core)

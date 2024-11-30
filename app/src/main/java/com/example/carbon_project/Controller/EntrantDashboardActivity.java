@@ -2,17 +2,20 @@ package com.example.carbon_project.Controller;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.MenuItem;
 import android.widget.Button;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.carbon_project.Model.Entrant;
 import com.example.carbon_project.R;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 public class EntrantDashboardActivity extends AppCompatActivity {
 
-    private Button viewEventsButton, myProfileButton;
+    private Button viewEventsButton, myProfileButton, joinEventButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -27,6 +30,7 @@ public class EntrantDashboardActivity extends AppCompatActivity {
         }
 
         viewEventsButton = findViewById(R.id.view_events_button);
+        joinEventButton = findViewById(R.id.join_event_button);
         myProfileButton = findViewById(R.id.my_profile_button);
 
         viewEventsButton.setOnClickListener(v -> {
@@ -40,5 +44,37 @@ public class EntrantDashboardActivity extends AppCompatActivity {
             intent.putExtra("userObject", entrant);
             startActivity(intent);
         });
+      
+        joinEventButton.setOnClickListener(v -> {
+            Intent intent = new Intent(EntrantDashboardActivity.this, EntrantJoinEventActivity.class);
+            intent.putExtra("userObject", entrant);
+            startActivity(intent);
+        });
+
+        // Back Button
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+        // Bottom navigation view
+        BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_navigation);
+        bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                if (item.getItemId() == R.id.navigation_home) {
+                    startActivity(new Intent(getApplicationContext(), MainActivity.class));
+                    overridePendingTransition(0, 0);
+                    return true;
+                }
+                return false;
+            }
+        });
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        if (item.getItemId() == android.R.id.home) {
+            onBackPressed(); // Go back to the previous screen
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 }
