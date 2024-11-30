@@ -11,6 +11,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.example.carbon_project.Model.Facility;
 import com.example.carbon_project.R;
@@ -46,7 +47,10 @@ public class AdminFacilityListFragment extends Fragment {
 //        data.add(new Facility("facilityID2", "Facility 2", "Anderossa", 500, "Falser_Org"));
 //        data.add(new Facility("facilityID3", "Facility 3", "Anderossa", 500, "Falsest_Org"));
 
-        AdminRecyclerViewAdapter adapter = new AdminRecyclerViewAdapter(data);
+        AdminRecyclerViewAdapter adapter = new AdminRecyclerViewAdapter(data, position -> {
+            Facility clickedFacility = (Facility) data.get(position);
+            Toast.makeText(getContext(), "Clicked " + clickedFacility.getName(), Toast.LENGTH_SHORT).show();
+        });
         recyclerView.setAdapter(adapter);
 
 

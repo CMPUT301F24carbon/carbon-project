@@ -11,6 +11,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.example.carbon_project.Model.Event;
 import com.example.carbon_project.Model.Facility;
@@ -50,7 +51,10 @@ public class AdminEventListFragment extends Fragment {
 //        data.add(new Event("event2id", "Event 2", "Desc2", "False_Org", 21, true, "April1", "April2", "URL", "QR", new Facility("FID1", "Test Facility 1", "Unknown", 500, "False_Org")));
 //        data.add(new Event("event3id", "Event 3", "Desc3", "False_Org", 21, true, "April1", "April2", "URL", "QR", new Facility("FID1", "Test Facility 1", "Unknown", 500, "False_Org")));
 
-        AdminRecyclerViewAdapter adapter = new AdminRecyclerViewAdapter(data);
+        AdminRecyclerViewAdapter adapter = new AdminRecyclerViewAdapter(data, position -> {
+            Event clickedEvent = (Event) data.get(position);
+            Toast.makeText(getContext(), "Clicked " + clickedEvent.getName(), Toast.LENGTH_SHORT).show();
+        });
         recyclerView.setAdapter(adapter);
 
         eventsRef.addSnapshotListener(new EventListener<QuerySnapshot>() {

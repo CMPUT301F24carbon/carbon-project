@@ -3,6 +3,7 @@ package com.example.carbon_project.Controller;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -17,14 +18,20 @@ import java.util.List;
 public class AdminRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     private final List<Object> data;
+    private final OnItemClickListener listener;
 
     // View types
     private static final int VIEW_TYPE_USER = 1;
     private static final int VIEW_TYPE_EVENT = 2;
     private static final int VIEW_TYPE_FACILITY = 3;
 
-    public AdminRecyclerViewAdapter(List<Object> data) {
+    public interface OnItemClickListener {
+        void onItemClick(int position);
+    }
+
+    public AdminRecyclerViewAdapter(List<Object> data, OnItemClickListener listener) {
         this.data = data;
+        this.listener = listener;
     }
 
     @Override
@@ -46,13 +53,13 @@ public class AdminRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.
         LayoutInflater inflater = LayoutInflater.from(parent.getContext());
         if (viewType == VIEW_TYPE_USER) {
             View view = inflater.inflate(R.layout.user_item, parent, false);
-            return new UserViewHolder(view);
+            return new UserViewHolder(view, listener);
         } else if (viewType == VIEW_TYPE_EVENT) {
             View view = inflater.inflate(R.layout.event_item, parent, false);
-            return new EventViewHolder(view);
+            return new EventViewHolder(view, listener);
         } else if (viewType == VIEW_TYPE_FACILITY) {
             View view = inflater.inflate(R.layout.item_facility, parent, false);
-            return new FacilityViewHolder(view);
+            return new FacilityViewHolder(view, listener);
         }
         throw new IllegalArgumentException("Unsupported view type");
     }
@@ -80,11 +87,17 @@ public class AdminRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.
         TextView phone;
 
 
-        public UserViewHolder(@NonNull View itemView) {
+        public UserViewHolder(@NonNull View itemView, OnItemClickListener listener) {
             super(itemView);
             name = itemView.findViewById(R.id.name);
             email = itemView.findViewById(R.id.email);
             phone = itemView.findViewById(R.id.phone);
+            itemView.setOnClickListener(view -> {
+                int position = getAdapterPosition();
+                if (position != RecyclerView.NO_POSITION) {
+                    listener.onItemClick(position);
+                }
+            });
         }
 
         public void bind(User item) {
@@ -108,7 +121,7 @@ public class AdminRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.
         TextView eventStartDateTextView;
         TextView eventEndDateTextView;
 
-        public EventViewHolder(@NonNull View itemView) {
+        public EventViewHolder(@NonNull View itemView, OnItemClickListener listener) {
             super(itemView);
             eventNameTextView = itemView.findViewById(R.id.textView_event_name);
             eventDescriptionView = itemView.findViewById(R.id.textView_description);
@@ -116,6 +129,12 @@ public class AdminRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.
             eventCapacityTextView = itemView.findViewById(R.id.textView_capacity);
             eventStartDateTextView = itemView.findViewById(R.id.textView_start_date);
             eventEndDateTextView = itemView.findViewById(R.id.textView_end_date);
+            itemView.setOnClickListener(view -> {
+                int position = getAdapterPosition();
+                if (position != RecyclerView.NO_POSITION) {
+                    listener.onItemClick(position);
+                }
+            });
         }
 
         public void bind(Event item) {
@@ -133,11 +152,17 @@ public class AdminRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.
         TextView facilityLocation;
         TextView facilityCapacity;
 
-        public FacilityViewHolder(@NonNull View itemView) {
+        public FacilityViewHolder(@NonNull View itemView, OnItemClickListener listener) {
             super(itemView);
             facilityName = itemView.findViewById(R.id.tvFacilityName);
             facilityLocation = itemView.findViewById(R.id.tvFacilityLocation);
             facilityCapacity = itemView.findViewById(R.id.tvFacilityCapacity);
+            itemView.setOnClickListener(view -> {
+                int position = getAdapterPosition();
+                if (position != RecyclerView.NO_POSITION) {
+                    listener.onItemClick(position);
+                }
+            });
         }
 
         public void bind(Facility item) {

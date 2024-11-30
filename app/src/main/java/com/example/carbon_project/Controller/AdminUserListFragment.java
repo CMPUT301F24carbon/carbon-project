@@ -11,6 +11,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.example.carbon_project.Model.Facility;
 import com.example.carbon_project.Model.User;
@@ -47,7 +48,10 @@ public class AdminUserListFragment extends Fragment{
 //        data.add("Tab1 Item 2");
 //        data.add("Tab1 Item 3");
 
-        AdminRecyclerViewAdapter adapter = new AdminRecyclerViewAdapter(data);
+        AdminRecyclerViewAdapter adapter = new AdminRecyclerViewAdapter(data, position -> {
+            User clickedUser = (User) data.get(position);
+            Toast.makeText(getContext(), "Clicked " + clickedUser.getName(), Toast.LENGTH_SHORT).show();
+        });
         recyclerView.setAdapter(adapter);
 
         usersRef.addSnapshotListener(new EventListener<QuerySnapshot>() {
