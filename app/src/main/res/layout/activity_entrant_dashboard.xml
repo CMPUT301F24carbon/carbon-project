@@ -28,6 +28,13 @@
             android:layout_height="wrap_content"
             android:text="View Events"
             android:layout_marginBottom="16dp" />
+      
+        <Button
+            android:id="@+id/join_event_button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Join an Event"
+            android:layout_marginBottom="16dp" />
 
         <Button
             android:id="@+id/my_profile_button"

@@ -34,7 +34,7 @@ public class EntrantEventsListActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_entrant_events);
 
-        entrant = (Entrant) getIntent().getSerializableExtra("entrantObject");
+        entrant = (Entrant) getIntent().getSerializableExtra("userObject");
 
         if (entrant == null) {
             Toast.makeText(this, "Entrant data is missing!", Toast.LENGTH_SHORT).show();

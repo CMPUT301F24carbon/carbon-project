@@ -35,25 +35,31 @@ android {
 dependencies {
 
     // Firebase dependencies
-    implementation(platform("com.google.firebase:firebase-bom:33.6.0"))
-
-    implementation("com.squareup.picasso:picasso:2.71828")
+    implementation(platform(libs.firebase.bom))
+    implementation(libs.picasso)
 
     // Navigation bar dependencies
     implementation("com.google.android.material:material:1.9.0")
+    
+    // Dependencies for QR scanning and generating
+    implementation(libs.zxing.embedded)
+    implementation(libs.zxing.core)
+
+    // Dependencies for testers
+    implementation(libs.ext.junit)
+    implementation(libs.androidx.espresso.core)
+    implementation(libs.firebase.crashlytics.buildtools)
+    testImplementation(libs.junit)
+    androidTestImplementation(libs.espresso.core)
+    androidTestImplementation(libs.androidx.rules)
+    androidTestImplementation(libs.androidx.runner)
 
     implementation(libs.appcompat)
     implementation(libs.material)
-//    implementation(libs.activity)
     implementation(libs.constraintlayout)
     implementation(libs.firebase.firestore)
     implementation(libs.firebase.auth)
     implementation(libs.firebase.storage)
-    /*    implementation(libs.car.ui.lib)
-        implementation(libs.firebase.firestore)
-        implementation(libs.firebase.auth)
-        implementation(libs.firebase.storage)
-        implementation(libs.recyclerview)*/
     testImplementation(libs.junit)
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)

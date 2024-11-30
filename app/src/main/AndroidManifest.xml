@@ -33,6 +33,8 @@
         <activity android:name="com.example.carbon_project.Controller.EntrantDashboardActivity" />
         <activity android:name="com.example.carbon_project.Controller.EntrantEventsListActivity" />
         <activity android:name="com.example.carbon_project.Controller.ProfileActivity" />
+        <activity android:name="com.example.carbon_project.Controller.SaveQRCodeActivity" />
+        <activity android:name="com.example.carbon_project.Controller.EntrantJoinEventActivity" />
 
     </application>
 
