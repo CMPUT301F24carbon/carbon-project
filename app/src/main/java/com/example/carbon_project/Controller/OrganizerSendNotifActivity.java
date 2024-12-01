@@ -23,7 +23,8 @@ import com.example.carbon_project.R;
 *
 * startActivity(intent);
 *
-*
+*Open this with an eventId to open a menu that send notifications to users of that event
+*You can send notifications to selected, rejected, and waiting users.
 * */
 public class OrganizerSendNotifActivity extends AppCompatActivity {
     private EditText title;
