@@ -244,7 +244,7 @@ public class MainActivity extends AppCompatActivity {
 
         String deviceId = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
 
-        User abdul = new User(deviceId, "Abdulrehman Zia", "pleasepass@example.com", "123-456-789", "Organizer");
+        User abdul = new User(deviceId, "YL", "pleasepass@example.com", "123-456-789", "Organizer");
         findViewById(R.id.entrant_button).setOnClickListener(view -> createUser(abdul, Entrant.class));
         findViewById(R.id.organizer_button).setOnClickListener(view -> createUser(abdul, Organizer.class));
         findViewById(R.id.admin_button).setOnClickListener(view -> createUser(abdul, Admin.class));
@@ -275,7 +275,7 @@ public class MainActivity extends AppCompatActivity {
             intent = new Intent(MainActivity.this, OrganizerDashboardActivity.class);
             intent.putExtra("userObject", (Organizer) userInstance);
         } else if (userInstance instanceof Admin) {
-            intent = new Intent(MainActivity.this, AdminDashboardActivity.class);
+            intent = new Intent(MainActivity.this, AdminListActivity.class);
             intent.putExtra("userObject", (Admin) userInstance);
         } else {
             throw new IllegalArgumentException("Unknown user type");

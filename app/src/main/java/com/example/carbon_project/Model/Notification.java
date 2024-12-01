@@ -4,7 +4,6 @@ import android.util.Log;
 
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
-import com.google.firebase.functions.FirebaseFunctions;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -107,6 +106,41 @@ public class Notification {
                 });
     }
 
+    //sends a notification to all rejected users in an event
+    public static void sendToRejected(String eventId, String title, String body) {
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        db.collection("events")
+                .document(eventId)
+                .get()
+                .addOnSuccessListener(documentSnapshot -> {
+                    if (documentSnapshot.exists()) {
+                        // Get list of user IDs in the event
+                        List<String> userIds = (List<String>) documentSnapshot.get("rejectedList");
+
+                        if (userIds != null) {
+                            // Fetch the FCM tokens for these users
+                            db.collection("users")
+                                    .whereIn("userId", userIds)
+                                    .get()
+                                    .addOnSuccessListener(querySnapshot -> {
+                                        List<String> fcmTokens = new ArrayList<>();
+                                        for (QueryDocumentSnapshot userDoc : querySnapshot) {
+                                            String token = userDoc.getString("fcm");
+                                            if (token != null) {
+                                                fcmTokens.add(token);
+                                            }
+                                        }
+
+                                        // Send notifications using FCM
+                                        if (!fcmTokens.isEmpty()) {
+                                            sendFcmNotifications(fcmTokens, title, body);
+                                        }
+                                    });
+                        }
+                    }
+                });
+    }
+
     private static void sendFcmNotifications(List<String> fcmTokens, String title, String body) {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
 
@@ -114,14 +148,10 @@ public class Notification {
         map.put("title", title);
         map.put("body", body);
         map.put("fcmTokens", fcmTokens);
-        db.collection("notifications")
-                .add(map)
-                .addOnSuccessListener(aVoid -> {
-                    System.out.println("Notification sent successfully");
-                })
-                .addOnFailureListener(e -> {
-                    System.out.println("Error sending notification: " + e.getMessage());
-                });
+        db.document("notifications/notification")
+                .update(map)
+                .addOnSuccessListener(aVoid -> Log.d("Firestore", "Document successfully updated!"))
+                .addOnFailureListener(e -> Log.w("Firestore", "Error updating document", e));
 
     }
 

@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="16dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:gravity="center"
+        android:paddingBottom="32dp">
+
+        <!-- Profile Image -->
+        <ImageView
+            android:id="@+id/profileImage"
+            android:layout_width="120dp"
+            android:layout_height="120dp"
+            android:layout_marginBottom="16dp"
+            android:src="@drawable/ic_person"
+            android:scaleType="centerCrop"
+            android:contentDescription="@string/profile_image_placeholder" /> <!-- Content Description for Accessibility -->
+
+        <!-- Upload profile picture button -->
+        <Button
+            android:id="@+id/btnUploadPicture"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/upload_profile_picture"
+            android:layout_marginBottom="20dp"
+            android:textColor="#4CAF50"/>
+
+        <!-- Name Input -->
+        <EditText
+            android:id="@+id/editTextName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/enter_your_name"
+            android:inputType="textPersonName"
+            android:layout_marginBottom="16dp"
+            android:padding="12dp"
+            android:background="@drawable/bg_rounded_rectangle"
+            android:autofillHints="name" />
+
+        <!-- Email Input -->
+        <EditText
+            android:id="@+id/editTextEmail"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/enter_your_email"
+            android:inputType="textEmailAddress"
+            android:layout_marginBottom="16dp"
+            android:padding="12dp"
+            android:background="@drawable/bg_rounded_rectangle"
+            android:autofillHints="email" />
+
+        <!-- Phone Input (Optional) -->
+        <EditText
+            android:id="@+id/editTextPhone"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/enter_your_phone"
+            android:inputType="phone"
+            android:layout_marginBottom="16dp"
+            android:padding="12dp"
+            android:background="@drawable/bg_rounded_rectangle"
+            android:autofillHints="tel" />
+
+        <!-- Save Profile Button -->
+        <Button
+            android:id="@+id/btnSaveProfile"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/save_profile"
+            android:backgroundTint="#4CAF50"
+            android:textColor="#FFFFFF"
+            android:padding="16dp"/>
+    </LinearLayout> <!-- Closing the LinearLayout tag properly -->
+</ScrollView>

@@ -33,11 +33,14 @@
         <activity android:name="com.example.carbon_project.Controller.EntrantDashboardActivity" />
         <activity android:name="com.example.carbon_project.Controller.EntrantEventsListActivity" />
         <activity android:name="com.example.carbon_project.Controller.ProfileActivity" />
+        <activity android:name="com.example.carbon_project.Controller.AdminListActivity"/>
+        <activity android:name="com.example.carbon_project.Controller.AdminViewProfileActivity"/>
         <activity android:name="com.example.carbon_project.Controller.SaveQRCodeActivity" />
         <activity android:name="com.example.carbon_project.Controller.EntrantJoinEventActivity" />
         <activity android:name="com.example.carbon_project.Controller.OrganizerEventListDetailsActivity" />
         <activity android:name="com.example.carbon_project.Controller.OrganizerMapActivity" />
         <activity android:name="com.example.carbon_project.Controller.OrganizerUserListActivity" />
+        <activity android:name="com.example.carbon_project.Controller.OrganizerSendNotifActivity" />
     </application>
 
     <!-- Declare camera permission for QR scanning -->
@@ -49,5 +52,8 @@
 
     <!-- Permission to access personal storage to upload image -->
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+
 
 </manifest>
