@@ -3,7 +3,9 @@ package com.example.carbon_project.Controller;
 import android.content.Intent;
 import android.os.Bundle;
 import android.provider.Settings;
+import android.util.Log;
 import android.view.MenuItem;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.Toast;
@@ -25,6 +27,7 @@ public class ViewEventsActivity extends AppCompatActivity {
     private ArrayAdapter<String> adapter;
     private FirebaseFirestore db;
     private String organizerId;
+    private ArrayList<String> eventIds;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,6 +38,7 @@ public class ViewEventsActivity extends AppCompatActivity {
 
         eventsListView = findViewById(R.id.events_list_view);
         eventsList = new ArrayList<>();
+        eventIds = new ArrayList<>();
 
         // Set up the adapter for the ListView
         adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, eventsList);
@@ -42,25 +46,41 @@ public class ViewEventsActivity extends AppCompatActivity {
 
         organizerId = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
 
+        // Disable list view initially
+        eventsListView.setEnabled(false);
 
         // Fetch events from Firestore
         fetchEventsFromDatabase(organizerId);
+
+        eventsListView.setOnItemClickListener((parent, view, position, id) -> {
+            if (eventIds.isEmpty()) {
+                Log.e("ViewEventsActivity", "Event ID list is empty!");
+                return;
+            }
+
+            // Get the correct event ID
+            String eventId = eventIds.get(position);
+
+            Log.d("OrganizerEventDetails", "Event ID: " + eventId);
+
+            // Navigate to OrganizerEventListDetailsActivity
+            Intent intent = new Intent(ViewEventsActivity.this, OrganizerEventListDetailsActivity.class);
+            intent.putExtra("eventId", eventId);
+            startActivity(intent);
+        });
 
         // Back Button
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         // Bottom navigation view
         BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_navigation);
-        bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
-            @Override
-            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-                if (item.getItemId() == R.id.navigation_home) {
-                    startActivity(new Intent(getApplicationContext(), MainActivity.class));
-                    overridePendingTransition(0, 0);
-                    return true;
-                }
-                return false;
+        bottomNavigationView.setOnNavigationItemSelectedListener(item -> {
+            if (item.getItemId() == R.id.navigation_home) {
+                startActivity(new Intent(getApplicationContext(), MainActivity.class));
+                overridePendingTransition(0, 0);
+                return true;
             }
+            return false;
         });
     }
 
@@ -80,17 +100,27 @@ public class ViewEventsActivity extends AppCompatActivity {
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
                         for (QueryDocumentSnapshot document : task.getResult()) {
-                            // Extract event data from the document
-                            String eventName = document.getString("name");
-                            String eventDescription = document.getString("description");
-                            String eventText = eventName + " - " + eventDescription;
+                            String eventId = document.getId(); // Get the event ID
+                            String eventName = document.getString("name"); // Get the event name
 
-                            eventsList.add(eventText);
-                            adapter.notifyDataSetChanged();
+                            if (eventId != null && eventName != null) {
+                                eventIds.add(eventId); // Store event ID
+                                eventsList.add(eventName); // Display event name
+                            }
                         }
+
+                        if (eventIds.isEmpty() || eventsList.isEmpty()) {
+                            Log.e("FetchEvents", "No events found for this organizer.");
+                        }
+
+                        adapter.notifyDataSetChanged();
+
+                        // Enable list view once data is loaded
+                        eventsListView.setEnabled(true);
                     } else {
-                        Toast.makeText(ViewEventsActivity.this, "Failed to load events.", Toast.LENGTH_SHORT).show();
+                        Log.e("FetchEvents", "Error fetching events", task.getException());
                     }
                 });
     }
+
 }

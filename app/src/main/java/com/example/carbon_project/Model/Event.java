@@ -258,6 +258,7 @@ public class Event {
         map.put("waitingList", waitingList);
         map.put("selectedList", selectedList);
         map.put("canceledList", canceledList);
+        map.put("enrolledList", enrolledList);
         map.put("eventPosterUrl", eventPosterUrl);
         map.put("qrCodeUrl", qrCodeUrl);
         map.put("eventStatus", eventStatus);
