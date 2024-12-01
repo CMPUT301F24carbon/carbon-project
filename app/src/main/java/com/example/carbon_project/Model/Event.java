@@ -29,11 +29,11 @@ public class Event {
     private Facility facility;
 
 
-    private List<Entrant> rejectedList;
-    private List<Entrant> waitingList;
-    private List<Entrant> selectedList;
-    private List<Entrant> canceledList;
-    private List<Entrant> enrolledList;
+    private List<String> rejectedList;
+    private List<String> waitingList;
+    private List<String> selectedList;
+    private List<String> canceledList;
+    private List<String> enrolledList;
 
     // Constructor
     public Event(String eventId, String name, String description, String organizerId, int capacity, boolean geolocationRequired, String startDate, String endDate, String eventPosterUrl, String qrCodeUrl, Facility facility) {
@@ -54,7 +54,7 @@ public class Event {
         this.enrolledList = new ArrayList<>();
     }
 
-    public Event(String eventId, String name, String description, String organizerId, int capacity, List<Entrant> waitingList, List<Entrant> selectedList, List<String> canceledList, List<Entrant> enrolledList, boolean geolocationRequired, String startDate, String endDate, String eventPosterUrl, String qrCodeUrl) {
+    public Event(String eventId, String name, String description, String organizerId, int capacity, List<String> waitingList, List<String> selectedList, List<String> canceledList, List<String> enrolledList, boolean geolocationRequired, String startDate, String endDate, String eventPosterUrl, String qrCodeUrl) {
         this.eventId = eventId;
         this.name = name;
         this.description = description;
@@ -78,11 +78,11 @@ public class Event {
         this.geolocationRequired = geolocationRequired;
     }
 
-    public List<Entrant> getEnrolledList() {
+    public List<String> getEnrolledList() {
         return enrolledList;
     }
 
-    public void setEnrolledList(List<Entrant> enrolledList) {
+    public void setEnrolledList(List<String> enrolledList) {
         this.enrolledList = enrolledList;
     }
 
@@ -166,40 +166,40 @@ public class Event {
         this.capacity = capacity;
     }
 
-    public List<Entrant> getWaitingList() {
+    public List<String> getWaitingList() {
         return waitingList;
     }
 
-    public void setWaitingList(List<Entrant> waitingList) {
+    public void setWaitingList(List<String> waitingList) {
         this.waitingList = waitingList;
     }
 
-    public List<Entrant> getSelectedList() {
+    public List<String> getSelectedList() {
         return selectedList;
     }
 
-    public void setSelectedList(List<Entrant> selectedList) {
+    public void setSelectedList(List<String> selectedList) {
         this.selectedList = selectedList;
     }
 
-    public void setCanceledList(List<Entrant> canceledList) {
+    public void setCanceledList(List<String> canceledList) {
         this.canceledList = canceledList;
     }
 
     public Facility getFacility() { return this.facility; }
 
     // Getters and Setters
-    public List<Entrant> getCanceledList() { return canceledList; }
+    public List<String> getCanceledList() { return canceledList; }
 
     // Add to canceled list
-    public void cancelAttendance(Entrant entrant) {
+    public void cancelAttendance(String entrant) {
         if (selectedList.contains(entrant)) {
             selectedList.remove(entrant);
             canceledList.add(entrant);
         }
     }
 
-    public void addToWaitingList(Entrant entrant) {
+    public void addToWaitingList(String entrant) {
         waitingList.add(entrant);
     }
 
@@ -232,7 +232,7 @@ public class Event {
     }
 
     // Method to add an entrant to the waiting list
-    public void addEntrantToWaitingList(Entrant entrant) {
+    public void addEntrantToWaitingList(String entrant) {
         if (waitingList.size() < capacity) {
             waitingList.add(entrant);
         } else {
@@ -240,7 +240,7 @@ public class Event {
         }
     }
 
-    public List<Entrant> getSelectedEntrants() {
+    public List<String> getSelectedEntrants() {
         return selectedList;
     }
 

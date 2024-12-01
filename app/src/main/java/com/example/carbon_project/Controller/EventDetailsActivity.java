@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.app.AlertDialog;
 
 import android.os.Bundle;
+import android.provider.Settings;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
@@ -14,6 +15,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.carbon_project.Model.Entrant;
+import com.example.carbon_project.Model.Event;
 import com.example.carbon_project.R;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.firestore.FieldValue;
@@ -28,6 +30,7 @@ public class EventDetailsActivity extends AppCompatActivity {
     private String eventId;
     private FirebaseFirestore db;
     private Entrant entrant;
+    private Event event;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,22 +44,55 @@ public class EventDetailsActivity extends AppCompatActivity {
         leaveButton = findViewById(R.id.leave_event_button);
 
         // Retrieve event details from Intent
-        String eventDetails = getIntent().getStringExtra("eventDetails");
-        entrant = (Entrant) getIntent().getSerializableExtra("entrantObject");
         eventId = getIntent().getStringExtra("eventId");
 
-        if (eventDetails != null && eventDetails.contains(" - ")) {
-            String[] details = eventDetails.split(" - ");
-            if (details.length > 0) {
-                eventName.setText(details[0]);
-            }
-            if (details.length > 1) {
-                eventDescription.setText(details[1]);
-            } else {
-                eventDescription.setText("No description available.");
-            }
+        db = FirebaseFirestore.getInstance();
+        String deviceId = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
+        db.collection("users").document(deviceId).get()
+                .addOnSuccessListener(documentSnapshot -> {
+                    if (documentSnapshot.exists()) {
+                        entrant = new Entrant(deviceId, documentSnapshot.getString("name"), documentSnapshot.getString("email"), documentSnapshot.getString("phoneNumber"));
+                        db.collection("events").document(eventId).get()
+                                .addOnSuccessListener(eventDocumentSnapshot -> {
+                                    if (eventDocumentSnapshot.exists()) {
+                                        event = new Event(
+                                                eventId,
+                                                eventDocumentSnapshot.getString("name"),
+                                                eventDocumentSnapshot.getString("description"),
+                                                eventDocumentSnapshot.getString("organizerId"),
+                                                eventDocumentSnapshot.getLong("capacity").intValue(),
+                                                eventDocumentSnapshot.get("waitingList", List.class),
+                                                eventDocumentSnapshot.get("selectedList", List.class),
+                                                eventDocumentSnapshot.get("canceledList", List.class),
+                                                eventDocumentSnapshot.get("enrolledList", List.class),
+                                                eventDocumentSnapshot.getBoolean("geolocationRequired"),
+                                                eventDocumentSnapshot.getString("startDate"),
+                                                eventDocumentSnapshot.getString("endDate"),
+                                                eventDocumentSnapshot.getString("eventPosterUrl"),
+                                                eventDocumentSnapshot.getString("qrCodeUrl")
+                                                );
+                                        showUI();
+                                    }
+                                })
+                                .addOnFailureListener(e -> {
+                                    Toast.makeText(this, "Error retrieving event details: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                                });
+                    }
+                })
+                .addOnFailureListener(e -> {
+                    Toast.makeText(this, "Error retrieving user details: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                });
+    }
+
+    public void showUI() {
+        if (event.getName() != null) {
+            eventName.setText(event.getName());
         } else {
             eventName.setText("Event name not provided");
+        }
+        if (event.getDescription() != null) {
+            eventDescription.setText(event.getDescription());
+        } else {
             eventDescription.setText("No description available.");
         }
 
@@ -101,65 +137,36 @@ public class EventDetailsActivity extends AppCompatActivity {
             return;
         }
 
-        FirebaseFirestore db = FirebaseFirestore.getInstance();
-        db.collection("events").document(eventId)
-                .get()
-                .addOnSuccessListener(documentSnapshot -> {
-                    if (documentSnapshot.exists()) {
-                        List<String> waitingList = (List<String>) documentSnapshot.get("waitingList");
+        List<String> waitingList = event.getWaitingList();
 
-                        if (waitingList != null && waitingList.contains(entrant.getUserId())) {
-                            joinButton.setVisibility(View.GONE);
-                            leaveButton.setVisibility(View.VISIBLE);
-                        } else {
-                            joinButton.setVisibility(View.VISIBLE);
-                            leaveButton.setVisibility(View.GONE);
-                        }
-                    } else {
-                        Toast.makeText(EventDetailsActivity.this, "Event not found.", Toast.LENGTH_SHORT).show();
-                    }
-                })
-                .addOnFailureListener(e -> {
-                    Toast.makeText(this, "Failed to check waiting list: " + e.getMessage(), Toast.LENGTH_SHORT).show();
-                });
+        if (waitingList != null && waitingList.contains(entrant.getUserId())) {
+            joinButton.setVisibility(View.GONE);
+            leaveButton.setVisibility(View.VISIBLE);
+        } else {
+            joinButton.setVisibility(View.VISIBLE);
+            leaveButton.setVisibility(View.GONE);
+        }
     }
 
     private void checkGeolocationRequirement() {
-        if (eventId == null) {
-            Toast.makeText(this, "Invalid event. Try again later.", Toast.LENGTH_SHORT).show();
-            return;
+        Boolean geolocationRequired = event.isGeolocationRequired();
+
+        if (Boolean.TRUE.equals(geolocationRequired)) {
+            new AlertDialog.Builder(this)
+                    .setTitle("Location Sharing Required")
+                    .setMessage("This event requires you to share your location. Do you want to proceed?")
+                    .setPositiveButton("OK", (dialog, which) -> {
+                        joinEvent();
+                    })
+                    .setNegativeButton("Cancel", (dialog, which) -> {
+                        Toast.makeText(this, "You need to share your location to join this event.", Toast.LENGTH_SHORT).show();
+                    })
+                    .show();
+
+            // TODO: Implement location handling logic here if necessary
+        } else {
+            joinEvent();
         }
-
-        db = FirebaseFirestore.getInstance();
-
-        db.collection("events").document(eventId).get()
-                .addOnSuccessListener(documentSnapshot -> {
-                    if (documentSnapshot.exists()) {
-                        Boolean geolocationRequired = documentSnapshot.getBoolean("geolocationRequired");
-
-                        if (Boolean.TRUE.equals(geolocationRequired)) {
-                            new AlertDialog.Builder(this)
-                                    .setTitle("Location Sharing Required")
-                                    .setMessage("This event requires you to share your location. Do you want to proceed?")
-                                    .setPositiveButton("OK", (dialog, which) -> {
-                                        joinEvent();
-                                    })
-                                    .setNegativeButton("Cancel", (dialog, which) -> {
-                                        Toast.makeText(this, "You need to share your location to join this event.", Toast.LENGTH_SHORT).show();
-                                    })
-                                    .show();
-
-                            // TODO: Implement location handling logic here if necessary
-                        } else {
-                            joinEvent();
-                        }
-                    } else {
-                        Toast.makeText(this, "Event not found.", Toast.LENGTH_SHORT).show();
-                    }
-                })
-                .addOnFailureListener(e -> {
-                    Toast.makeText(this, "Error retrieving event: " + e.getMessage(), Toast.LENGTH_SHORT).show();
-                });
     }
 
 

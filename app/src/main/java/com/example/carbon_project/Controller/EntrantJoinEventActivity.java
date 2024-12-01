@@ -17,9 +17,6 @@ import com.journeyapps.barcodescanner.DecoratedBarcodeView;
 import java.util.Collections;
 
 public class EntrantJoinEventActivity extends AppCompatActivity {
-    private FirebaseFirestore db;
-    private Entrant entrant;
-
     private DecoratedBarcodeView barcodeView;
 
     @Override
@@ -57,19 +54,9 @@ public class EntrantJoinEventActivity extends AppCompatActivity {
     };
 
     private void handleScanResult(String scannedData) {
-        db = FirebaseFirestore.getInstance();
-        entrant.joinEvent(scannedData);
-        db.collection("users").document(entrant.getUserId())
-                .update("joinedEvents", entrant.getJoinedEvents())
-                .addOnSuccessListener(aVoid -> {
-                    Toast.makeText(this, "Event joined successfully!", Toast.LENGTH_SHORT).show();
-                })
-                .addOnFailureListener(e -> Toast.makeText(this, "Failed to join event: " + e.getMessage(), Toast.LENGTH_SHORT).show());
-
-        Intent intent = new Intent(this, EntrantDashboardActivity.class);
-        intent.putExtra("userObject", entrant);
+        Intent intent = new Intent(this, EventDetailsActivity.class);
+        intent.putExtra("eventId", scannedData);
         startActivity(intent);
-        finish();
     }
 
     @Override
