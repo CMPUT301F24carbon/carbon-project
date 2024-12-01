@@ -1,5 +1,6 @@
 package com.example.carbon_project.Controller;
 
+import android.content.Intent;
 import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -13,6 +14,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
+import com.example.carbon_project.Model.Entrant;
 import com.example.carbon_project.Model.Facility;
 import com.example.carbon_project.Model.User;
 import com.example.carbon_project.R;
@@ -50,7 +52,9 @@ public class AdminUserListFragment extends Fragment{
 
         AdminRecyclerViewAdapter adapter = new AdminRecyclerViewAdapter(data, position -> {
             User clickedUser = (User) data.get(position);
-            Toast.makeText(getContext(), "Clicked " + clickedUser.getName(), Toast.LENGTH_SHORT).show();
+            Intent intent = new Intent(requireContext(), AdminViewProfileActivity.class);
+            intent.putExtra("userObject", clickedUser);
+            startActivity(intent);
         });
         recyclerView.setAdapter(adapter);
 

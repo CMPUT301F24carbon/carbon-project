@@ -34,6 +34,7 @@
         <activity android:name="com.example.carbon_project.Controller.EntrantEventsListActivity" />
         <activity android:name="com.example.carbon_project.Controller.ProfileActivity" />
         <activity android:name="com.example.carbon_project.Controller.AdminListActivity"/>
+        <activity android:name="com.example.carbon_project.Controller.AdminViewProfileActivity"/>
 
     </application>
 
