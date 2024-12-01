@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="16dp">
+
+            <ImageView
+                android:id="@+id/event_image"
+                android:layout_width="match_parent"
+                android:layout_height="200dp"
+                android:scaleType="centerCrop"
+                android:src="@drawable/ic_image" />
+
+            <TextView
+                android:id="@+id/event_name"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Event Name"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                android:paddingTop="8dp" />
+
+            <TextView
+                android:id="@+id/event_description"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Event Description"
+                android:paddingTop="8dp" />
+
+            <TextView
+                android:id="@+id/event_capacity"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Capacity"
+                android:paddingTop="8dp" />
+
+            <TextView
+                android:id="@+id/event_start_date"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Start Date"
+                android:paddingTop="8dp" />
+
+            <TextView
+                android:id="@+id/event_end_date"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="End Date"
+                android:paddingTop="8dp" />
+
+            <Button
+                android:id="@+id/view_waiting_list_button"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Waiting List"
+                android:layout_marginTop="8dp"/>
+
+            <Button
+                android:id="@+id/view_selected_list_button"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Selected List"
+                android:layout_marginTop="8dp"/>
+
+            <Button
+                android:id="@+id/view_cancelled_list_button"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Cancelled List"
+                android:layout_marginTop="8dp"/>
+
+            <Button
+                android:id="@+id/view_enrolled_list_button"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Enrolled List"
+                android:layout_marginTop="8dp"/>
+
+            <Button
+                android:id="@+id/view_map_button"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="View Map"
+                android:layout_marginTop="8dp"
+                android:visibility="gone"/>
+        </LinearLayout>
+</ScrollView>
+
+    <!-- Bottom Navigation Bar -->
+    <com.google.android.material.bottomnavigation.BottomNavigationView
+        android:id="@+id/bottom_navigation"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="?attr/colorPrimary"
+        app:menu="@menu/bottom_nav_menu"
+        app:itemIconTint="@drawable/selector"
+        app:itemTextColor="@drawable/selector"
+        android:layout_alignParentBottom="true"/>
+
+</RelativeLayout>
