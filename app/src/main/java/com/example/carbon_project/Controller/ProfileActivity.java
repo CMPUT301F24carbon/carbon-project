@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.provider.Settings;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
@@ -78,7 +79,8 @@ public class ProfileActivity extends AppCompatActivity {
                 Toast.makeText(this, "Unknown user type!", Toast.LENGTH_SHORT).show();
             }
         } else {
-            Toast.makeText(this, "User data not found!", Toast.LENGTH_SHORT).show();
+            String deviceId = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
+            loadProfile(deviceId);
         }
 
 
@@ -235,6 +237,8 @@ public class ProfileActivity extends AppCompatActivity {
             Toast.makeText(this, "No image selected!", Toast.LENGTH_SHORT).show();
         }
     }
+
+
 
 
     private void saveProfile(User userType) {
