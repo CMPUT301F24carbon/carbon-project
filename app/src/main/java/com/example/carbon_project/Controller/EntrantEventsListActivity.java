@@ -2,16 +2,19 @@ package com.example.carbon_project.Controller;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.carbon_project.Model.Entrant;
 import com.example.carbon_project.R;
 import com.example.carbon_project.View.EventsAdapter;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 
@@ -31,7 +34,7 @@ public class EntrantEventsListActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_entrant_events);
 
-        entrant = (Entrant) getIntent().getSerializableExtra("entrantObject");
+        entrant = (Entrant) getIntent().getSerializableExtra("userObject");
 
         if (entrant == null) {
             Toast.makeText(this, "Entrant data is missing!", Toast.LENGTH_SHORT).show();
@@ -49,7 +52,7 @@ public class EntrantEventsListActivity extends AppCompatActivity {
         eventsListView.setAdapter(adapter);
 
         // Fetch events from the database
-        fetchEventsFromDatabase();
+        fetchUserSpecificEvents(entrant.getUserId());
 
         eventsListView.setOnItemClickListener((AdapterView<?> parent, View view, int position, long id) -> {
             String selectedEvent = eventsList.get(position);
@@ -61,27 +64,87 @@ public class EntrantEventsListActivity extends AppCompatActivity {
             intent.putExtra("eventId", eventId);
             startActivity(intent);
         });
+
+        // Back Button
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+        // Bottom navigation view
+        BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_navigation);
+        bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                if (item.getItemId() == R.id.navigation_home) {
+                    startActivity(new Intent(getApplicationContext(), MainActivity.class));
+                    overridePendingTransition(0, 0);
+                    return true;
+                }
+                return false;
+            }
+        });
     }
 
-    private void fetchEventsFromDatabase() {
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        if (item.getItemId() == android.R.id.home) {
+            onBackPressed(); // Go back to the previous screen
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+    private void fetchUserSpecificEvents(String userId) {
+        eventsList.clear();
+        eventIds.clear();
+
+        // Fetch events where the user is in the enrolled list
         db.collection("events")
+                .whereArrayContains("enrolled", userId)
                 .get()
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
                         for (QueryDocumentSnapshot document : task.getResult()) {
-                            String eventId = document.getId();
-                            String eventName = document.getString("name");
-                            String eventDescription = document.getString("description");
-                            String eventText = eventName + " - " + eventDescription;
-
-
-                            eventsList.add(eventText);
-                            eventIds.add(eventId);
+                            addEventToList(document);
                         }
-                        adapter.notifyDataSetChanged();
+
+                        // Fetch events where the user is in the waiting list
+                        db.collection("events")
+                                .whereArrayContains("waitingList", userId)
+                                .get()
+                                .addOnCompleteListener(waitingTask -> {
+                                    if (waitingTask.isSuccessful()) {
+                                        for (QueryDocumentSnapshot document : waitingTask.getResult()) {
+                                            addEventToList(document);
+                                        }
+
+                                        // Update the adapter
+                                        adapter.notifyDataSetChanged();
+                                    } else {
+                                        Toast.makeText(EntrantEventsListActivity.this, "Failed to load waiting list events.", Toast.LENGTH_SHORT).show();
+                                    }
+                                });
                     } else {
-                        Toast.makeText(EntrantEventsListActivity.this, "Failed to load events.", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(EntrantEventsListActivity.this, "Failed to load enrolled events.", Toast.LENGTH_SHORT).show();
                     }
                 });
+    }
+
+    // Helper method to process each document and add to the list
+    private void addEventToList(QueryDocumentSnapshot document) {
+        String eventId = document.getId();
+        String eventName = document.getString("name");
+        String eventStartDate = document.getString("startDate");
+        String eventEndDate = document.getString("endDate");
+        String eventDescription = document.getString("description");
+        Long eventCapacity = document.getLong("capacity");
+
+        String eventText = eventName + "\n"
+                + eventDescription + "\n"
+                + eventStartDate + " to " + eventEndDate + "\n"
+                + "Capacity: " + eventCapacity;
+
+        // Avoid adding duplicate events
+        if (!eventIds.contains(eventId)) {
+            eventsList.add(eventText);
+            eventIds.add(eventId);
+        }
     }
 }

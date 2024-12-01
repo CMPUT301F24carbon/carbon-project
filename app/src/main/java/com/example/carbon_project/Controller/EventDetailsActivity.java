@@ -1,15 +1,21 @@
 package com.example.carbon_project.Controller;
 
+import android.content.Intent;
+import android.app.AlertDialog;
+
 import android.os.Bundle;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.carbon_project.Model.Entrant;
 import com.example.carbon_project.R;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 
@@ -59,8 +65,34 @@ public class EventDetailsActivity extends AppCompatActivity {
         checkIfUserIsInWaitingList();
 
         // Set onClick listeners for the buttons
-        joinButton.setOnClickListener(v -> joinEvent(eventId));
+        joinButton.setOnClickListener(v -> checkGeolocationRequirement());
         leaveButton.setOnClickListener(v -> leaveEvent());
+
+        // Back Button
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+        // Bottom navigation view
+        BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_navigation);
+        bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                if (item.getItemId() == R.id.navigation_home) {
+                    startActivity(new Intent(getApplicationContext(), MainActivity.class));
+                    overridePendingTransition(0, 0);
+                    return true;
+                }
+                return false;
+            }
+        });
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        if (item.getItemId() == android.R.id.home) {
+            onBackPressed(); // Go back to the previous screen
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     private void checkIfUserIsInWaitingList() {
@@ -80,7 +112,6 @@ public class EventDetailsActivity extends AppCompatActivity {
                             joinButton.setVisibility(View.GONE);
                             leaveButton.setVisibility(View.VISIBLE);
                         } else {
-                            // User is not in the waiting list, show join button
                             joinButton.setVisibility(View.VISIBLE);
                             leaveButton.setVisibility(View.GONE);
                         }
@@ -93,13 +124,50 @@ public class EventDetailsActivity extends AppCompatActivity {
                 });
     }
 
-    private void joinEvent(String eventId) {
+    private void checkGeolocationRequirement() {
+        if (eventId == null) {
+            Toast.makeText(this, "Invalid event. Try again later.", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        db = FirebaseFirestore.getInstance();
+
+        db.collection("events").document(eventId).get()
+                .addOnSuccessListener(documentSnapshot -> {
+                    if (documentSnapshot.exists()) {
+                        Boolean geolocationRequired = documentSnapshot.getBoolean("geolocationRequired");
+
+                        if (Boolean.TRUE.equals(geolocationRequired)) {
+                            new AlertDialog.Builder(this)
+                                    .setTitle("Location Sharing Required")
+                                    .setMessage("This event requires you to share your location. Do you want to proceed?")
+                                    .setPositiveButton("OK", (dialog, which) -> {
+                                        joinEvent();
+                                    })
+                                    .setNegativeButton("Cancel", (dialog, which) -> {
+                                        Toast.makeText(this, "You need to share your location to join this event.", Toast.LENGTH_SHORT).show();
+                                    })
+                                    .show();
+
+                            // TODO: Implement location handling logic here if necessary
+                        } else {
+                            joinEvent();
+                        }
+                    } else {
+                        Toast.makeText(this, "Event not found.", Toast.LENGTH_SHORT).show();
+                    }
+                })
+                .addOnFailureListener(e -> {
+                    Toast.makeText(this, "Error retrieving event: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                });
+    }
+
+
+    private void joinEvent() {
         if (eventId == null || entrant.getUserId() == null) {
             Toast.makeText(this, "Failed to join the event. Try again later.", Toast.LENGTH_SHORT).show();
             return;
         }
-
-        FirebaseFirestore db = FirebaseFirestore.getInstance();
 
         db.collection("events").document(eventId)
                 .update("waitingList", FieldValue.arrayUnion(entrant.getUserId()))
@@ -118,8 +186,6 @@ public class EventDetailsActivity extends AppCompatActivity {
             Toast.makeText(this, "Failed to leave the event. Try again later.", Toast.LENGTH_SHORT).show();
             return;
         }
-
-        FirebaseFirestore db = FirebaseFirestore.getInstance();
 
         db.collection("events").document(eventId)
                 .update("waitingList", FieldValue.arrayRemove(entrant.getUserId()))

@@ -2,6 +2,9 @@ package com.example.carbon_project.Model;
 
 import android.util.Log;
 
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -24,6 +27,9 @@ public class Event {
     private String qrCodeUrl;
     private String eventStatus;
     private Facility facility;
+
+
+    private List<Entrant> rejectedList;
     private List<Entrant> waitingList;
     private List<Entrant> selectedList;
     private List<Entrant> canceledList;
@@ -259,5 +265,4 @@ public class Event {
 
         return map;
     }
-
 }

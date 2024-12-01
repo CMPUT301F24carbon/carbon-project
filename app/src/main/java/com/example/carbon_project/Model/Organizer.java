@@ -47,4 +47,5 @@ public class Organizer extends User implements Serializable {
                     System.out.println("Error saving organizer: " + e.getMessage());
                 });
     }
+
 }

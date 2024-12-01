@@ -1,8 +1,14 @@
 package com.example.carbon_project.Controller;
 
 import android.app.DatePickerDialog;
+import android.content.Intent;
 import android.os.Bundle;
 import android.provider.Settings;
+import android.view.MenuItem;
+import android.graphics.Bitmap;
+import android.os.Bundle;
+import android.provider.Settings;
+import android.util.Base64;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -11,14 +17,20 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.carbon_project.Model.Event;
 import com.example.carbon_project.Model.Facility;
 import com.example.carbon_project.R;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.zxing.BarcodeFormat;
+import com.google.zxing.WriterException;
+import com.journeyapps.barcodescanner.BarcodeEncoder;
 
+import java.io.ByteArrayOutputStream;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -68,6 +80,32 @@ public class CreateEventActivity extends AppCompatActivity {
         btnSaveEvent.setOnClickListener(v -> createAndSaveEvent());
 
         fetchFacilitiesForOrganizer(organizerId);
+
+        // Back Button
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+        // Bottom navigation view
+        BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_navigation);
+        bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                if (item.getItemId() == R.id.navigation_home) {
+                    startActivity(new Intent(getApplicationContext(), MainActivity.class));
+                    overridePendingTransition(0, 0);
+                    return true;
+                }
+                return false;
+            }
+        });
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        if (item.getItemId() == android.R.id.home) {
+            onBackPressed(); // Go back to the previous screen
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     private void showDatePickerDialog(boolean isStartDate) {
@@ -164,26 +202,47 @@ public class CreateEventActivity extends AppCompatActivity {
         Facility selectedFacility = facilityList.get(selectedFacilityPosition);
 
         String eventId = UUID.randomUUID().toString();
-        String qrCodeUrl = generateQRCodeForEvent(eventId);
+        byte[] qrCode = generateQRCodeForEvent(eventId);
+        String qrUri = byteArrayToUri(qrCode);
 
         // Event poster URL (assuming the organizer uploads an image)
         String eventPosterUrl = "default_poster_url";
-        Event event = new Event(eventId, eventName, eventDescription, organizerId, eventCapacity, geolocationRequired, tvStartDate.getText().toString(), tvEndDate.getText().toString(), eventPosterUrl, qrCodeUrl, selectedFacility);
+        Event event = new Event(eventId, eventName, eventDescription, organizerId, eventCapacity, geolocationRequired, tvStartDate.getText().toString(), tvEndDate.getText().toString(), eventPosterUrl, qrUri, selectedFacility);
 
         // Save the event to Firestore
         db.collection("events").document(eventId).set(event.toMap())
                 .addOnSuccessListener(aVoid -> {
                     Toast.makeText(CreateEventActivity.this, "Event created successfully", Toast.LENGTH_SHORT).show();
-                    finish();
+                    // Navigate to the QR code activity
+                    Intent intent = new Intent(CreateEventActivity.this, SaveQRCodeActivity.class);
+                    intent.putExtra("qrCodeByteArray", qrCode);     // Pass the byte array
+                    startActivity(intent);
                 })
                 .addOnFailureListener(e -> {
                     Toast.makeText(CreateEventActivity.this, "Error creating event: " + e.getMessage(), Toast.LENGTH_SHORT).show();
                 });
     }
 
-    // Example method to generate a QR code URL (replace with actual QR code generation logic)
-    private String generateQRCodeForEvent(String eventId) {
-        // Generate and return a QR code URL (example URL, replace with actual logic)
-        return "https://example.com/qr-code/" + eventId;
+    // Generate a QR code in byte array format
+    private byte[] generateQRCodeForEvent(String eventId) {
+        try {
+            // Generate the QR code Bitmap
+            BarcodeEncoder barcodeEncoder = new BarcodeEncoder();
+            Bitmap bitmap = barcodeEncoder.encodeBitmap(eventId, BarcodeFormat.QR_CODE, 200, 200);
+
+            // Convert the Bitmap into a byte array
+            ByteArrayOutputStream stream = new ByteArrayOutputStream();
+            bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream);
+            return stream.toByteArray();
+        } catch (WriterException e) {
+            System.err.println("Error generating QR code: " + e.getMessage());
+            return null;
+        }
+    }
+
+    // Turn a Byte array into a base64-encoded Uri to be stored in Firestore
+    public String byteArrayToUri(byte[] byteArray) {
+        // Convert byte array to Base64 string
+        return Base64.encodeToString(byteArray, Base64.DEFAULT);
     }
 }
