@@ -24,4 +24,10 @@
     <string name="publish_event_button">Publish</string>
     <string name="back">Back</string>
     <string name="create_new_event">Create New Event</string>
+    <string name="upload_profile_picture">Upload Profile Picture</string>
+    <string name="enter_your_name">Enter Your Name</string>
+    <string name="enter_your_email">Enter Your Email</string>
+    <string name="enter_your_phone">Enter Your Phone (Optional)</string>
+    <string name="save_profile">Save Profile</string>
+    <string name="profile_image_placeholder">Profile Image Placeholder</string>
 </resources>
