@@ -35,7 +35,9 @@
         <activity android:name="com.example.carbon_project.Controller.ProfileActivity" />
         <activity android:name="com.example.carbon_project.Controller.SaveQRCodeActivity" />
         <activity android:name="com.example.carbon_project.Controller.EntrantJoinEventActivity" />
-
+        <activity android:name="com.example.carbon_project.Controller.OrganizerEventListDetailsActivity" />
+        <activity android:name="com.example.carbon_project.Controller.OrganizerMapActivity" />
+        <activity android:name="com.example.carbon_project.Controller.OrganizerUserListActivity" />
     </application>
 
     <!-- Declare camera permission for QR scanning -->
