@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
@@ -64,28 +64,28 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="Waiting List"
-                android:layout_marginTop="8dp"/>
+                android:layout_marginTop="8dp" />
 
             <Button
                 android:id="@+id/view_selected_list_button"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="Selected List"
-                android:layout_marginTop="8dp"/>
+                android:layout_marginTop="8dp" />
 
             <Button
                 android:id="@+id/view_cancelled_list_button"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="Cancelled List"
-                android:layout_marginTop="8dp"/>
+                android:layout_marginTop="8dp" />
 
             <Button
                 android:id="@+id/view_enrolled_list_button"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="Enrolled List"
-                android:layout_marginTop="8dp"/>
+                android:layout_marginTop="8dp" />
 
             <Button
                 android:id="@+id/view_map_button"
@@ -93,9 +93,17 @@
                 android:layout_height="wrap_content"
                 android:text="View Map"
                 android:layout_marginTop="8dp"
-                android:visibility="gone"/>
+                android:visibility="gone" />
+
+            <!-- New Lottery Button -->
+            <Button
+                android:id="@+id/lottery_button"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Lottery"
+                android:layout_marginTop="8dp" />
         </LinearLayout>
-</ScrollView>
+    </ScrollView>
 
     <!-- Bottom Navigation Bar -->
     <com.google.android.material.bottomnavigation.BottomNavigationView
@@ -106,6 +114,5 @@
         app:menu="@menu/bottom_nav_menu"
         app:itemIconTint="@drawable/selector"
         app:itemTextColor="@drawable/selector"
-        android:layout_alignParentBottom="true"/>
-
+        android:layout_alignParentBottom="true" />
 </RelativeLayout>

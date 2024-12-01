@@ -7,22 +7,24 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+
 import com.example.carbon_project.R;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.ArrayList;
+import java.util.Random;
 
 public class OrganizerEventListDetailsActivity extends AppCompatActivity {
 
     private FirebaseFirestore db;
     private TextView eventName, eventDescription, eventCapacity, eventStart, eventEnd;
     private ImageView eventImage;
-    private Button viewMapButton, viewWaitingListButton, viewSelectedListButton, viewCancelledListButton, viewEnrolledListButton;
-
+    private Button viewMapButton, viewWaitingListButton, viewSelectedListButton, viewCancelledListButton, viewEnrolledListButton, lotteryButton;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -38,6 +40,7 @@ public class OrganizerEventListDetailsActivity extends AppCompatActivity {
         eventStart = findViewById(R.id.event_start_date);
         eventEnd = findViewById(R.id.event_end_date);
         eventImage = findViewById(R.id.event_image);
+        lotteryButton = findViewById(R.id.lottery_button);
 
         viewMapButton = findViewById(R.id.view_map_button);
         viewWaitingListButton = findViewById(R.id.view_waiting_list_button);
@@ -59,6 +62,11 @@ public class OrganizerEventListDetailsActivity extends AppCompatActivity {
         viewSelectedListButton.setOnClickListener(v -> openListActivity(eventId, "selectedList"));
         viewCancelledListButton.setOnClickListener(v -> openListActivity(eventId, "cancelledList"));
         viewEnrolledListButton.setOnClickListener(v -> openListActivity(eventId, "enrolledList"));
+        lotteryButton.setOnClickListener(v -> {
+            if (eventId != null) {
+                runLottery(eventId);
+            }
+        });
 
         // Back Button
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -105,27 +113,18 @@ public class OrganizerEventListDetailsActivity extends AppCompatActivity {
                         eventEnd.setText("End: " + endDate);
 
                         // Handle geolocationRequired field
-                        Button viewMapButton = findViewById(R.id.view_map_button);
                         if (geolocationRequired != null && geolocationRequired) {
                             viewMapButton.setVisibility(View.VISIBLE);
                         } else {
                             viewMapButton.setVisibility(View.GONE);
                         }
-
-                        // Handle waiting, selected, cancelled, and enrolled lists
-                        // These fields are retrieved from Firestore
-                        ArrayList<String> waitingList = (ArrayList<String>) documentSnapshot.get("waitingList");
-                        ArrayList<String> selectedList = (ArrayList<String>) documentSnapshot.get("selectedList");
-                        ArrayList<String> cancelledList = (ArrayList<String>) documentSnapshot.get("cancelledList");
-                        ArrayList<String> enrolledList = (ArrayList<String>) documentSnapshot.get("enrolledList");
-
-                        // Use the lists as needed
                     }
                 })
                 .addOnFailureListener(e -> {
-                    // Handle error
+                    Toast.makeText(this, "Error fetching event details: " + e.getMessage(), Toast.LENGTH_SHORT).show();
                 });
     }
+
 
     private void openMapActivity(String eventId) {
         // Intent to open the map activity, passing the event ID
@@ -141,4 +140,44 @@ public class OrganizerEventListDetailsActivity extends AppCompatActivity {
         intent.putExtra("listType", listType); // Pass which list to view
         startActivity(intent);
     }
+
+    private void runLottery(String eventId) {
+        db.collection("events").document(eventId).get()
+                .addOnSuccessListener(documentSnapshot -> {
+                    if (documentSnapshot.exists()) {
+                        ArrayList<String> waitingList = (ArrayList<String>) documentSnapshot.get("waitingList");
+                        ArrayList<String> selectedList = (ArrayList<String>) documentSnapshot.get("selectedList");
+
+                        if (waitingList != null && !waitingList.isEmpty()) {
+                            // Pick a random person from the waiting list
+                            Random random = new Random();
+                            int randomIndex = random.nextInt(waitingList.size());
+                            String selectedPerson = waitingList.remove(randomIndex);
+
+                            // Add the selected person to the selected list
+                            if (selectedList == null) {
+                                selectedList = new ArrayList<>();
+                            }
+                            selectedList.add(selectedPerson);
+
+                            // Update Firestore with the modified lists
+                            db.collection("events").document(eventId)
+                                    .update("waitingList", waitingList, "selectedList", selectedList)
+                                    .addOnSuccessListener(aVoid -> {
+                                        Toast.makeText(this, "Person selected and moved to Selected List.", Toast.LENGTH_SHORT).show();
+                                    })
+                                    .addOnFailureListener(e -> {
+                                        Toast.makeText(this, "Error updating lists: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                                    });
+                        } else {
+                            Toast.makeText(this, "Waiting list is empty.", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                })
+                .addOnFailureListener(e -> {
+                    Toast.makeText(this, "Error retrieving event details: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                });
+    }
+
+
 }
