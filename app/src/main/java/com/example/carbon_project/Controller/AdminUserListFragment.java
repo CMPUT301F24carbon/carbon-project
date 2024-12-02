@@ -46,9 +46,6 @@ public class AdminUserListFragment extends Fragment{
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 
         List<Object> data = new ArrayList<>();
-//        data.add("Tab1 Item 1");
-//        data.add("Tab1 Item 2");
-//        data.add("Tab1 Item 3");
 
         AdminRecyclerViewAdapter adapter = new AdminRecyclerViewAdapter(data, position -> {
             User clickedUser = (User) data.get(position);
@@ -69,13 +66,7 @@ public class AdminUserListFragment extends Fragment{
                     data.clear();
                     for (QueryDocumentSnapshot doc: value) {
                         if (!Objects.equals(doc.getString("role"), "admin")) {
-                            String userId = doc.getId();
-                            String name = doc.getString("name");
-                            String email = doc.getString("email");
-                            String phoneNumber = doc.getString("phoneNumber");
-                            String role = doc.getString("role");
-                            String pfpURL = doc.getString("profilePictureUrl");
-                            data.add(new User(userId, name, email, phoneNumber, role, pfpURL));
+                            data.add(new User(doc.getData()));
                         }
                     }
                     adapter.notifyDataSetChanged();

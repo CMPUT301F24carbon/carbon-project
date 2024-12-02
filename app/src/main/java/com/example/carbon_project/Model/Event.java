@@ -2,6 +2,9 @@ package com.example.carbon_project.Model;
 
 import android.util.Log;
 
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
+
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -266,6 +269,11 @@ public class Event {
         } else {
             Log.d("Event", "Event is at full capacity.");
         }
+    }
+
+    public void deleteEvent() {
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        db.collection("events").document(this.eventId).delete();
     }
 
     public List<String> getSelectedEntrants() {

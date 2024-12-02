@@ -1,5 +1,11 @@
 package com.example.carbon_project.Model;
 
+import android.widget.Toast;
+
+import com.example.carbon_project.Controller.OrganizerFacilitiesActivity;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
+
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
@@ -61,6 +67,22 @@ public class Facility implements Serializable {
 
     public void setOrganizerId(String organizerId) {
         this.organizerId = organizerId;
+    }
+
+    public void deleteFacility() {
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        db.collection("events")
+                .whereEqualTo("facility.facilityId", facilityId)
+                .get()
+                .addOnSuccessListener(queryDocumentSnapshots -> {
+                    for (DocumentSnapshot document : queryDocumentSnapshots) {
+                        db.collection("events").document(document.getId()).delete();
+                    }
+
+                    db.collection("facilities")
+                            .document(facilityId)
+                            .delete();
+                });
     }
 
     // Convert Facility object to a Map for Firestore storage
