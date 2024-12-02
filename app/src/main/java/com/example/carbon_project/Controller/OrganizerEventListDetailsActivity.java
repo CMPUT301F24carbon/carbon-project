@@ -169,17 +169,20 @@ public class OrganizerEventListDetailsActivity extends AppCompatActivity {
                             if (selectedList == null) {
                                 selectedList = new ArrayList<>();
                             }
+
                             if(capacity >= waitingList.size() + selectedList.size() || capacity==0){
                                 selectedList.addAll(waitingList);
                                 waitingList.clear();
                             }
-
-                            while(selectedList.size()<capacity){
-                                // Pick a random person from the waiting list
-                                Random random = new Random();
-                                int randomIndex = random.nextInt(waitingList.size());
-                                String selectedPerson = waitingList.remove(randomIndex);
-                                selectedList.add(selectedPerson);
+                            else {
+                                while(selectedList.size()<capacity && !waitingList.isEmpty()){
+                                    // Pick a random person from the waiting list
+                                    Random random = new Random();
+                                    System.out.println(waitingList.size());
+                                    int randomIndex = random.nextInt(waitingList.size());
+                                    String selectedPerson = waitingList.remove(randomIndex);
+                                    selectedList.add(selectedPerson);
+                                }
                             }
 
                             // Update Firestore with the modified lists
