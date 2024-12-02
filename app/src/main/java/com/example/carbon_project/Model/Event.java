@@ -276,20 +276,19 @@ public class Event {
     public Map<String, Object> toMap() {
         Map<String, Object> map = new HashMap<>();
         map.put("eventId", eventId);
-        map.put("name", name);
-        map.put("description", description);
-        map.put("organizerId", organizerId);
+        map.put("name", name != null ? name : "");
+        map.put("description", description != null ? description : "");
+        map.put("organizerId", organizerId != null ? organizerId : "");
         map.put("capacity", capacity);
         map.put("geolocationRequired", geolocationRequired);
-        map.put("startDate", startDate);
-        map.put("endDate", endDate);
+        map.put("startDate", startDate != null ? startDate : "");
+        map.put("endDate", endDate != null ? endDate : "");
         map.put("waitingList", waitingList);
         map.put("selectedList", selectedList);
         map.put("canceledList", canceledList);
         map.put("enrolledList", enrolledList);
         map.put("eventPosterUrl", eventPosterUrl);
         map.put("qrCodeUrl", qrCodeUrl);
-        map.put("eventStatus", eventStatus);
 
         return map;
     }
