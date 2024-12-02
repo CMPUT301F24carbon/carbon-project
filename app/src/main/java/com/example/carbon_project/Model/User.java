@@ -37,18 +37,7 @@ public class User implements Serializable {
         this.role = role;
         this.profilePictureUrl = null;
 
-        //generates a token that tells firebase who to send notifications to
-        FirebaseMessaging.getInstance().getToken()
-                .addOnCompleteListener(task -> {
-                    if (task.isSuccessful()) {
-                        // Retrieve the FCM token
-                        this.fcm = task.getResult();
-                        this.saveToFirestore();
-                        Log.d("Success", this.fcm);
-                    } else {
-                        System.err.println("Failed to retrieve FCM token");
-                    }
-                });
+        this.requestToken();
     }
 
     public User(String userId, String name, String email, String phoneNumber, String role, String profilePictureUrl) {
@@ -58,6 +47,8 @@ public class User implements Serializable {
         this.phoneNumber = phoneNumber;
         this.role = role;
         this.profilePictureUrl = profilePictureUrl;
+
+        this.requestToken();
     }
 
     // Getters and Setters
@@ -104,5 +95,19 @@ public class User implements Serializable {
         map.put("fcm", fcm);
 
         return map;
+    }
+
+    private void requestToken(){
+        FirebaseMessaging.getInstance().getToken()
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        // Retrieve the FCM token
+                        this.fcm = task.getResult();
+                        this.saveToFirestore();
+                        Log.d("Success", this.fcm);
+                    } else {
+                        System.err.println("Failed to retrieve FCM token");
+                    }
+                });
     }
 }
