@@ -38,6 +38,7 @@
         <activity android:name="com.example.carbon_project.Controller.SaveQRCodeActivity" />
         <activity android:name="com.example.carbon_project.Controller.EntrantJoinEventActivity" />
         <activity android:name="com.example.carbon_project.Controller.OrganizerSendNotifActivity" />
+        <activity android:name="com.example.carbon_project.Controller.EntrantAcceptEventActivity"/>
 
     </application>
 
