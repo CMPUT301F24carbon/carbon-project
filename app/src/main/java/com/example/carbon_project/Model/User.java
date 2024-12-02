@@ -87,12 +87,12 @@ public class User implements Serializable {
     public Map<String, Object> toMap() {
         Map<String, Object> map = new HashMap<>();
         map.put("userId", userId);
-        map.put("name", name);
-        map.put("email", email);
-        map.put("phoneNumber", phoneNumber);
+        map.put("name", name != null ? name : "");
+        map.put("email", email != null ? name : "");
+        map.put("phoneNumber", phoneNumber != null ? name : "");
         map.put("role", role);
-        map.put("profilePictureUrl", profilePictureUrl);
-        map.put("fcm", fcm);
+        map.put("profilePictureUrl", profilePictureUrl != null ? profilePictureUrl : "");
+        map.put("fcm", fcm != null ? fcm : "");
 
         return map;
     }
