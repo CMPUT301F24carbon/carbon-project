@@ -5,6 +5,8 @@ import android.util.Log;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -12,7 +14,7 @@ import java.util.Map;
 
 public class Notification {
 
-    public static void sendtoUsers(List<String> users, String title, String body) {
+    public static void sendtoUsers(List<String> users, String body) {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         if (users != null) {
             // Fetch the FCM tokens for these users
@@ -30,14 +32,14 @@ public class Notification {
 
                         // Send notifications using FCM
                         if (!fcmTokens.isEmpty()) {
-                            sendFcmNotifications(fcmTokens, title, body);
+                            sendFcmNotifications(fcmTokens, body);
                         }
                     });
         }
     }
 
     //this sends a notification to all selected users in an event
-    public static void sendToSelected(String eventId, String title, String body) {
+    public static void sendToSelected(String eventId, String body) {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         db.collection("events")
                 .document(eventId)
@@ -63,7 +65,7 @@ public class Notification {
 
                                         // Send notifications using FCM
                                         if (!fcmTokens.isEmpty()) {
-                                            sendFcmNotifications(fcmTokens, title, body);
+                                            sendFcmNotifications(fcmTokens, body);
                                         }
                                     });
                         }
@@ -72,7 +74,7 @@ public class Notification {
     }
 
     //this sends a notification to all wating users in an event
-    public static void sendToWating(String eventId, String title, String body) {
+    public static void sendToWating(String eventId, String body) {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         db.collection("events")
                 .document(eventId)
@@ -98,7 +100,7 @@ public class Notification {
 
                                         // Send notifications using FCM
                                         if (!fcmTokens.isEmpty()) {
-                                            sendFcmNotifications(fcmTokens, title, body);
+                                            sendFcmNotifications(fcmTokens, body);
                                         }
                                     });
                         }
@@ -107,7 +109,7 @@ public class Notification {
     }
 
     //sends a notification to all rejected users in an event
-    public static void sendToRejected(String eventId, String title, String body) {
+    public static void sendToNotSelected(String eventId, String body) {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         db.collection("events")
                 .document(eventId)
@@ -115,7 +117,7 @@ public class Notification {
                 .addOnSuccessListener(documentSnapshot -> {
                     if (documentSnapshot.exists()) {
                         // Get list of user IDs in the event
-                        List<String> userIds = (List<String>) documentSnapshot.get("rejectedList");
+                        List<String> userIds = (List<String>) documentSnapshot.get("notSelectedList");
 
                         if (userIds != null) {
                             // Fetch the FCM tokens for these users
@@ -133,7 +135,7 @@ public class Notification {
 
                                         // Send notifications using FCM
                                         if (!fcmTokens.isEmpty()) {
-                                            sendFcmNotifications(fcmTokens, title, body);
+                                            sendFcmNotifications(fcmTokens, body);
                                         }
                                     });
                         }
@@ -141,11 +143,11 @@ public class Notification {
                 });
     }
 
-    private static void sendFcmNotifications(List<String> fcmTokens, String title, String body) {
+    private static void sendFcmNotifications(List<String> fcmTokens, String body) {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
 
         Map<String, Object> map = new HashMap<>();
-        map.put("title", title);
+        map.put("title", LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
         map.put("body", body);
         map.put("fcmTokens", fcmTokens);
         db.document("notifications/notification")

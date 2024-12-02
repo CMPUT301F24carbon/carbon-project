@@ -27,7 +27,6 @@ import com.example.carbon_project.R;
 *You can send notifications to selected, rejected, and waiting users.
 * */
 public class OrganizerSendNotifActivity extends AppCompatActivity {
-    private EditText title;
     private EditText body;
     private Spinner userType;
     private Button send;
@@ -43,7 +42,6 @@ public class OrganizerSendNotifActivity extends AppCompatActivity {
             eventId = bundle.getString("eventId", "");
         }
 
-        title = findViewById(R.id.notif_title);
         body = findViewById(R.id.notif_body);
         userType = findViewById(R.id.spinnerNotif);
         send = findViewById(R.id.btnSendNotif);
@@ -59,17 +57,17 @@ public class OrganizerSendNotifActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 String type = userType.getSelectedItem().toString();
-                String titleText = title.getText().toString();
-                String bodyText = body.getText().toString();
+                //without the + "0" it doesn't work
+                String bodyText = body.getText().toString() + " 0";
                 switch (type){
                     case "Selected List":
-                        Notification.sendToSelected(eventId,titleText,bodyText);
+                        Notification.sendToSelected(eventId,bodyText);
                         break;
                     case "Rejected List":
-                        Notification.sendToRejected(eventId,titleText,bodyText);
+                        Notification.sendToNotSelected(eventId,bodyText);
                         break;
                     case "Waiting List":
-                        Notification.sendToWating(eventId,titleText,bodyText);
+                        Notification.sendToWating(eventId,bodyText);
                         break;
                     default:
                         break;

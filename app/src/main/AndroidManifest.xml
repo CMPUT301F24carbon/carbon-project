@@ -41,6 +41,8 @@
         <activity android:name="com.example.carbon_project.Controller.OrganizerMapActivity" />
         <activity android:name="com.example.carbon_project.Controller.OrganizerUserListActivity" />
         <activity android:name="com.example.carbon_project.Controller.OrganizerSendNotifActivity" />
+        <activity android:name="com.example.carbon_project.Controller.EntrantAcceptEventActivity"/>
+
     </application>
 
     <!-- Declare camera permission for QR scanning -->

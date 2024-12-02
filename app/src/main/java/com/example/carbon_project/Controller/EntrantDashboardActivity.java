@@ -15,7 +15,7 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 public class EntrantDashboardActivity extends AppCompatActivity {
 
-    private Button viewEventsButton, myProfileButton, joinEventButton;
+    private Button viewEventsButton, myProfileButton, joinEventButton, acceptEventButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,6 +31,7 @@ public class EntrantDashboardActivity extends AppCompatActivity {
 
         viewEventsButton = findViewById(R.id.view_events_button);
         joinEventButton = findViewById(R.id.join_event_button);
+        acceptEventButton = findViewById(R.id.accept_invitation_button);
         myProfileButton = findViewById(R.id.my_profile_button);
 
         viewEventsButton.setOnClickListener(v -> {
@@ -47,6 +48,12 @@ public class EntrantDashboardActivity extends AppCompatActivity {
       
         joinEventButton.setOnClickListener(v -> {
             Intent intent = new Intent(EntrantDashboardActivity.this, EntrantJoinEventActivity.class);
+            intent.putExtra("userObject", entrant);
+            startActivity(intent);
+        });
+
+        acceptEventButton.setOnClickListener(v -> {
+            Intent intent = new Intent(EntrantDashboardActivity.this, EntrantAcceptEventActivity.class);
             intent.putExtra("userObject", entrant);
             startActivity(intent);
         });
