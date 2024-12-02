@@ -41,7 +41,7 @@ public class OrganizerSendNotifActivity extends AppCompatActivity {
         userType = findViewById(R.id.spinnerNotif);
         send = findViewById(R.id.btnSendNotif);
 
-        String[] spinnerItems = {"Selected List", "Waiting List"};
+        String[] spinnerItems = {"Enrolled List", "Selected List", "Waiting List"};
 
         ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, spinnerItems);
 
@@ -52,9 +52,11 @@ public class OrganizerSendNotifActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 String type = userType.getSelectedItem().toString();
-                //without the + "0" it doesn't work
-                String bodyText = body.getText().toString() + " 0";
+                String bodyText = body.getText().toString();
                 switch (type){
+                    case "Enrolled List":
+                        Notification.sendToEnrolled(eventId,bodyText);
+                        break;
                     case "Selected List":
                         Notification.sendToSelected(eventId,bodyText);
                         break;

@@ -83,9 +83,6 @@ public class MainActivity extends AppCompatActivity {
                         user = new Admin(dataMap);
                         toActivity(AdminListActivity.class);
                     }
-
-                    // Save the user data to Firestore
-                    user.saveToFirestore();
                 })
                 .addOnFailureListener(e -> {
                     Toast.makeText(this, "Error loading user data: " + e.getMessage(), Toast.LENGTH_SHORT).show();

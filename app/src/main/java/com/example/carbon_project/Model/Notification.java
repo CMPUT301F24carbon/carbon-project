@@ -84,6 +84,40 @@ public class Notification {
                         // Get list of user IDs in the event
                         List<String> userIds = (List<String>) documentSnapshot.get("waitingList");
 
+                        if (userIds != null && !userIds.isEmpty()) {
+                            // Fetch the FCM tokens for these users
+                            db.collection("users")
+                                    .whereIn("userId", userIds)
+                                    .get()
+                                    .addOnSuccessListener(querySnapshot -> {
+                                        List<String> fcmTokens = new ArrayList<>();
+                                        for (QueryDocumentSnapshot userDoc : querySnapshot) {
+                                            String token = userDoc.getString("fcm");
+                                            if (token != null) {
+                                                fcmTokens.add(token);
+                                            }
+                                        }
+
+                                        // Send notifications using FCM
+                                        if (!fcmTokens.isEmpty()) {
+                                            sendFcmNotifications(fcmTokens, body);
+                                        }
+                                    });
+                        }
+                    }
+                });
+    }
+
+    public static void sendToEnrolled(String eventId, String body) {
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        db.collection("events")
+                .document(eventId)
+                .get()
+                .addOnSuccessListener(documentSnapshot -> {
+                    if (documentSnapshot.exists()) {
+                        // Get list of user IDs in the event
+                        List<String> userIds = (List<String>) documentSnapshot.get("enrolledList");
+
                         if (userIds != null) {
                             // Fetch the FCM tokens for these users
                             db.collection("users")
@@ -115,8 +149,8 @@ public class Notification {
         map.put("title", LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
         map.put("body", body);
         map.put("fcmTokens", fcmTokens);
-        db.document("notifications/notification")
-                .update(map)
+        db.collection("notifications")
+                .add(map)
                 .addOnSuccessListener(aVoid -> Log.d("Firestore", "Document successfully updated!"))
                 .addOnFailureListener(e -> Log.w("Firestore", "Error updating document", e));
 

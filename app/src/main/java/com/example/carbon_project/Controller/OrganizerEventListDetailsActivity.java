@@ -163,24 +163,34 @@ public class OrganizerEventListDetailsActivity extends AppCompatActivity {
                     if (documentSnapshot.exists()) {
                         ArrayList<String> waitingList = (ArrayList<String>) documentSnapshot.get("waitingList");
                         ArrayList<String> selectedList = (ArrayList<String>) documentSnapshot.get("selectedList");
+                        int capacity = documentSnapshot.getLong("capacity").intValue();
 
                         if (waitingList != null && !waitingList.isEmpty()) {
-                            // Pick a random person from the waiting list
-                            Random random = new Random();
-                            int randomIndex = random.nextInt(waitingList.size());
-                            String selectedPerson = waitingList.remove(randomIndex);
-
-                            // Add the selected person to the selected list
                             if (selectedList == null) {
                                 selectedList = new ArrayList<>();
                             }
-                            selectedList.add(selectedPerson);
+                            if(capacity >= waitingList.size()+selectedList.size() || capacity==0){
+                                selectedList.addAll(waitingList);
+                                waitingList.clear();
+                            }
+
+                            while(selectedList.size()<capacity){
+                                // Pick a random person from the waiting list
+                                Random random = new Random();
+                                int randomIndex = random.nextInt(waitingList.size());
+                                String selectedPerson = waitingList.remove(randomIndex);
+                                selectedList.add(selectedPerson);
+                            }
 
                             // Update Firestore with the modified lists
                             db.collection("events").document(eventId)
                                     .update("waitingList", waitingList, "selectedList", selectedList)
                                     .addOnSuccessListener(aVoid -> {
-                                        Toast.makeText(this, "Person selected and moved to Selected List.", Toast.LENGTH_SHORT).show();
+                                        Toast.makeText(this, "People selected and moved to Selected List.", Toast.LENGTH_SHORT).show();
+                                        Notification.sendToSelected(eventId, "You have been selected to participate in an event." +
+                                                " Go to the accept invitation page to enroll");
+                                        Notification.sendToWating(eventId, "You have not been select to participate in " + eventName.getText().toString() +"."
+                                                + " Don't worry if somebody drops out you will get another chance to participate");
                                     })
                                     .addOnFailureListener(e -> {
                                         Toast.makeText(this, "Error updating lists: " + e.getMessage(), Toast.LENGTH_SHORT).show();
@@ -193,11 +203,6 @@ public class OrganizerEventListDetailsActivity extends AppCompatActivity {
                 .addOnFailureListener(e -> {
                     Toast.makeText(this, "Error retrieving event details: " + e.getMessage(), Toast.LENGTH_SHORT).show();
                 });
-
-        Notification.sendToSelected(eventId, "You have been selected to participate in an event." +
-                " Go to the accept invitation page to enroll");
-        Notification.sendToWating(eventId, "You have not been select to participate in " + eventName.getText().toString() +"."
-                + " Don't worry if somebody drops out you will get another chance to participate");
     }
 
 

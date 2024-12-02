@@ -51,6 +51,7 @@ dependencies {
     implementation(libs.ext.junit)
     implementation(libs.androidx.espresso.core)
     implementation(libs.firebase.crashlytics.buildtools)
+    implementation(libs.play.services.location)
     testImplementation(libs.junit)
     androidTestImplementation(libs.espresso.core)
     androidTestImplementation(libs.androidx.rules)
