@@ -11,7 +11,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * Represents an event in the system, which is associated with a facility and can have multiple users
+ * enrolled in it. The event contains various attributes like its name, description, capacity, start
+ * and end dates, and lists of users who have been selected, waiting, not selected, canceled, or enrolled.
+ */
 public class Event {
+
     private String eventId;
     private String name;
     private String description;
@@ -24,27 +30,29 @@ public class Event {
     private String qrCodeUrl;
     private String eventStatus;
     private Facility facility;
-
-    public void setFacility(Facility facility) {
-        this.facility = facility;
-    }
-
-    public List<String> getNotSelectedList() {
-        return notSelectedList;
-    }
-
-    public void setNotSelectedList(List<String> notSelectedList) {
-        this.notSelectedList = notSelectedList;
-    }
-
     private List<String> notSelectedList;
     private List<String> waitingList;
     private List<String> selectedList;
     private List<String> canceledList;
     private List<String> enrolledList;
 
-    // Constructor
-    public Event(String eventId, String name, String description, String organizerId, int capacity, boolean geolocationRequired, String startDate, String endDate, String eventPosterUrl, String qrCodeUrl, Facility facility) {
+    /**
+     * Constructor to initialize an event with the provided details.
+     * 
+     * @param eventId          The unique identifier for the event.
+     * @param name            The name of the event.
+     * @param description     A brief description of the event.
+     * @param organizerId     The ID of the event organizer.
+     * @param capacity        The maximum number of users that can enroll in the event.
+     * @param geolocationRequired A flag to indicate if geolocation is required for the event.
+     * @param startDate       The start date of the event.
+     * @param endDate         The end date of the event.
+     * @param eventPosterUrl  URL for the event's poster image.
+     * @param qrCodeUrl       URL for the event's QR code.
+     * @param facility        The facility hosting the event.
+     */
+    public Event(String eventId, String name, String description, String organizerId, int capacity, boolean geolocationRequired, 
+                 String startDate, String endDate, String eventPosterUrl, String qrCodeUrl, Facility facility) {
         this.eventId = eventId;
         this.name = name;
         this.description = description;
@@ -63,7 +71,27 @@ public class Event {
         this.enrolledList = new ArrayList<>();
     }
 
-    public Event(String eventId, String name, String description, String organizerId, int capacity, List<String> waitingList, List<String> selectedList, List<String> canceledList, List<String> enrolledList, boolean geolocationRequired, String startDate, String endDate, String eventPosterUrl, String qrCodeUrl) {
+    /**
+     * Constructor to initialize an event with specific lists for attendees.
+     * 
+     * @param eventId          The unique identifier for the event.
+     * @param name            The name of the event.
+     * @param description     A brief description of the event.
+     * @param organizerId     The ID of the event organizer.
+     * @param capacity        The maximum number of users that can enroll in the event.
+     * @param waitingList     The list of users who are currently waiting for the event.
+     * @param selectedList    The list of users who have been selected for the event.
+     * @param canceledList    The list of users who canceled their attendance.
+     * @param enrolledList    The list of users who have enrolled for the event.
+     * @param geolocationRequired A flag to indicate if geolocation is required for the event.
+     * @param startDate       The start date of the event.
+     * @param endDate         The end date of the event.
+     * @param eventPosterUrl  URL for the event's poster image.
+     * @param qrCodeUrl       URL for the event's QR code.
+     */
+    public Event(String eventId, String name, String description, String organizerId, int capacity, List<String> waitingList, 
+                 List<String> selectedList, List<String> canceledList, List<String> enrolledList, boolean geolocationRequired, 
+                 String startDate, String endDate, String eventPosterUrl, String qrCodeUrl) {
         this.eventId = eventId;
         this.name = name;
         this.description = description;
@@ -80,62 +108,13 @@ public class Event {
         this.enrolledList = enrolledList;
     }
 
-    public boolean isGeolocationRequired() {
-        return geolocationRequired;
-    }
+    // Getters and Setters for event properties
 
-    public void setGeolocationRequired(boolean geolocationRequired) {
-        this.geolocationRequired = geolocationRequired;
-    }
-
-    public List<String> getEnrolledList() {
-        return enrolledList;
-    }
-
-    public void setEnrolledList(List<String> enrolledList) {
-        this.enrolledList = enrolledList;
-    }
-
-    public String getStartDate() {
-        return startDate;
-    }
-
-    public void setStartDate(String startDate) {
-        this.startDate = startDate;
-    }
-
-    public String getEndDate() {
-        return endDate;
-    }
-
-    public String getEventPosterUrl() {
-        return eventPosterUrl;
-    }
-
-    public void setEventPosterUrl(String eventPosterUrl) {
-        this.eventPosterUrl = eventPosterUrl;
-    }
-
-    public String getQrCodeUrl() {
-        return qrCodeUrl;
-    }
-
-    public void setQrCodeUrl(String qrCodeUrl) {
-        this.qrCodeUrl = qrCodeUrl;
-    }
-
-    public String getEventStatus() {
-        return eventStatus;
-    }
-
-    public void setEventStatus(String eventStatus) {
-        this.eventStatus = eventStatus;
-    }
-
-    public void setEndDate(String endDate) {
-        this.endDate = endDate;
-    }
-
+    /**
+     * Returns the event's ID.
+     * 
+     * @return The event's unique identifier.
+     */
     public String getEventId() {
         return eventId;
     }
@@ -176,6 +155,62 @@ public class Event {
         this.capacity = capacity;
     }
 
+    public boolean isGeolocationRequired() {
+        return geolocationRequired;
+    }
+
+    public void setGeolocationRequired(boolean geolocationRequired) {
+        this.geolocationRequired = geolocationRequired;
+    }
+
+    public String getStartDate() {
+        return startDate;
+    }
+
+    public void setStartDate(String startDate) {
+        this.startDate = startDate;
+    }
+
+    public String getEndDate() {
+        return endDate;
+    }
+
+    public void setEndDate(String endDate) {
+        this.endDate = endDate;
+    }
+
+    public String getEventPosterUrl() {
+        return eventPosterUrl;
+    }
+
+    public void setEventPosterUrl(String eventPosterUrl) {
+        this.eventPosterUrl = eventPosterUrl;
+    }
+
+    public String getQrCodeUrl() {
+        return qrCodeUrl;
+    }
+
+    public void setQrCodeUrl(String qrCodeUrl) {
+        this.qrCodeUrl = qrCodeUrl;
+    }
+
+    public String getEventStatus() {
+        return eventStatus;
+    }
+
+    public void setEventStatus(String eventStatus) {
+        this.eventStatus = eventStatus;
+    }
+
+    public Facility getFacility() {
+        return facility;
+    }
+
+    public void setFacility(Facility facility) {
+        this.facility = facility;
+    }
+
     public List<String> getWaitingList() {
         return waitingList;
     }
@@ -192,16 +227,37 @@ public class Event {
         this.selectedList = selectedList;
     }
 
+    public List<String> getNotSelectedList() {
+        return notSelectedList;
+    }
+
+    public void setNotSelectedList(List<String> notSelectedList) {
+        this.notSelectedList = notSelectedList;
+    }
+
+    public List<String> getCanceledList() {
+        return canceledList;
+    }
+
     public void setCanceledList(List<String> canceledList) {
         this.canceledList = canceledList;
     }
 
-    public Facility getFacility() { return this.facility; }
+    public List<String> getEnrolledList() {
+        return enrolledList;
+    }
 
-    // Getters and Setters
-    public List<String> getCanceledList() { return canceledList; }
+    public void setEnrolledList(List<String> enrolledList) {
+        this.enrolledList = enrolledList;
+    }
 
-    // Add to canceled list
+    // Event-related methods
+
+    /**
+     * Cancels an entrant's attendance by moving them from the selected list to the canceled list.
+     * 
+     * @param entrant The entrant's ID.
+     */
     public void cancelAttendance(String entrant) {
         if (selectedList.contains(entrant)) {
             selectedList.remove(entrant);
@@ -209,10 +265,19 @@ public class Event {
         }
     }
 
+    /**
+     * Adds an entrant to the waiting list.
+     * 
+     * @param entrant The entrant's ID.
+     */
     public void addToWaitingList(String entrant) {
         waitingList.add(entrant);
     }
 
+    /**
+     * Draws entrants from the waiting list to be selected based on the event's capacity.
+     * If the number of entrants on the waiting list exceeds capacity, a random selection is made.
+     */
     public void drawEntrants() {
         if (waitingList.size() <= capacity) {
             selectedList.addAll(waitingList);
@@ -222,14 +287,29 @@ public class Event {
         }
     }
 
+    /**
+     * Returns the remaining capacity for the event.
+     * 
+     * @return The number of remaining slots for the event.
+     */
     public int remainingCapacity() {
         return capacity - selectedList.size();
     }
 
+    /**
+     * Checks whether the event has reached its full capacity.
+     * 
+     * @return True if the event is full, false otherwise.
+     */
     public boolean isFull() {
         return selectedList.size() >= capacity;
     }
 
+    /**
+     * Validates whether the event's start and end dates are in a valid range.
+     * 
+     * @return True if the start date is before the end date, false otherwise.
+     */
     public boolean isValidEventDate() {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
         try {
@@ -241,7 +321,11 @@ public class Event {
         }
     }
 
-    // Method to add an entrant to the waiting list
+    /**
+     * Adds an entrant to the waiting list if the event's capacity is not yet full.
+     * 
+     * @param entrant The entrant's ID.
+     */
     public void addEntrantToWaitingList(String entrant) {
         if (waitingList.size() < capacity) {
             waitingList.add(entrant);
@@ -250,11 +334,11 @@ public class Event {
         }
     }
 
-    public List<String> getSelectedEntrants() {
-        return selectedList;
-    }
-
-    // Convert Event object to a Map for Firestore storage
+    /**
+     * Converts the Event object into a Map suitable for Firestore storage.
+     * 
+     * @return A map containing all event details.
+     */
     public Map<String, Object> toMap() {
         Map<String, Object> map = new HashMap<>();
         map.put("eventId", eventId);
@@ -274,7 +358,6 @@ public class Event {
         map.put("qrCodeUrl", qrCodeUrl);
         map.put("eventStatus", eventStatus);
         map.put("facility", facility != null ? facility.toMap() : null);
-
         return map;
     }
 }
