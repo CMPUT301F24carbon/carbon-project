@@ -12,8 +12,20 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * Utility class for sending notifications to users using Firebase Cloud Messaging (FCM).
+ * The class provides methods for sending notifications to users in different categories
+ * such as "selected" users, "waiting" users, or any group of users.
+ * Notifications are sent based on user IDs stored in Firestore.
+ */
 public class Notification {
 
+    /**
+     * Sends a notification to a list of users.
+     *
+     * @param users The list of user IDs to send the notification to.
+     * @param body  The content of the notification body.
+     */
     public static void sendtoUsers(List<String> users, String body) {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         if (users != null) {
@@ -38,7 +50,12 @@ public class Notification {
         }
     }
 
-    //this sends a notification to all selected users in an event
+    /**
+     * Sends a notification to all selected users in an event.
+     *
+     * @param eventId The ID of the event for which the notification is being sent.
+     * @param body    The content of the notification body.
+     */
     public static void sendToSelected(String eventId, String body) {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         db.collection("events")
@@ -46,7 +63,7 @@ public class Notification {
                 .get()
                 .addOnSuccessListener(documentSnapshot -> {
                     if (documentSnapshot.exists()) {
-                        // Get list of user IDs in the event
+                        // Get list of user IDs in the event's selected list
                         List<String> userIds = (List<String>) documentSnapshot.get("selectedList");
 
                         if (userIds != null) {
@@ -73,7 +90,12 @@ public class Notification {
                 });
     }
 
-    //this sends a notification to all wating users in an event
+    /**
+     * Sends a notification to all waiting users in an event.
+     *
+     * @param eventId The ID of the event for which the notification is being sent.
+     * @param body    The content of the notification body.
+     */
     public static void sendToWating(String eventId, String body) {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         db.collection("events")
@@ -81,7 +103,7 @@ public class Notification {
                 .get()
                 .addOnSuccessListener(documentSnapshot -> {
                     if (documentSnapshot.exists()) {
-                        // Get list of user IDs in the event
+                        // Get list of user IDs in the event's waiting list
                         List<String> userIds = (List<String>) documentSnapshot.get("waitingList");
 
                         if (userIds != null) {
@@ -108,6 +130,12 @@ public class Notification {
                 });
     }
 
+    /**
+     * Sends a notification to a list of FCM tokens (users).
+     *
+     * @param fcmTokens The list of FCM tokens to send the notification to.
+     * @param body      The content of the notification body.
+     */
     private static void sendFcmNotifications(List<String> fcmTokens, String body) {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
 
@@ -119,7 +147,5 @@ public class Notification {
                 .update(map)
                 .addOnSuccessListener(aVoid -> Log.d("Firestore", "Document successfully updated!"))
                 .addOnFailureListener(e -> Log.w("Firestore", "Error updating document", e));
-
     }
-
 }
