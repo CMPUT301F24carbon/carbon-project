@@ -4,16 +4,35 @@ import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * Represents a facility that can host an event. A facility has properties such as an ID, name,
+ * location, capacity, and the organizer associated with it. This class is used to store and manage
+ * information related to the facilities available for events.
+ */
 public class Facility implements Serializable {
+
     private String facilityId;
     private String name;
     private String location;
     private int capacity;
     private String organizerId;
 
+    /**
+     * Default constructor for Facility.
+     * Initializes an empty Facility object.
+     */
     public Facility() {
     }
 
+    /**
+     * Constructs a Facility with the specified details.
+     *
+     * @param facilityId    The unique identifier for the facility.
+     * @param name          The name of the facility.
+     * @param location      The location of the facility.
+     * @param capacity      The maximum capacity of the facility.
+     * @param organizerId   The ID of the organizer associated with the facility.
+     */
     public Facility(String facilityId, String name, String location, int capacity, String organizerId) {
         this.facilityId = facilityId;
         this.name = name;
@@ -23,6 +42,12 @@ public class Facility implements Serializable {
     }
 
     // Getters and Setters
+
+    /**
+     * Returns the unique ID of the facility.
+     * 
+     * @return The facility's unique ID.
+     */
     public String getFacilityId() {
         return facilityId;
     }
@@ -31,6 +56,11 @@ public class Facility implements Serializable {
         this.facilityId = facilityId;
     }
 
+    /**
+     * Returns the name of the facility.
+     * 
+     * @return The facility's name.
+     */
     public String getName() {
         return name;
     }
@@ -39,6 +69,11 @@ public class Facility implements Serializable {
         this.name = name;
     }
 
+    /**
+     * Returns the location of the facility.
+     * 
+     * @return The facility's location.
+     */
     public String getLocation() {
         return location;
     }
@@ -47,6 +82,11 @@ public class Facility implements Serializable {
         this.location = location;
     }
 
+    /**
+     * Returns the capacity of the facility.
+     * 
+     * @return The maximum number of people the facility can accommodate.
+     */
     public int getCapacity() {
         return capacity;
     }
@@ -55,6 +95,11 @@ public class Facility implements Serializable {
         this.capacity = capacity;
     }
 
+    /**
+     * Returns the ID of the organizer associated with the facility.
+     * 
+     * @return The ID of the organizer.
+     */
     public String getOrganizerId() {
         return organizerId;
     }
@@ -63,7 +108,11 @@ public class Facility implements Serializable {
         this.organizerId = organizerId;
     }
 
-    // Convert Facility object to a Map for Firestore storage
+    /**
+     * Converts the Facility object into a Map suitable for Firestore storage.
+     * 
+     * @return A Map containing the facility's details.
+     */
     public Map<String, Object> toMap() {
         Map<String, Object> map = new HashMap<>();
         map.put("facilityId", facilityId);
