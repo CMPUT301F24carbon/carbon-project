@@ -169,7 +169,7 @@ public class OrganizerEventListDetailsActivity extends AppCompatActivity {
                             if (selectedList == null) {
                                 selectedList = new ArrayList<>();
                             }
-                            if(capacity >= waitingList.size()+selectedList.size() || capacity==0){
+                            if(capacity >= waitingList.size() + selectedList.size() || capacity==0){
                                 selectedList.addAll(waitingList);
                                 waitingList.clear();
                             }

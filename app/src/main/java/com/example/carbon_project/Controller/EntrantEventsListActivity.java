@@ -2,6 +2,7 @@ package com.example.carbon_project.Controller;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
@@ -38,12 +39,7 @@ public class EntrantEventsListActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_entrant_events);
 
-        entrant = (Entrant) getIntent().getSerializableExtra("userObject");
-
-        if (entrant == null) {
-            Toast.makeText(this, "Entrant data is missing!", Toast.LENGTH_SHORT).show();
-            return;
-        }
+        String entrantId = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
 
         // Initialize Firebase Firestore
         db = FirebaseFirestore.getInstance();
@@ -63,10 +59,20 @@ public class EntrantEventsListActivity extends AppCompatActivity {
             startActivity(intent);
         });
 
-        // Fetch all events and update the ListView
-        for (String eventId : entrant.getJoinedEvents()) {
-            addEventToList(eventId);
-        }
+        // Fetch entrant data from Firestore
+        db.collection("users").document(entrantId).get()
+                .addOnSuccessListener(documentSnapshot -> {
+                            if (documentSnapshot.exists()) {
+                                Map<String, Object> userData = documentSnapshot.getData();
+                                entrant = new Entrant(userData);
+
+                                // Fetch all events and update the ListView
+                                for (String eventId : entrant.getJoinedEvents()) {
+                                    System.out.println(eventId);
+                                    addEventToList(eventId);
+                                }
+                            }
+                        });
 
         // Back Button
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -106,7 +112,6 @@ public class EntrantEventsListActivity extends AppCompatActivity {
                                 + event.getDescription() + "\n"
                                 + event.getStartDate() + " to " + event.getEndDate() + "\n"
                                 + "Capacity: " + event.getCapacity();
-
 
                         // Add the event info to the list and the eventId to the ids list
                         eventsList.add(eventText);
