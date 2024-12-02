@@ -14,6 +14,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.carbon_project.Model.Event;
 import com.example.carbon_project.R;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.firestore.FieldValue;
@@ -30,9 +31,7 @@ public class EventDetailsActivity extends AppCompatActivity {
     // Firebase and data objects
     private FirebaseFirestore db;
     private String userId;
-    private String eventId;
-
-    List<String> waitingList;
+    private Event event;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,7 +46,7 @@ public class EventDetailsActivity extends AppCompatActivity {
         setupBottomNavigation();
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        eventId = getIntent().getStringExtra("eventId");
+        String eventId = getIntent().getStringExtra("eventId");
         if (eventId == null) {
             Toast.makeText(this, "Event ID is missing", Toast.LENGTH_SHORT).show();
             finish();
@@ -56,28 +55,39 @@ public class EventDetailsActivity extends AppCompatActivity {
 
         db = FirebaseFirestore.getInstance();
 
-        loadEventData();
+        loadEventData(eventId);
     }
 
     // Load event data from Firestore
-    private void loadEventData() {
+    private void loadEventData(String eventId) {
         db.collection("events").document(eventId).get()
                 .addOnSuccessListener(documentSnapshot -> {
                     if (documentSnapshot.exists()) {
-                        String eventNameString = documentSnapshot.getString("name");
-                        String eventDescriptionString = documentSnapshot.getString("description");
-                        String eventLocationString = documentSnapshot.getString("location");
-                        Boolean isGeolocationRequired = documentSnapshot.getBoolean("geolocationRequired");
-                        waitingList = (List<String>) documentSnapshot.get("waitingList");
+                        String name = documentSnapshot.getString("name");
+                        String description = documentSnapshot.getString("description");
+                        String organizerId = documentSnapshot.getString("organizerId");
+                        int capacity = documentSnapshot.getLong("capacity").intValue();
+                        List<String> waitingList = (List<String>) documentSnapshot.get("waitingList");
+                        List<String> selectedList = (List<String>) documentSnapshot.get("selectedList");
+                        List<String> canceledList = (List<String>) documentSnapshot.get("canceledList");
+                        List<String> enrolledList = (List<String>) documentSnapshot.get("enrolledList");
+                        Boolean geolocationRequired = documentSnapshot.getBoolean("geolocationRequired");
+                        String startDate = documentSnapshot.getString("startDate");
+                        String endDate = documentSnapshot.getString("endDate");
+                        String eventPosterUrl = documentSnapshot.getString("eventPosterUrl");
+                        String qrCodeUrl = documentSnapshot.getString("qrCodeUrl");
+
+                        // Create Event object
+                        event = new Event(eventId, name, description, organizerId, capacity, waitingList, selectedList, canceledList, enrolledList, geolocationRequired, startDate, endDate, eventPosterUrl, qrCodeUrl);
 
                         // Setup UI
-                        eventName.setText(eventNameString != null ? eventNameString : "Event name not provided");
-                        eventDescription.setText(eventDescriptionString != null ? eventDescriptionString : "No description available.");
+                        eventName.setText(name != null ? name : "Event name not provided");
+                        eventDescription.setText(description != null ? description : "No description available.");
 
                         leaveButton.setVisibility(View.GONE);
                         updateJoinLeaveButtonVisibility();
 
-                        joinButton.setOnClickListener(v -> handleJoinEvent(isGeolocationRequired));
+                        joinButton.setOnClickListener(v -> handleJoinEvent());
                         leaveButton.setOnClickListener(v -> updateEventWaitingList(false));
 
                     } else {
@@ -89,7 +99,7 @@ public class EventDetailsActivity extends AppCompatActivity {
 
     // Update visibility of join and leave buttons
     private void updateJoinLeaveButtonVisibility() {
-        if (waitingList != null && waitingList.contains(userId)) {
+        if (event.getWaitingList() != null && event.getWaitingList().contains(userId)) {
             joinButton.setVisibility(View.GONE);
             leaveButton.setVisibility(View.VISIBLE);
         } else {
@@ -99,8 +109,8 @@ public class EventDetailsActivity extends AppCompatActivity {
     }
 
     // Handle join event logic
-    private void handleJoinEvent(Boolean isGeolocationRequired) {
-        if (Boolean.TRUE.equals(isGeolocationRequired)) {
+    private void handleJoinEvent() {
+        if (Boolean.TRUE.equals(event.isGeolocationRequired())) {
             promptGeolocationConsent(() -> updateEventWaitingList(true));
         } else {
             updateEventWaitingList(true);
@@ -112,7 +122,7 @@ public class EventDetailsActivity extends AppCompatActivity {
         String operation = isJoining ? "add" : "remove";
         FieldValue action = isJoining ? FieldValue.arrayUnion(userId) : FieldValue.arrayRemove(userId);
 
-        db.collection("events").document(eventId)
+        db.collection("events").document(event.getEventId())
                 .update("waitingList", action)
                 .addOnSuccessListener(aVoid -> {
                     String message = isJoining ? "Successfully joined the event!" : "Successfully left the event!";
