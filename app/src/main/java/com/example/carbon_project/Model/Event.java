@@ -15,7 +15,7 @@ public class Event {
     private String eventId;
     private String name;
     private String description;
-    private String facilityId;
+    private String organizerId;
     private int capacity;
     private boolean geolocationRequired;
     private String startDate;
@@ -34,7 +34,7 @@ public class Event {
         this.eventId = (String) dataMap.get("eventId");
         this.name = (String) dataMap.get("name");
         this.description = (String) dataMap.get("description");
-        this.facilityId = (String) dataMap.get("facilityId");
+        this.organizerId = (String) dataMap.get("organizerId");
         Long longCapacity = (Long) dataMap.get("capacity");
         this.capacity = longCapacity != null ? longCapacity.intValue() : 0;
         this.geolocationRequired = (boolean) dataMap.get("geolocationRequired");
@@ -68,11 +68,11 @@ public class Event {
         this.qrCodeUrl = (String) dataMap.get("qrCodeUrl");
     }
 
-    public Event(String eventId, String name, String description, String facilityId, int capacity, boolean geolocationRequired, String startDate, String endDate, String eventPosterUrl, String qrCodeUrl) {
+    public Event(String eventId, String name, String description, String organizerId, int capacity, boolean geolocationRequired, String startDate, String endDate, String eventPosterUrl, String qrCodeUrl) {
         this.eventId = eventId;
         this.name = name;
         this.description = description;
-        this.facilityId = facilityId;
+        this.organizerId = organizerId;
         this.capacity = capacity;
         this.geolocationRequired = geolocationRequired;
         this.startDate = startDate;
@@ -85,11 +85,11 @@ public class Event {
         this.enrolledList = new ArrayList<>();
     }
 
-    public Event(String eventId, String name, String description, String facilityId, int capacity, List<String> waitingList, List<String> selectedList, List<String> canceledList, List<String> enrolledList, boolean geolocationRequired, String startDate, String endDate, String eventPosterUrl, String qrCodeUrl) {
+    public Event(String eventId, String name, String description, String organizerId, int capacity, List<String> waitingList, List<String> selectedList, List<String> canceledList, List<String> enrolledList, boolean geolocationRequired, String startDate, String endDate, String eventPosterUrl, String qrCodeUrl) {
         this.eventId = eventId;
         this.name = name;
         this.description = description;
-        this.facilityId = facilityId;
+        this.organizerId = organizerId;
         this.capacity = capacity;
         this.geolocationRequired = geolocationRequired;
         this.startDate = startDate;
@@ -182,12 +182,12 @@ public class Event {
         this.description = description;
     }
 
-    public String getFacilityId() {
-        return facilityId;
+    public String getOrganizerId() {
+        return organizerId;
     }
 
-    public void setFacilityId(String facilityId) {
-        this.facilityId = facilityId;
+    public void setOrganizerId(String facilityId) {
+        this.organizerId = organizerId;
     }
 
     public int getCapacity() {
@@ -280,7 +280,7 @@ public class Event {
         map.put("eventId", eventId);
         map.put("name", name);
         map.put("description", description);
-        map.put("facilityId", facilityId);
+        map.put("organizerId", organizerId);
         map.put("capacity", capacity);
         map.put("geolocationRequired", geolocationRequired);
         map.put("startDate", startDate);

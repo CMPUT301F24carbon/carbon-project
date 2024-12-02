@@ -51,7 +51,7 @@ public class EventTest {
         assertEquals("event123", event.getEventId());
         assertEquals("Tech Conference 2024", event.getName());
         assertEquals("A conference on the latest tech trends.", event.getDescription());
-        assertEquals("facility1", event.getFacilityId());
+        assertEquals("facility1", event.getOrganizerId());
         assertEquals(50, event.getCapacity());
         assertTrue(event.isGeolocationRequired());
         assertEquals("2024-05-01", event.getStartDate());

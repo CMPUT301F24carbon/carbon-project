@@ -26,6 +26,7 @@ public class OrganizerEventListDetailsActivity extends AppCompatActivity {
     private TextView eventName, eventDescription, eventCapacity, eventStart, eventEnd;
     private ImageView eventImage;
     private Button viewMapButton, viewWaitingListButton, viewSelectedListButton, viewCancelledListButton, viewEnrolledListButton, lotteryButton;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

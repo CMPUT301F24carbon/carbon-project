@@ -71,14 +71,14 @@ public class AdminEventListFragment extends Fragment {
                         String eventId = doc.getId();
                         String eventName = doc.getString("name");
                         String description = doc.getString("description");
-                        String facilityId = doc.getString("facilityId");
+                        String organizerId = doc.getString("organizerId");
                         int capacity = doc.getLong("capacity").intValue();
                         boolean geolocationRequired = doc.getBoolean("geolocationRequired");
                         String startDate = doc.getString("startDate");
                         String endDate = doc.getString("endDate");
                         String eventPosterURL = doc.getString("eventPosterURL");
                         String qrURL = doc.getString("qrCodeURL");
-                        data.add(new Event(eventId, eventName, description, facilityId, capacity, geolocationRequired, startDate, endDate, eventPosterURL ,qrURL));
+                        data.add(new Event(eventId, eventName, description, organizerId, capacity, geolocationRequired, startDate, endDate, eventPosterURL,qrURL));
                     }
                     adapter.notifyDataSetChanged();
                 }

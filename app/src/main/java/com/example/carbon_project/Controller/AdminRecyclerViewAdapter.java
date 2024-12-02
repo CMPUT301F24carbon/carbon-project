@@ -3,7 +3,6 @@ package com.example.carbon_project.Controller;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -140,7 +139,7 @@ public class AdminRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.
         public void bind(Event item) {
             eventNameTextView.setText(item.getName());
             eventDescriptionView.setText(item.getDescription());
-            eventFacilityTextView.setText(item.getFacilityId());
+            eventFacilityTextView.setText(item.getOrganizerId());
             eventCapacityTextView.setText(String.valueOf(item.getCapacity()));
             eventStartDateTextView.setText(item.getStartDate());
             eventEndDateTextView.setText(item.getEndDate());

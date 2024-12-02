@@ -207,7 +207,7 @@ public class CreateEventActivity extends AppCompatActivity {
 
         // Event poster URL (assuming the organizer uploads an image)
         String eventPosterUrl = "default_poster_url";
-        Event event = new Event(eventId, eventName, eventDescription, selectedFacility.getFacilityId(), eventCapacity, geolocationRequired, tvStartDate.getText().toString(), tvEndDate.getText().toString(), eventPosterUrl, qrUri);
+        Event event = new Event(eventId, eventName, eventDescription, organizerId, eventCapacity, geolocationRequired, tvStartDate.getText().toString(), tvEndDate.getText().toString(), eventPosterUrl, qrUri);
 
         // Save the event to Firestore
         db.collection("events").document(eventId).set(event.toMap())
