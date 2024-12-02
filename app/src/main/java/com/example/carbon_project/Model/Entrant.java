@@ -45,4 +45,7 @@ public class Entrant extends User implements Serializable {
                 });
     }
 
+    public List<String> getJoinedEvents() {
+        return joinedEvents;
+    }
 }

@@ -36,10 +36,9 @@ public class EventTest {
 
         // Create an event with real data
         event = new Event(
-                "event123", "Tech Conference 2024", "A conference on the latest tech trends.",
+                "event123", facility.getFacilityId(), "A conference on the latest tech trends.",
                 "organizer1", 50, true, "2024-05-01", "2024-05-03",
-                "http://example.com/poster.jpg", "http://example.com/qrcode.jpg",
-                facility
+                "http://example.com/poster.jpg", "http://example.com/qrcode.jpg"
         );
     }
 
@@ -52,15 +51,13 @@ public class EventTest {
         assertEquals("event123", event.getEventId());
         assertEquals("Tech Conference 2024", event.getName());
         assertEquals("A conference on the latest tech trends.", event.getDescription());
-        assertEquals("organizer1", event.getOrganizerId());
+        assertEquals("facility1", event.getFacilityId());
         assertEquals(50, event.getCapacity());
         assertTrue(event.isGeolocationRequired());
         assertEquals("2024-05-01", event.getStartDate());
         assertEquals("2024-05-03", event.getEndDate());
         assertEquals("http://example.com/poster.jpg", event.getEventPosterUrl());
         assertEquals("http://example.com/qrcode.jpg", event.getQrCodeUrl());
-        assertNotNull(event.getFacility());
-        assertEquals("facility1", event.getFacility().getFacilityId());
     }
 
     /**
