@@ -15,6 +15,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.example.carbon_project.R;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.Random;
@@ -34,6 +35,7 @@ public class OrganizerEventListDetailsActivity extends AppCompatActivity {
         db = FirebaseFirestore.getInstance();
 
         // Bind views
+        eventImage = findViewById(R.id.event_image);
         eventName = findViewById(R.id.event_name);
         eventDescription = findViewById(R.id.event_description);
         eventCapacity = findViewById(R.id.event_capacity);
@@ -106,6 +108,12 @@ public class OrganizerEventListDetailsActivity extends AppCompatActivity {
                         Boolean geolocationRequired = documentSnapshot.getBoolean("geolocationRequired");
 
                         // Populate views
+                        if (posterUrl != null && !posterUrl.isEmpty()) {
+                            Picasso.get()
+                                    .load(posterUrl)
+                                    .into(eventImage);
+                        }
+
                         eventName.setText(name);
                         eventDescription.setText(description);
                         eventCapacity.setText("Capacity: " + capacity);

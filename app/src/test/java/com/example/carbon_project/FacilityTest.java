@@ -1,91 +1,100 @@
 package com.example.carbon_project;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+
+import com.example.carbon_project.Model.Facility;
 
 import com.example.carbon_project.Model.Facility;
 
 import org.junit.Before;
 import org.junit.Test;
 
+import java.util.Map;
+
 /**
- * Test class for the Facility class.
+ * Unit tests for the Facility class in the Carbon Project.
+ * This test class validates the functionality of the Facility class,
+ * ensuring proper initialization and conversion to a map for database storage.
  */
 public class FacilityTest {
 
     private Facility facility;
 
     /**
-     * Sets up the test environment by initializing a sample Facility object.
+     * Setup method to initialize test data before each test.
+     * Creates a sample Facility with valid data.
      */
     @Before
     public void setUp() {
-        facility = new Facility("Conference Room", "New York", 50, "A large conference room with projectors.");
+        facility = new Facility("facility1", "Facility One", "1234 Address St", 100, "organizer1");
     }
 
     /**
-     * Tests the constructor and getter methods of the Facility class.
+     * Test the initialization of the Facility object to ensure all properties are set correctly.
      */
     @Test
-    public void testFacilityConstructor() {
-        // Test the constructor and getter methods
-        assertEquals("FAC001", facility.getFacilityId());
-        assertEquals("Conference Room", facility.getName());
-        assertEquals("New York", facility.getLocation());
-        assertEquals(50, facility.getCapacity());
-        assertEquals("A large conference room with projectors.", facility.getDescription());
-    }
-
-    /**
-     * Tests the setName method of the Facility class.
-     */
-    @Test
-    public void testSetName() {
-        // Test setter method
-        facility.setName("Meeting Room");
-        assertEquals("Meeting Room", facility.getName());
-    }
-
-    /**
-     * Tests the setLocation method of the Facility class.
-     */
-    @Test
-    public void testSetLocation() {
-        // Test setter method
-        facility.setLocation("Los Angeles");
-        assertEquals("Los Angeles", facility.getLocation());
-    }
-
-    /**
-     * Tests the setCapacity method of the Facility class.
-     */
-    @Test
-    public void testSetCapacity() {
-        // Test setter method
-        facility.setCapacity(100);
+    public void testFacilityInitialization() {
+        // Check if the facility is initialized correctly
+        assertEquals("facility1", facility.getFacilityId());
+        assertEquals("Facility One", facility.getName());
+        assertEquals("1234 Address St", facility.getLocation());
         assertEquals(100, facility.getCapacity());
+        assertEquals("organizer1", facility.getOrganizerId());
     }
 
     /**
-     * Tests the setDescription method of the Facility class.
+     * Test the default constructor of the Facility class.
+     * Ensures that the fields are initialized to their default values.
      */
     @Test
-    public void testSetDescription() {
-        // Test setter method
-        facility.setDescription("A small meeting room.");
-        assertEquals("A small meeting room.", facility.getDescription());
+    public void testDefaultConstructor() {
+        Facility defaultFacility = new Facility();
+
+        // Verify all fields are null or zero
+        assertNull(defaultFacility.getFacilityId());
+        assertNull(defaultFacility.getName());
+        assertNull(defaultFacility.getLocation());
+        assertEquals(0, defaultFacility.getCapacity());
+        assertNull(defaultFacility.getOrganizerId());
     }
 
     /**
-     * Tests creating a Facility object with empty fields.
+     * Test the setters and getters of the Facility class.
+     * Verifies that the setter methods correctly set the field values.
      */
     @Test
-    public void testFacilityWithEmptyFields() {
-        // Create a facility with empty name
-        Facility emptyFacility = new Facility("", "Los Angeles", 0, "");
-        assertTrue(emptyFacility.getName().isEmpty());
-        assertEquals("Los Angeles", emptyFacility.getLocation());
-        assertEquals(0, emptyFacility.getCapacity());
-        assertTrue(emptyFacility.getDescription().isEmpty());
+    public void testSettersAndGetters() {
+        Facility updatedFacility = new Facility();
+
+        updatedFacility.setFacilityId("facility2");
+        updatedFacility.setName("Updated Facility");
+        updatedFacility.setLocation("5678 Another St");
+        updatedFacility.setCapacity(200);
+        updatedFacility.setOrganizerId("organizer2");
+
+        assertEquals("facility2", updatedFacility.getFacilityId());
+        assertEquals("Updated Facility", updatedFacility.getName());
+        assertEquals("5678 Another St", updatedFacility.getLocation());
+        assertEquals(200, updatedFacility.getCapacity());
+        assertEquals("organizer2", updatedFacility.getOrganizerId());
+    }
+
+    /**
+     * Test the conversion of the Facility object to a Map representation.
+     * This is used for storing facility data in a database or transferring it across systems.
+     */
+    @Test
+    public void testToMapConversion() {
+        // Convert the facility to a map and check if all fields are correctly mapped
+        Map<String, Object> facilityMap = facility.toMap();
+
+        assertNotNull(facilityMap);
+        assertEquals("facility1", facilityMap.get("facilityId"));
+        assertEquals("Facility One", facilityMap.get("name"));
+        assertEquals("1234 Address St", facilityMap.get("location"));
+        assertEquals(100, facilityMap.get("capacity"));
+        assertEquals("organizer1", facilityMap.get("organizerId"));
     }
 }

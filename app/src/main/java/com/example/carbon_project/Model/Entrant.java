@@ -45,8 +45,4 @@ public class Entrant extends User implements Serializable {
                 });
     }
 
-    // Specific methods for entrants
-    public void joinEvent(String eventId) { joinedEvents.add(eventId); }
-    public void leaveEvent(String eventId) { joinedEvents.remove(eventId); }
-    public List<String> getJoinedEvents() { return joinedEvents; }
 }
