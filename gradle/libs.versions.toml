@@ -19,6 +19,7 @@ firebaseStorage = "21.0.1"
 firebaseCrashlyticsBuildtools = "3.0.2"
 firebaseMessaging = "23.1.1"
 firebaseFunctions = "20.1.0"
+playServicesLocation = "21.3.0"
 
 [libraries]
 androidx-rules = { module = "androidx.test:rules", version.ref = "rules" }
@@ -40,6 +41,7 @@ firebase-storage = { group = "com.google.firebase", name = "firebase-storage", v
 firebase-crashlytics-buildtools = { group = "com.google.firebase", name = "firebase-crashlytics-buildtools", version.ref = "firebaseCrashlyticsBuildtools" }
 firebase-messaging = { group = "com.google.firebase", name = "firebase-messaging", version.ref = "firebaseMessaging" }
 firebase-functions = {group = "com.google.firebase", name = "firebase-functions", version.ref =  "firebaseFunctions"}
+play-services-location = { group = "com.google.android.gms", name = "play-services-location", version.ref = "playServicesLocation" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

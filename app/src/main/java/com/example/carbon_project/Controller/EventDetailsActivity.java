@@ -1,6 +1,5 @@
 package com.example.carbon_project.Controller;
 
-import android.annotation.SuppressLint;
 import android.content.Intent;
 
 import android.os.Bundle;
@@ -17,6 +16,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.carbon_project.Model.Event;
 import com.example.carbon_project.R;
+import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -36,6 +36,8 @@ public class EventDetailsActivity extends AppCompatActivity {
     private FirebaseFirestore db;
     private String userId;
     private Event event;
+
+    private FusedLocationProviderClient fusedLocationClient;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -176,18 +178,19 @@ public class EventDetailsActivity extends AppCompatActivity {
     // Handle join event logic
     private void handleJoinEvent() {
         if (event.getCanceledList().contains(userId)) {
-            updateList("canceledList", "waitingList");
+            Toast.makeText(this, "You cannot rejoin an event that has been canceled", Toast.LENGTH_SHORT).show();
         } else {
             updateList(null, "waitingList");
+            db.collection("users").document(userId)
+                    .update("joinedEvents", FieldValue.arrayUnion(event.getEventId()));
         }
-        db.collection("users").document(userId)
-                .update("joinedEvents", FieldValue.arrayUnion(event.getEventId()));
     }
 
     // Handle leave event logic
     private void handleLeaveEvent() {
-        if (event.getWaitingList().contains(userId) || event.getSelectedList().contains(userId)) {
-            updateList("waitingList", "canceledList");
+        if (event.getWaitingList().contains(userId)) {
+            updateList("waitingList", null);
+        } else if (event.getSelectedList().contains(userId)) {
             updateList("selectedList", "canceledList");
         }
         db.collection("users").document(userId)
