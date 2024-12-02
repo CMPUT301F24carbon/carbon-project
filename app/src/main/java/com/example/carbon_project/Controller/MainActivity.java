@@ -10,6 +10,7 @@ import android.os.Bundle;
 import android.provider.Settings;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
@@ -106,5 +107,50 @@ public class MainActivity extends AppCompatActivity {
         intent = new Intent(MainActivity.this, activityClass);
         intent.putExtra("userObject", user);
         startActivity(intent);
+    }
+
+    private void handlePermissions() {
+        // Check for both permissions
+        boolean cameraGranted = ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED;
+        boolean notificationGranted = ContextCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS) == PackageManager.PERMISSION_GRANTED;
+        if (cameraGranted && notificationGranted) {
+            // Both permissions are already granted
+            Toast.makeText(this, "All permissions granted", Toast.LENGTH_SHORT).show();
+        } else {
+            // Show rationale if needed
+            if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.CAMERA) ||
+                    ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.POST_NOTIFICATIONS)) {
+                Toast.makeText(this, "Camera and notification permissions are required for this app", Toast.LENGTH_LONG).show();
+            }
+            // Request both permissions
+            ActivityCompat.requestPermissions(this,
+                    new String[]{
+                            Manifest.permission.CAMERA,
+                            Manifest.permission.POST_NOTIFICATIONS
+                    },
+                    101);
+        }
+    }
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        if (requestCode == 101) {
+            boolean cameraGranted = false;
+            boolean notificationGranted = false;
+            for (int i = 0; i < permissions.length; i++) {
+                if (permissions[i].equals(Manifest.permission.CAMERA)) {
+                    cameraGranted = grantResults[i] == PackageManager.PERMISSION_GRANTED;
+                } else if (permissions[i].equals(Manifest.permission.POST_NOTIFICATIONS)) {
+                    notificationGranted = grantResults[i] == PackageManager.PERMISSION_GRANTED;
+                }
+            }
+            if (cameraGranted && notificationGranted) {
+                Toast.makeText(this, "All permissions granted", Toast.LENGTH_SHORT).show();
+            } else if (!cameraGranted) {
+                Toast.makeText(this, "Camera permission denied", Toast.LENGTH_SHORT).show();
+            } else if (!notificationGranted) {
+                Toast.makeText(this, "Notification permission denied", Toast.LENGTH_SHORT).show();
+            }
+        }
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
     }
 }
