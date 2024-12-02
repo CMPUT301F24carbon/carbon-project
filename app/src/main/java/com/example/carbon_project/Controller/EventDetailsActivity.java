@@ -1,4 +1,5 @@
 package com.example.carbon_project.Controller;
+import com.example.carbon_project.R;
 
 import android.content.Intent;
 import android.app.AlertDialog;

@@ -1,4 +1,5 @@
 package com.example.carbon_project.Controller;
+import com.example.carbon_project.R;
 
 import android.os.Bundle;
 import androidx.annotation.NonNull;
@@ -14,7 +15,6 @@ import android.view.ViewGroup;
 import android.widget.Toast;
 
 import com.example.carbon_project.Model.Facility;
-import com.example.carbon_project.R;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
