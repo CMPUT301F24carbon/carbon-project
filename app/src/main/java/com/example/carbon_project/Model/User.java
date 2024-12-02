@@ -26,7 +26,8 @@ public class User implements Serializable {
         this.email = (String) map.get("email");
         this.phoneNumber = (String) map.get("phoneNumber");
         this.profilePictureUrl = (String) map.get("profilePictureUrl");
-        this.fcm = (String) map.get("fcm");
+
+        this.requestToken();
     }
 
     public User(String userId, String name, String email, String phoneNumber, String role) {
