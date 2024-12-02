@@ -3,7 +3,9 @@ package com.example.carbon_project.Controller;
 import android.app.DatePickerDialog;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.provider.Settings;
 import android.util.Base64;
 import android.view.MenuItem;
@@ -11,6 +13,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -24,6 +27,8 @@ import com.example.carbon_project.R;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.WriterException;
 import com.journeyapps.barcodescanner.BarcodeEncoder;
@@ -34,6 +39,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Locale;
 import java.util.UUID;
+
 public class CreateEventActivity extends AppCompatActivity {
 
     private EditText etEventName, etEventDescription, etEventCapacity;
@@ -41,13 +47,17 @@ public class CreateEventActivity extends AppCompatActivity {
     private Button btnSaveEvent;
     private CheckBox cbGeolocationRequired;
     private Spinner spFacility;
+    private ImageView ivEventPoster;
     private FirebaseFirestore db;
     private String organizerId;
     private ArrayList<Facility> facilityList;
+    private Uri eventPosterUri;
 
     // Variables for the date picker
     private int startYear, startMonth, startDay;
     private int endYear, endMonth, endDay;
+
+    private static final int PICK_IMAGE_REQUEST = 1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,7 +65,6 @@ public class CreateEventActivity extends AppCompatActivity {
         setContentView(R.layout.activity_create_event);
 
         db = FirebaseFirestore.getInstance();
-
         organizerId = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
 
         // Initialize views
@@ -67,6 +76,7 @@ public class CreateEventActivity extends AppCompatActivity {
         cbGeolocationRequired = findViewById(R.id.cbGeolocationRequired);
         btnSaveEvent = findViewById(R.id.btnSaveEvent);
         spFacility = findViewById(R.id.spinnerFacility);
+        ivEventPoster = findViewById(R.id.ivEventPoster);
 
         // Initialize the facility list
         facilityList = new ArrayList<>();
@@ -75,6 +85,8 @@ public class CreateEventActivity extends AppCompatActivity {
         tvEndDate.setOnClickListener(v -> showDatePickerDialog(false));
 
         btnSaveEvent.setOnClickListener(v -> createAndSaveEvent());
+
+        ivEventPoster.setOnClickListener(v -> openImagePicker());
 
         fetchFacilitiesForOrganizer(organizerId);
 
@@ -204,12 +216,44 @@ public class CreateEventActivity extends AppCompatActivity {
         byte[] qrCode = generateQRCodeForEvent(eventId);
         String qrUri = byteArrayToUri(qrCode);
 
-        // Event poster URL (assuming the organizer uploads an image)
+        // Set default event poster URL
         String eventPosterUrl = "default_poster_url";
+
+        // Create the Event object with placeholder poster URL
         Event event = new Event(eventId, eventName, eventDescription, organizerId, eventCapacity, geolocationRequired, tvStartDate.getText().toString(), tvEndDate.getText().toString(), eventPosterUrl, qrUri, selectedFacility);
 
-        // Save the event to Firestore
-        db.collection("events").document(eventId).set(event.toMap())
+        if (eventPosterUri != null) {
+            // Upload the event poster
+            uploadEventPoster(eventId, event, qrCode);
+        } else {
+            // If no poster, directly save event to Firestore
+            saveEventToFirestore(event, qrCode);
+        }
+    }
+
+    private void uploadEventPoster(String eventId, final Event event, byte[] qrCode) {
+        StorageReference storageReference = FirebaseStorage.getInstance().getReference();
+        StorageReference eventPosterRef = storageReference.child("event_posters/" + eventId + ".jpg");
+
+        // Upload image
+        eventPosterRef.putFile(eventPosterUri)
+                .addOnSuccessListener(taskSnapshot -> {
+                    eventPosterRef.getDownloadUrl().addOnSuccessListener(uri -> {
+                        String eventPosterUrl = uri.toString();
+                        event.setEventPosterUrl(eventPosterUrl); // Update the event's poster URL
+                        Toast.makeText(CreateEventActivity.this, "Poster uploaded successfully", Toast.LENGTH_SHORT).show();
+
+                        // After poster upload, save the event to Firestore
+                        saveEventToFirestore(event, qrCode);
+                    });
+                })
+                .addOnFailureListener(e -> {
+                    Toast.makeText(CreateEventActivity.this, "Error uploading poster: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                });
+    }
+
+    private void saveEventToFirestore(Event event, byte[] qrCode) {
+        db.collection("events").document(event.getEventId()).set(event.toMap())
                 .addOnSuccessListener(aVoid -> {
                     Toast.makeText(CreateEventActivity.this, "Event created successfully", Toast.LENGTH_SHORT).show();
                     // Navigate to the QR code activity
@@ -239,9 +283,42 @@ public class CreateEventActivity extends AppCompatActivity {
         }
     }
 
-    // Turn a Byte array into a base64-encoded Uri to be stored in Firestore
-    public String byteArrayToUri(byte[] byteArray) {
-        // Convert byte array to Base64 string
-        return Base64.encodeToString(byteArray, Base64.DEFAULT);
+    // Turn a Byte array into a URI to store it as a QR code image URL
+    private String byteArrayToUri(byte[] byteArray) {
+        return Base64.encodeToString(byteArray, Base64.NO_WRAP);
+    }
+
+    private void uploadEventPoster(String eventId, final Event event) {
+        StorageReference storageReference = FirebaseStorage.getInstance().getReference();
+        StorageReference eventPosterRef = storageReference.child("event_posters/" + eventId + ".jpg");
+
+        // Upload image
+        eventPosterRef.putFile(eventPosterUri)
+                .addOnSuccessListener(taskSnapshot -> {
+                    eventPosterRef.getDownloadUrl().addOnSuccessListener(uri -> {
+                        String eventPosterUrl = uri.toString();
+                        event.setEventPosterUrl(eventPosterUrl); // Update the event's poster URL
+                        Toast.makeText(CreateEventActivity.this, "Poster uploaded successfully", Toast.LENGTH_SHORT).show();
+                    });
+                })
+                .addOnFailureListener(e -> {
+                    Toast.makeText(CreateEventActivity.this, "Error uploading poster: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                });
+    }
+
+
+    private void openImagePicker() {
+        Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+        intent.setType("image/*");
+        startActivityForResult(Intent.createChooser(intent, "Select Event Poster"), PICK_IMAGE_REQUEST);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == PICK_IMAGE_REQUEST && resultCode == RESULT_OK && data != null && data.getData() != null) {
+            eventPosterUri = data.getData();
+            ivEventPoster.setImageURI(eventPosterUri);
+        }
     }
 }

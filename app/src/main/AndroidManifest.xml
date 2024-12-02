@@ -28,7 +28,6 @@
         <activity android:name="com.example.carbon_project.Controller.ViewEventsActivity" />
 
         <activity android:name="com.example.carbon_project.Controller.EventManagementActivity" />
-        <activity android:name="com.example.carbon_project.Controller.EventListActivity" />
         <activity android:name="com.example.carbon_project.Controller.EventDetailsActivity" />
         <activity android:name="com.example.carbon_project.Controller.EntrantDashboardActivity" />
         <activity android:name="com.example.carbon_project.Controller.EntrantEventsListActivity" />
@@ -54,6 +53,8 @@
 
     <!-- Permission to access personal storage to upload image -->
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
 
