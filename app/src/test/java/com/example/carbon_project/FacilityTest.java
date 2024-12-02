@@ -6,8 +6,6 @@ import static org.junit.Assert.assertNull;
 
 import com.example.carbon_project.Model.Facility;
 
-import com.example.carbon_project.Model.Facility;
-
 import org.junit.Before;
 import org.junit.Test;
 
