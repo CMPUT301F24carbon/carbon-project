@@ -1,10 +1,13 @@
 package com.example.carbon_project.Controller;
 
 import android.os.Bundle;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.carbon_project.R;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
 
 import org.osmdroid.api.IMapController;
 import org.osmdroid.config.Configuration;
@@ -16,6 +19,8 @@ import org.osmdroid.views.overlay.Marker;
 public class OrganizerMapActivity extends AppCompatActivity {
 
     private MapView mapView;
+    private FirebaseFirestore db;
+    private String eventId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -25,6 +30,11 @@ public class OrganizerMapActivity extends AppCompatActivity {
         Configuration.getInstance().setUserAgentValue(getPackageName());
 
         setContentView(R.layout.activity_organizer_map);
+
+        eventId = getIntent().getStringExtra("eventId");
+
+        // Initialize Firestore
+        db = FirebaseFirestore.getInstance();
 
         // Initialize MapView
         mapView = findViewById(R.id.map);
@@ -37,11 +47,35 @@ public class OrganizerMapActivity extends AppCompatActivity {
         GeoPoint startPoint = new GeoPoint(37.7749, -122.4194); // Example: San Francisco
         mapController.setCenter(startPoint);
 
-        // Add a marker
-        Marker marker = new Marker(mapView);
-        marker.setPosition(startPoint);
-        marker.setTitle("Marker in San Francisco");
-        mapView.getOverlays().add(marker);
+        // Fetch geolocations from Firestore and add markers
+        fetchGeolocationsAndAddMarkers();
+    }
+
+    private void fetchGeolocationsAndAddMarkers() {
+        // Fetch the geolocation data (latitude and longitude) from Firestore
+        db.collection("events") // Replace with the actual collection containing event data
+                .get()
+                .addOnSuccessListener(queryDocumentSnapshots -> {
+                    for (QueryDocumentSnapshot document : queryDocumentSnapshots) {
+                        Double latitude = document.getDouble("latitude");
+                        Double longitude = document.getDouble("longitude");
+
+                        if (latitude != null && longitude != null) {
+                            // Create a GeoPoint for the location
+                            GeoPoint geoPoint = new GeoPoint(latitude, longitude);
+
+                            // Add a marker on the map
+                            Marker marker = new Marker(mapView);
+                            marker.setPosition(geoPoint);
+                            marker.setTitle(document.getString("eventName")); // Set event name as the marker title
+                            mapView.getOverlays().add(marker);
+                        }
+                    }
+                })
+                .addOnFailureListener(e -> {
+                    // Handle failure if needed
+                    Toast.makeText(this, "Error fetching geolocations: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                });
     }
 
     @Override
@@ -60,3 +94,4 @@ public class OrganizerMapActivity extends AppCompatActivity {
         }
     }
 }
+

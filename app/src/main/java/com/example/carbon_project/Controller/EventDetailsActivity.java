@@ -1,7 +1,10 @@
 package com.example.carbon_project.Controller;
 
+import android.Manifest;
+import android.app.AlertDialog;
 import android.content.Intent;
 
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.view.MenuItem;
@@ -13,6 +16,8 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 
 import com.example.carbon_project.Model.Event;
 import com.example.carbon_project.R;
@@ -22,6 +27,7 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -39,6 +45,7 @@ public class EventDetailsActivity extends AppCompatActivity {
     private Event event;
 
     private FusedLocationProviderClient fusedLocationClient;
+    private static final int LOCATION_PERMISSION_REQUEST_CODE = 1000;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -140,7 +147,13 @@ public class EventDetailsActivity extends AppCompatActivity {
         updateButtonVisibility();
 
         // Set button click listeners
-        joinButton.setOnClickListener(v -> handleJoinEvent());
+        joinButton.setOnClickListener(v -> {
+            if (event.isGeolocationRequired()) {
+                promptGeolocationConsent(() -> handleJoinEvent());
+            } else {
+                handleJoinEvent();
+            }
+        });
         leaveButton.setOnClickListener(v -> handleLeaveEvent());
         enrollButton.setOnClickListener(v -> handleEnrollEvent());
     }
@@ -203,7 +216,7 @@ public class EventDetailsActivity extends AppCompatActivity {
     // Handle enroll event logic
     private void handleEnrollEvent() {
         if (event.getSelectedList().contains(userId)) {
-            updateList("selectedList", "enrolledList");;
+            updateList("selectedList", "enrolledList");
         }
     }
 
@@ -236,6 +249,61 @@ public class EventDetailsActivity extends AppCompatActivity {
     // Show error message
     private void showError(String message) {
         Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
+    }
+
+    // Prompt for geolocation consent
+    private void promptGeolocationConsent(Runnable onConsent) {
+        new AlertDialog.Builder(this)
+                .setTitle("Location Sharing Required")
+                .setMessage("This event requires you to share your location. Do you want to proceed?")
+                .setPositiveButton("OK", (dialog, which) -> {
+                    if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
+                            == PackageManager.PERMISSION_GRANTED) {
+                        getLocationAndUpdate();
+                        onConsent.run();
+                    } else {
+                        ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
+                                LOCATION_PERMISSION_REQUEST_CODE);
+                    }
+                })
+                .setNegativeButton("Cancel", (dialog, which) -> Toast.makeText(this, "Location sharing is required to join this event.", Toast.LENGTH_SHORT).show())
+                .show();
+    }
+
+    // Handle permission request results
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == LOCATION_PERMISSION_REQUEST_CODE) {
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                getLocationAndUpdate();
+            } else {
+                Toast.makeText(this, "Permission denied", Toast.LENGTH_SHORT).show();
+            }
+        }
+    }
+
+    // Update waiting list with location data
+    private void getLocationAndUpdate() {
+        fusedLocationClient.getLastLocation()
+                .addOnSuccessListener(this, location -> {
+                    if (location != null) {
+                        double latitude = location.getLatitude();
+                        double longitude = location.getLongitude();
+
+                        // Create a map to hold the user's data, including userId and location
+                        Map<String, Object> userLocation = new HashMap<>();
+                        userLocation.put("latitude", latitude);
+                        userLocation.put("longitude", longitude);
+
+                        // Add this user's location to the waiting list in Firestore
+                        db.collection("events").document(event.getEventId())
+                                .update("geoLocations", FieldValue.arrayUnion(userLocation));
+                    } else {
+                        showError("Unable to retrieve location.");
+                    }
+                })
+                .addOnFailureListener(e -> showError("Failed to get location: " + e.getMessage()));
     }
 }
 
