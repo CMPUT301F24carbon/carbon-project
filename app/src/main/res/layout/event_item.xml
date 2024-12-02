@@ -7,6 +7,7 @@
 
     <!-- Picture on the left -->
     <ImageView
+        android:id="@+id/event_image"
         android:layout_width="100dp"
         android:layout_height="100dp"
         android:src="@drawable/ic_image"
@@ -69,13 +70,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
         </LinearLayout>
-
-        <TextView
-            android:id="@+id/textView_status"
-            android:text="Waitlist"
-            android:textSize="14sp"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
 
     </LinearLayout>
 </LinearLayout>

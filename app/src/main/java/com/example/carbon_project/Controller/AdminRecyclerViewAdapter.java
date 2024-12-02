@@ -3,6 +3,7 @@ package com.example.carbon_project.Controller;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -11,6 +12,7 @@ import com.example.carbon_project.Model.Event;
 import com.example.carbon_project.Model.Facility;
 import com.example.carbon_project.Model.User;
 import com.example.carbon_project.R;
+import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
@@ -81,6 +83,7 @@ public class AdminRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.
     }
 
     static class UserViewHolder extends RecyclerView.ViewHolder {
+        ImageView profilePicture;
         TextView name;
         TextView email;
         TextView phone;
@@ -88,6 +91,7 @@ public class AdminRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.
 
         public UserViewHolder(@NonNull View itemView, OnItemClickListener listener) {
             super(itemView);
+            profilePicture = itemView.findViewById(R.id.profile_picture);
             name = itemView.findViewById(R.id.name);
             email = itemView.findViewById(R.id.email);
             phone = itemView.findViewById(R.id.phone);
@@ -100,6 +104,11 @@ public class AdminRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.
         }
 
         public void bind(User item) {
+            if (item.getProfilePictureUrl() != null && !item.getProfilePictureUrl().isEmpty()) {
+                Picasso.get()
+                        .load(item.getProfilePictureUrl())
+                        .into(profilePicture);
+            }
             name.setText(item.getName());
             email.setText(item.getEmail());
             if (item.getPhoneNumber() != null || !item.getPhoneNumber().isEmpty()) {
@@ -113,6 +122,7 @@ public class AdminRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.
     }
 
     static class EventViewHolder extends RecyclerView.ViewHolder {
+        ImageView eventImage;
         TextView eventNameTextView;
         TextView eventDescriptionView;
         TextView eventFacilityTextView;
@@ -122,6 +132,7 @@ public class AdminRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.
 
         public EventViewHolder(@NonNull View itemView, OnItemClickListener listener) {
             super(itemView);
+            eventImage = itemView.findViewById(R.id.event_image);
             eventNameTextView = itemView.findViewById(R.id.textView_event_name);
             eventDescriptionView = itemView.findViewById(R.id.textView_description);
             eventFacilityTextView = itemView.findViewById(R.id.textView_facility_name);
@@ -137,6 +148,11 @@ public class AdminRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.
         }
 
         public void bind(Event item) {
+            if (item.getEventPosterUrl() != null && !item.getEventPosterUrl().isEmpty()) {
+                Picasso.get()
+                        .load(item.getEventPosterUrl())
+                        .into(eventImage);
+            }
             eventNameTextView.setText(item.getName());
             eventDescriptionView.setText(item.getDescription());
             eventFacilityTextView.setText(item.getOrganizerId());
