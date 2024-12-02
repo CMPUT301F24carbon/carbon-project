@@ -10,6 +10,7 @@ import java.util.Map;
 public class Organizer extends User implements Serializable {
     private List<String> createdEvents;
     private List<String> facilityIds;
+    private List<String> joinedEvents;
 
     public Organizer(Map<String, Object> map) {
         super(map);
@@ -23,6 +24,11 @@ public class Organizer extends User implements Serializable {
             this.facilityIds = (List<String>) map.get("facilityIds");
         } else {
             this.facilityIds = new ArrayList<>();
+        }
+        if (map.containsKey("joinedEvents")) {
+            this.joinedEvents = (List<String>) map.get("joinedEvents");
+        } else {
+            this.joinedEvents = new ArrayList<>();
         }
     }
 
@@ -46,6 +52,7 @@ public class Organizer extends User implements Serializable {
     public Map<String, Object> toMap() {
         Map<String, Object> map = super.toMap();
         map.put("createdEvents", createdEvents);
+        map.put("joinedEvents", joinedEvents);
         return map;
     }
 
