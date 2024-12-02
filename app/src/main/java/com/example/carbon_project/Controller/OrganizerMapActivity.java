@@ -47,7 +47,7 @@ public class OrganizerMapActivity extends AppCompatActivity {
         // Set initial map view
         IMapController mapController = mapView.getController();
         mapController.setZoom(10.0);
-        GeoPoint startPoint = new GeoPoint(53.631611, -113.323975); // Example: Edmonton
+        GeoPoint startPoint = new GeoPoint(37.773972, -122.431297); // Example: San Francisco
         mapController.setCenter(startPoint);
 
         // Fetch geolocations from Firestore and add markers
