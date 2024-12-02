@@ -63,9 +63,6 @@ public class OrganizerSendNotifActivity extends AppCompatActivity {
                     case "Selected List":
                         Notification.sendToSelected(eventId,bodyText);
                         break;
-                    case "Rejected List":
-                        Notification.sendToNotSelected(eventId,bodyText);
-                        break;
                     case "Waiting List":
                         Notification.sendToWating(eventId,bodyText);
                         break;

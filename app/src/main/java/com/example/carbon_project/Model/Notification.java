@@ -108,41 +108,6 @@ public class Notification {
                 });
     }
 
-    //sends a notification to all rejected users in an event
-    public static void sendToNotSelected(String eventId, String body) {
-        FirebaseFirestore db = FirebaseFirestore.getInstance();
-        db.collection("events")
-                .document(eventId)
-                .get()
-                .addOnSuccessListener(documentSnapshot -> {
-                    if (documentSnapshot.exists()) {
-                        // Get list of user IDs in the event
-                        List<String> userIds = (List<String>) documentSnapshot.get("notSelectedList");
-
-                        if (userIds != null) {
-                            // Fetch the FCM tokens for these users
-                            db.collection("users")
-                                    .whereIn("userId", userIds)
-                                    .get()
-                                    .addOnSuccessListener(querySnapshot -> {
-                                        List<String> fcmTokens = new ArrayList<>();
-                                        for (QueryDocumentSnapshot userDoc : querySnapshot) {
-                                            String token = userDoc.getString("fcm");
-                                            if (token != null) {
-                                                fcmTokens.add(token);
-                                            }
-                                        }
-
-                                        // Send notifications using FCM
-                                        if (!fcmTokens.isEmpty()) {
-                                            sendFcmNotifications(fcmTokens, body);
-                                        }
-                                    });
-                        }
-                    }
-                });
-    }
-
     private static void sendFcmNotifications(List<String> fcmTokens, String body) {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
 
