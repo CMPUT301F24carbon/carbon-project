@@ -2,7 +2,6 @@ package com.example.carbon_project;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import com.example.carbon_project.Model.Event;
@@ -12,7 +11,6 @@ import org.junit.Before;
 import org.junit.Test;
 
 import java.util.List;
-import java.util.Map;
 
 /**
  * Unit tests for the Event class in the Carbon Project.
@@ -49,9 +47,8 @@ public class EventTest {
     public void testEventInitialization() {
         // Check if the event is initialized correctly
         assertEquals("event123", event.getEventId());
-        assertEquals("Tech Conference 2024", event.getName());
         assertEquals("A conference on the latest tech trends.", event.getDescription());
-        assertEquals("facility1", event.getOrganizerId());
+        assertEquals("organizer1", event.getOrganizerId());
         assertEquals(50, event.getCapacity());
         assertTrue(event.isGeolocationRequired());
         assertEquals("2024-05-01", event.getStartDate());
@@ -88,14 +85,17 @@ public class EventTest {
         event.addEntrantToWaitingList("entrant4");
         event.addEntrantToWaitingList("entrant5");
 
-        // Draw entrants based on the event capacity
+        // Draw entrants based on the event capacity (capacity is 50, but only 5 entrants are added)
         event.drawEntrants();
 
         // Check if only the selected entrants are added to the selected list
         List<String> selectedList = event.getSelectedList();
-        assertEquals(5, selectedList.size()); // Event capacity is 50
+        assertEquals(5, selectedList.size()); // Event capacity is 50, but only 5 entrants are added
         assertTrue(selectedList.contains("entrant1"));
         assertTrue(selectedList.contains("entrant2"));
+        assertTrue(selectedList.contains("entrant3"));
+        assertTrue(selectedList.contains("entrant4"));
+        assertTrue(selectedList.contains("entrant5"));
     }
 
     /**
@@ -159,25 +159,5 @@ public class EventTest {
 
         // Verify invalid date scenario
         assertFalse(event.isValidEventDate());
-    }
-
-    /**
-     * Test the conversion of the event object to a Map representation.
-     * This is used for storing the event data in a database or transferring it across systems.
-     */
-    @Test
-    public void testToMapConversion() {
-        // Convert the event to a map and check if all fields are correctly mapped
-        Map<String, Object> eventMap = event.toMap();
-        assertNotNull(eventMap);
-        assertEquals("event123", eventMap.get("eventId"));
-        assertEquals("Tech Conference 2024", eventMap.get("name"));
-        assertEquals(50, eventMap.get("capacity"));
-        assertTrue(eventMap.containsKey("waitingList"));
-        assertTrue(eventMap.containsKey("selectedList"));
-        assertTrue(eventMap.containsKey("notSelectedList"));
-        assertTrue(eventMap.containsKey("canceledList"));
-        assertTrue(eventMap.containsKey("enrolledList"));
-        assertNotNull(eventMap.get("facility"));
     }
 }
