@@ -1,7 +1,11 @@
 package com.example.carbon_project.View;
 
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
 import android.app.PendingIntent;
+import android.content.Context;
 import android.content.Intent;
+import android.os.Build;
 
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
@@ -18,28 +22,30 @@ public class NotificationService extends FirebaseMessagingService {
             String title = remoteMessage.getNotification().getTitle();
             String body = remoteMessage.getNotification().getBody();
 
-            showNotification(title, body);
+            NotificationCompat.Builder builder = new NotificationCompat.Builder(this, "notification_channel")
+                    .setContentTitle(title)
+                    .setContentText(body)
+                    .setPriority(NotificationCompat.PRIORITY_HIGH) // Ensure the notification is high priority
+                    .setAutoCancel(true)  // Automatically dismiss when tapped
+                    .setVisibility(NotificationCompat.VISIBILITY_PUBLIC); // Make notification visible to everyone
+
+            NotificationManager notificationManager =
+                    (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+
+            // For Android O and above, create a notification channel if not already created
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                NotificationChannel channel = new NotificationChannel(
+                        "notification_channel",
+                        "Default Channel",
+                        NotificationManager.IMPORTANCE_DEFAULT
+                );
+                channel.setDescription("This is a default notification channel");
+                notificationManager.createNotificationChannel(channel);
+            }
+
+            // Show the notification
+            notificationManager.notify(0, builder.build());
         }
-    }
-
-    private void showNotification(String title, String message) {
-        // Build the notification
-        NotificationCompat.Builder builder = new NotificationCompat.Builder(this, "eventChannel")
-                .setContentTitle(title)
-                .setContentText(message)
-                .setPriority(NotificationCompat.PRIORITY_HIGH) // Ensure the notification is high priority
-                .setAutoCancel(true)  // Automatically dismiss when tapped
-                .setVisibility(NotificationCompat.VISIBILITY_PUBLIC); // Make notification visible to everyone
-
-        // Create an Intent to open your app when the notification is tapped
-        Intent intent = new Intent(this, MainActivity.class);
-        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent,
-                PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
-        builder.setContentIntent(pendingIntent);
-
-        // Notify using NotificationManager
-        NotificationManagerCompat manager = NotificationManagerCompat.from(this);
-        manager.notify(0, builder.build());
     }
 }
 
