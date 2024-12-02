@@ -45,6 +45,8 @@ dependencies {
     implementation(libs.zxing.embedded)
     implementation(libs.zxing.core)
 
+    implementation("org.osmdroid:osmdroid-android:6.1.14")
+
     // Dependencies for testers
     implementation(libs.ext.junit)
     implementation(libs.androidx.espresso.core)
