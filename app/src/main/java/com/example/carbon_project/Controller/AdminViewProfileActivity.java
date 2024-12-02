@@ -11,11 +11,13 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.example.carbon_project.Model.Entrant;
 import com.example.carbon_project.Model.User;
 import com.example.carbon_project.R;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 public class AdminViewProfileActivity extends AppCompatActivity {
 
     private Button deleteProfile, deletePicture;
     private TextView profileName, profileEmail, profilePhone, profileRole;
+    private FirebaseFirestore db;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,11 +45,15 @@ public class AdminViewProfileActivity extends AppCompatActivity {
         profileRole.setText(user.getRole());
 
         deletePicture.setOnClickListener(v -> {
-            //user.deletePicture();
+            user.setProfilePictureUrl("");
+            user.saveToFirestore();
+            finish();
         });
 
         deleteProfile.setOnClickListener(v -> {
-            //user.deleteUser();
+            db = FirebaseFirestore.getInstance();
+            db.collection("users").document(user.getUserId()).delete();
+            finish();
         });
     }
 }
