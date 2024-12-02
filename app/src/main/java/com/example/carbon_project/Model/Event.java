@@ -15,7 +15,7 @@ public class Event {
     private String eventId;
     private String name;
     private String description;
-    private String organizerId;
+    private String facilityId;
     private int capacity;
     private boolean geolocationRequired;
     private String startDate;
@@ -23,40 +23,73 @@ public class Event {
     private String eventPosterUrl;
     private String qrCodeUrl;
     private String eventStatus;
-    private Facility facility;
 
-
-    private List<String> notSelectedList;
     private List<String> waitingList;
     private List<String> selectedList;
     private List<String> canceledList;
     private List<String> enrolledList;
 
     // Constructor
-    public Event(String eventId, String name, String description, String organizerId, int capacity, boolean geolocationRequired, String startDate, String endDate, String eventPosterUrl, String qrCodeUrl, Facility facility) {
+    public Event(Map<String, Object> dataMap) {
+        this.eventId = (String) dataMap.get("eventId");
+        this.name = (String) dataMap.get("name");
+        this.description = (String) dataMap.get("description");
+        this.facilityId = (String) dataMap.get("facilityId");
+        Long longCapacity = (Long) dataMap.get("capacity");
+        this.capacity = longCapacity != null ? longCapacity.intValue() : 0;
+        this.geolocationRequired = (boolean) dataMap.get("geolocationRequired");
+        this.startDate = (String) dataMap.get("startDate");
+        this.endDate = (String) dataMap.get("endDate");
+
+        System.out.println("Before");
+        if (dataMap.containsKey("waitingList")) {
+            this.waitingList = (List<String>) dataMap.get("waitingList");
+        } else {
+            this.waitingList = new ArrayList<>();
+        }
+        if (dataMap.containsKey("selectedList")) {
+            this.selectedList = (List<String>) dataMap.get("selectedList");
+        } else {
+            this.selectedList = new ArrayList<>();
+        }
+        if (dataMap.containsKey("canceledList")) {
+            this.canceledList = (List<String>) dataMap.get("canceledList");
+        } else {
+            this.canceledList = new ArrayList<>();
+        }
+        if (dataMap.containsKey("enrolledList")) {
+            this.enrolledList = (List<String>) dataMap.get("enrolledList");
+        } else {
+            this.enrolledList = new ArrayList<>();
+        }
+        System.out.println("After");
+
+        this.eventPosterUrl = (String) dataMap.get("eventPosterUrl");
+        this.qrCodeUrl = (String) dataMap.get("qrCodeUrl");
+    }
+
+    public Event(String eventId, String name, String description, String facilityId, int capacity, boolean geolocationRequired, String startDate, String endDate, String eventPosterUrl, String qrCodeUrl) {
         this.eventId = eventId;
         this.name = name;
         this.description = description;
-        this.organizerId = organizerId;
+        this.facilityId = facilityId;
         this.capacity = capacity;
         this.geolocationRequired = geolocationRequired;
         this.startDate = startDate;
         this.endDate = endDate;
         this.eventPosterUrl = eventPosterUrl;
         this.qrCodeUrl = qrCodeUrl;
-        this.facility = facility;
         this.waitingList = new ArrayList<>();
         this.selectedList = new ArrayList<>();
-        this.notSelectedList = new ArrayList<>();
         this.canceledList = new ArrayList<>();
         this.enrolledList = new ArrayList<>();
     }
 
-    public Event(String eventId, String name, String description, String organizerId, int capacity, List<String> waitingList, List<String> selectedList, List<String> canceledList, List<String> enrolledList, boolean geolocationRequired, String startDate, String endDate, String eventPosterUrl, String qrCodeUrl) {
+    public Event(String eventId, String name, String description, String facilityId, int capacity, List<String> waitingList, List<String> selectedList, List<String> canceledList, List<String> enrolledList, boolean geolocationRequired, String startDate, String endDate, String eventPosterUrl, String qrCodeUrl) {
         this.eventId = eventId;
         this.name = name;
         this.description = description;
-        this.organizerId = organizerId;
+        this.facilityId = facilityId;
         this.capacity = capacity;
         this.geolocationRequired = geolocationRequired;
         this.startDate = startDate;
@@ -65,7 +98,7 @@ public class Event {
         this.qrCodeUrl = qrCodeUrl;
         this.waitingList = waitingList;
         this.selectedList = selectedList;
-        this.notSelectedList = selectedList;
+        this.canceledList = canceledList;
         this.enrolledList = enrolledList;
     }
 
@@ -149,12 +182,12 @@ public class Event {
         this.description = description;
     }
 
-    public String getOrganizerId() {
-        return organizerId;
+    public String getFacilityId() {
+        return facilityId;
     }
 
-    public void setOrganizerId(String organizerId) {
-        this.organizerId = organizerId;
+    public void setFacilityId(String facilityId) {
+        this.facilityId = facilityId;
     }
 
     public int getCapacity() {
@@ -184,8 +217,6 @@ public class Event {
     public void setCanceledList(List<String> canceledList) {
         this.canceledList = canceledList;
     }
-
-    public Facility getFacility() { return this.facility; }
 
     // Getters and Setters
     public List<String> getCanceledList() { return canceledList; }
@@ -249,20 +280,18 @@ public class Event {
         map.put("eventId", eventId);
         map.put("name", name);
         map.put("description", description);
-        map.put("organizerId", organizerId);
+        map.put("facilityId", facilityId);
         map.put("capacity", capacity);
         map.put("geolocationRequired", geolocationRequired);
         map.put("startDate", startDate);
         map.put("endDate", endDate);
         map.put("waitingList", waitingList);
         map.put("selectedList", selectedList);
-        map.put("notSelectedList", notSelectedList);
         map.put("canceledList", canceledList);
         map.put("enrolledList", enrolledList);
         map.put("eventPosterUrl", eventPosterUrl);
         map.put("qrCodeUrl", qrCodeUrl);
         map.put("eventStatus", eventStatus);
-        map.put("facility", facility != null ? facility.toMap() : null);
 
         return map;
     }

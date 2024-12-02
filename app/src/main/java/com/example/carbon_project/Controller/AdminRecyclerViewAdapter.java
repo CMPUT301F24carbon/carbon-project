@@ -140,7 +140,7 @@ public class AdminRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.
         public void bind(Event item) {
             eventNameTextView.setText(item.getName());
             eventDescriptionView.setText(item.getDescription());
-            eventFacilityTextView.setText(item.getFacility().getName());
+            eventFacilityTextView.setText(item.getFacilityId());
             eventCapacityTextView.setText(String.valueOf(item.getCapacity()));
             eventStartDateTextView.setText(item.getStartDate());
             eventEndDateTextView.setText(item.getEndDate());

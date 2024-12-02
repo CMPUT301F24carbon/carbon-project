@@ -1,17 +1,14 @@
 package com.example.carbon_project.Controller;
 
 import android.content.Intent;
-import android.app.AlertDialog;
 
 import android.os.Bundle;
 import android.provider.Settings;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.carbon_project.Model.Event;
@@ -21,12 +18,14 @@ import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 
 public class EventDetailsActivity extends AppCompatActivity {
 
     // UI elements
     private TextView eventName, eventDescription;
-    private Button joinButton, leaveButton;
+    private Button joinButton, leaveButton, enrollButton;
 
     // Firebase and data objects
     private FirebaseFirestore db;
@@ -42,17 +41,18 @@ public class EventDetailsActivity extends AppCompatActivity {
         eventDescription = findViewById(R.id.event_description);
         joinButton = findViewById(R.id.join_event_button);
         leaveButton = findViewById(R.id.leave_event_button);
+        enrollButton = findViewById(R.id.enroll_event_button);
 
         setupBottomNavigation();
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
 
         String eventId = getIntent().getStringExtra("eventId");
         if (eventId == null) {
             Toast.makeText(this, "Event ID is missing", Toast.LENGTH_SHORT).show();
             finish();
         }
-        userId = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
 
+        userId = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
         db = FirebaseFirestore.getInstance();
 
         loadEventData(eventId);
@@ -63,32 +63,15 @@ public class EventDetailsActivity extends AppCompatActivity {
         db.collection("events").document(eventId).get()
                 .addOnSuccessListener(documentSnapshot -> {
                     if (documentSnapshot.exists()) {
-                        String name = documentSnapshot.getString("name");
-                        String description = documentSnapshot.getString("description");
-                        String organizerId = documentSnapshot.getString("organizerId");
-                        int capacity = documentSnapshot.getLong("capacity").intValue();
-                        List<String> waitingList = (List<String>) documentSnapshot.get("waitingList");
-                        List<String> selectedList = (List<String>) documentSnapshot.get("selectedList");
-                        List<String> canceledList = (List<String>) documentSnapshot.get("canceledList");
-                        List<String> enrolledList = (List<String>) documentSnapshot.get("enrolledList");
-                        Boolean geolocationRequired = documentSnapshot.getBoolean("geolocationRequired");
-                        String startDate = documentSnapshot.getString("startDate");
-                        String endDate = documentSnapshot.getString("endDate");
-                        String eventPosterUrl = documentSnapshot.getString("eventPosterUrl");
-                        String qrCodeUrl = documentSnapshot.getString("qrCodeUrl");
+                        Map<String, Object> eventData = documentSnapshot.getData();
+                        event = new Event(eventData);
 
-                        // Create Event object
-                        event = new Event(eventId, name, description, organizerId, capacity, waitingList, selectedList, canceledList, enrolledList, geolocationRequired, startDate, endDate, eventPosterUrl, qrCodeUrl);
+                        setUpUI();
 
-                        // Setup UI
-                        eventName.setText(name != null ? name : "Event name not provided");
-                        eventDescription.setText(description != null ? description : "No description available.");
-
-                        leaveButton.setVisibility(View.GONE);
-                        updateJoinLeaveButtonVisibility();
-
+                        // Set button click listeners
                         joinButton.setOnClickListener(v -> handleJoinEvent());
-                        leaveButton.setOnClickListener(v -> updateEventWaitingList(false));
+                        leaveButton.setOnClickListener(v -> handleLeaveEvent());
+                        enrollButton.setOnClickListener(v -> handleEnrollEvent());
 
                     } else {
                         showError("Event details not found");
@@ -97,49 +80,85 @@ public class EventDetailsActivity extends AppCompatActivity {
                 .addOnFailureListener(e -> showError("Error retrieving event details: " + e.getMessage()));
     }
 
-    // Update visibility of join and leave buttons
-    private void updateJoinLeaveButtonVisibility() {
-        if (event.getWaitingList() != null && event.getWaitingList().contains(userId)) {
-            joinButton.setVisibility(View.GONE);
-            leaveButton.setVisibility(View.VISIBLE);
+    // Set up UI elements
+    private void setUpUI() {
+        eventName.setText(event.getName());
+        eventDescription.setText(event.getDescription());
+        updateButtonVisibility();
+    }
+
+    // Update button visibility based on user's list status
+    private void updateButtonVisibility() {
+        List<String> waitingList = event.getWaitingList();
+        List<String> selectedList = event.getSelectedList();
+        List<String> canceledList = event.getCanceledList();
+        List<String> enrolledList = event.getEnrolledList();
+
+        if (waitingList.contains(userId)) {
+            // User in waitingList
+            setButtonVisibility(false, true, false);
+        } else if (selectedList.contains(userId)) {
+            // User in selectedList
+            setButtonVisibility(false, true, true);
+        } else if (canceledList.contains(userId)) {
+            // User in canceledList
+            setButtonVisibility(true, false, false);
+        } else if (enrolledList.contains(userId)) {
+            // User in enrolledList
+            setButtonVisibility(false, false, false);
+            Toast.makeText(this, "You are already enrolled!", Toast.LENGTH_SHORT).show();
         } else {
-            joinButton.setVisibility(View.VISIBLE);
-            leaveButton.setVisibility(View.GONE);
+            // User not in any list
+            setButtonVisibility(true, false, false);
         }
+    }
+
+    // Helper to set button visibility
+    private void setButtonVisibility(boolean showJoin, boolean showLeave, boolean showEnroll) {
+        joinButton.setVisibility(showJoin ? View.VISIBLE : View.GONE);
+        leaveButton.setVisibility(showLeave ? View.VISIBLE : View.GONE);
+        enrollButton.setVisibility(showEnroll ? View.VISIBLE : View.GONE);
     }
 
     // Handle join event logic
     private void handleJoinEvent() {
-        if (Boolean.TRUE.equals(event.isGeolocationRequired())) {
-            promptGeolocationConsent(() -> updateEventWaitingList(true));
+        if (event.getCanceledList().contains(userId)) {
+            updateList("canceledList", "waitingList");
         } else {
-            updateEventWaitingList(true);
+            updateList(null, "waitingList");
+        }
+        db.collection("users").document(userId)
+                .update("joinedEvents", FieldValue.arrayUnion(event.getEventId()));
+    }
+
+    // Handle leave event logic
+    private void handleLeaveEvent() {
+        if (event.getWaitingList().contains(userId) || event.getSelectedList().contains(userId)) {
+            updateList("waitingList", "canceledList");
+            updateList("selectedList", "canceledList");
+        }
+        db.collection("users").document(userId)
+                .update("joinedEvents", FieldValue.arrayRemove(event.getEventId()));
+    }
+
+    // Handle enroll event logic
+    private void handleEnrollEvent() {
+        if (event.getSelectedList().contains(userId)) {
+            updateList("selectedList", "enrolledList");;
         }
     }
 
-    // Update waiting list in Firestore
-    private void updateEventWaitingList(boolean isJoining) {
-        String operation = isJoining ? "add" : "remove";
-        FieldValue action = isJoining ? FieldValue.arrayUnion(userId) : FieldValue.arrayRemove(userId);
-
-        db.collection("events").document(event.getEventId())
-                .update("waitingList", action)
-                .addOnSuccessListener(aVoid -> {
-                    String message = isJoining ? "Successfully joined the event!" : "Successfully left the event!";
-                    Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
-                    updateJoinLeaveButtonVisibility();
-                })
-                .addOnFailureListener(e -> showError("Failed to " + operation + " the event: " + e.getMessage()));
-    }
-
-    // Prompt for geolocation consent
-    private void promptGeolocationConsent(Runnable onConsent) {
-        new AlertDialog.Builder(this)
-                .setTitle("Location Sharing Required")
-                .setMessage("This event requires you to share your location. Do you want to proceed?")
-                .setPositiveButton("OK", (dialog, which) -> onConsent.run())
-                .setNegativeButton("Cancel", (dialog, which) -> Toast.makeText(this, "Location sharing is required to join this event.", Toast.LENGTH_SHORT).show())
-                .show();
+    // Update Firestore lists
+    private void updateList(String removeFromList, String addToList) {
+        if (removeFromList != null) {
+            db.collection("events").document(event.getEventId())
+                    .update(removeFromList, FieldValue.arrayRemove(userId));
+        }
+        if (addToList != null) {
+            db.collection("events").document(event.getEventId())
+                    .update(addToList, FieldValue.arrayUnion(userId));
+        }
+        recreate();
     }
 
     // Setup bottom navigation
@@ -155,18 +174,9 @@ public class EventDetailsActivity extends AppCompatActivity {
         });
     }
 
-    // Handle back button press
-    @Override
-    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        if (item.getItemId() == android.R.id.home) {
-            onBackPressed();
-            return true;
-        }
-        return super.onOptionsItemSelected(item);
-    }
-
     // Show error message
     private void showError(String message) {
         Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
     }
 }
+

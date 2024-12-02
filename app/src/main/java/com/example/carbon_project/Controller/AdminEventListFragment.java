@@ -71,20 +71,14 @@ public class AdminEventListFragment extends Fragment {
                         String eventId = doc.getId();
                         String eventName = doc.getString("name");
                         String description = doc.getString("description");
-                        String orgID = doc.getString("organizerId");
+                        String facilityId = doc.getString("facilityId");
                         int capacity = doc.getLong("capacity").intValue();
                         boolean geolocationRequired = doc.getBoolean("geolocationRequired");
                         String startDate = doc.getString("startDate");
                         String endDate = doc.getString("endDate");
                         String eventPosterURL = doc.getString("eventPosterURL");
                         String qrURL = doc.getString("qrCodeURL");
-                        // collect data from facility Map needed for facility object that goes in event object
-                        String facilityID = ((HashMap<String, Object>) doc.getData().get("facility")).get("facilityId").toString();
-                        String facilityName = ((HashMap<String, Object>) doc.getData().get("facility")).get("name").toString();
-                        String facilityLocation = ((HashMap<String, Object>) doc.getData().get("facility")).get("location").toString();
-                        int facilityCapacity = Integer.parseInt(((HashMap<String, Object>) doc.getData().get("facility")).get("capacity").toString());
-                        String facilityOrganizer = ((HashMap<String, Object>) doc.getData().get("facility")).get("organizerId").toString();
-                        data.add(new Event(eventId, eventName, description, orgID, capacity, geolocationRequired, startDate, endDate, eventPosterURL ,qrURL, new Facility(facilityID, facilityName, facilityLocation, facilityCapacity, facilityOrganizer)));
+                        data.add(new Event(eventId, eventName, description, facilityId, capacity, geolocationRequired, startDate, endDate, eventPosterURL ,qrURL));
                     }
                     adapter.notifyDataSetChanged();
                 }

@@ -15,10 +15,19 @@ public class User implements Serializable {
     private String email;
     private String phoneNumber;
     private String profilePictureUrl;
-    private String role;
+    public String role;
 
     //This is a token for notifications
     private String fcm;
+
+    public User(Map<String, Object> map) {
+        this.userId = (String) map.get("userId");
+        this.name = (String) map.get("name");
+        this.email = (String) map.get("email");
+        this.phoneNumber = (String) map.get("phoneNumber");
+        this.profilePictureUrl = (String) map.get("profilePictureUrl");
+        this.fcm = (String) map.get("fcm");
+    }
 
     public User(String userId, String name, String email, String phoneNumber, String role) {
         this.userId = userId;
@@ -93,7 +102,6 @@ public class User implements Serializable {
         map.put("role", role);
         map.put("profilePictureUrl", profilePictureUrl);
         map.put("fcm", fcm);
-
 
         return map;
     }

@@ -33,13 +33,22 @@
                 android:id="@+id/join_event_button"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Join Waiting List" />
+                android:text="Join Waiting List"
+                android:visibility="gone" />
 
             <Button
                 android:id="@+id/leave_event_button"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Leave Waiting List" />
+                android:text="Leave Event"
+                android:visibility="gone" />
+
+            <Button
+                android:id="@+id/enroll_event_button"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Leave Waiting List"
+                android:visibility="gone" />
         </LinearLayout>
     </ScrollView>
 

@@ -3,6 +3,8 @@ package com.example.carbon_project;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
+import com.example.carbon_project.Model.Facility;
+
 import org.junit.Before;
 import org.junit.Test;
 

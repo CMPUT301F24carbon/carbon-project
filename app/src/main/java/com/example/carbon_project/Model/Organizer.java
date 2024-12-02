@@ -11,6 +11,21 @@ public class Organizer extends User implements Serializable {
     private List<String> createdEvents;
     private List<String> facilityIds;
 
+    public Organizer(Map<String, Object> map) {
+        super(map);
+        this.role = "organizer"; // Set the role to "organizer"
+        if (map.containsKey("createdEvents")) {
+            this.createdEvents = (List<String>) map.get("createdEvents");
+        } else {
+            this.createdEvents = new ArrayList<>();
+        }
+        if (map.containsKey("facilityIds")) {
+            this.facilityIds = (List<String>) map.get("facilityIds");
+        } else {
+            this.facilityIds = new ArrayList<>();
+        }
+    }
+
     public Organizer(String userId, String name, String email, String phoneNumber) {
         super(userId, name, email, phoneNumber, "organizer");
         this.createdEvents = new ArrayList<>();
@@ -47,5 +62,4 @@ public class Organizer extends User implements Serializable {
                     System.out.println("Error saving organizer: " + e.getMessage());
                 });
     }
-
 }

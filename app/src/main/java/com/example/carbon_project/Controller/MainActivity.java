@@ -8,6 +8,7 @@ import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
@@ -18,14 +19,19 @@ import com.example.carbon_project.Model.Entrant;
 import com.example.carbon_project.Model.Organizer;
 import com.example.carbon_project.Model.User;
 import com.example.carbon_project.R;
+import com.google.firebase.firestore.FirebaseFirestore;
+
+import java.util.HashMap;
+import java.util.Locale;
+import java.util.Map;
 
 public class MainActivity extends AppCompatActivity {
+    User user;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
 
         //this checks and asks for permissions
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
@@ -39,7 +45,6 @@ public class MainActivity extends AppCompatActivity {
             }
         }
 
-
         //this allows the app to recieve notifications in the background
         NotificationChannel channel = new NotificationChannel(
                 "eventChannel",
@@ -50,45 +55,56 @@ public class MainActivity extends AppCompatActivity {
             manager.createNotificationChannel(channel);
         }
 
-        String deviceId = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
-
-        User abdul = new User(deviceId, "YL", "pleasepass@example.com", "123-456-789", "Organizer");
-        findViewById(R.id.entrant_button).setOnClickListener(view -> createUser(abdul, Entrant.class));
-        findViewById(R.id.organizer_button).setOnClickListener(view -> createUser(abdul, Organizer.class));
-        findViewById(R.id.admin_button).setOnClickListener(view -> createUser(abdul, Admin.class));
+        // Listen for button clicks
+        findViewById(R.id.entrant_button).setOnClickListener(view -> createUser("entrant"));
+        findViewById(R.id.organizer_button).setOnClickListener(view -> createUser("organizer"));
+        findViewById(R.id.admin_button).setOnClickListener(view -> createUser("admin"));
     }
 
-    private void createUser(User user, Class<? extends User> userType) {
-        User userInstance;
-
-        if (userType == Entrant.class) {
-            userInstance = new Entrant(user.getUserId(), user.getName(), user.getEmail(), user.getPhoneNumber());
-        } else if (userType == Organizer.class) {
-            userInstance = new Organizer(user.getUserId(), user.getName(), user.getEmail(), user.getPhoneNumber());
-        } else if (userType == Admin.class) {
-            userInstance = new Admin(user.getUserId(), user.getName(), user.getEmail(), user.getPhoneNumber());
-        } else {
-            throw new IllegalArgumentException("Unknown user type");
-        }
-
-        // Save user to Firestore (or any other database)
-        userInstance.saveToFirestore();
-
+    private void createUser(String role) {
         // Navigate to the corresponding dashboard activity
         Intent intent;
-        if (userInstance instanceof Entrant) {
-            intent = new Intent(MainActivity.this, EntrantDashboardActivity.class);
-            intent.putExtra("userObject", (Entrant) userInstance);
-        } else if (userInstance instanceof Organizer) {
-            intent = new Intent(MainActivity.this, OrganizerDashboardActivity.class);
-            intent.putExtra("userObject", (Organizer) userInstance);
-        } else if (userInstance instanceof Admin) {
-            intent = new Intent(MainActivity.this, AdminListActivity.class);
-            intent.putExtra("userObject", (Admin) userInstance);
-        } else {
-            throw new IllegalArgumentException("Unknown user type");
-        }
+        String deviceId = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
 
+        // Load user data from Firestore
+        FirebaseFirestore.getInstance().collection("users").document(deviceId).get()
+                .addOnSuccessListener(documentSnapshot -> {
+                    Map<String, Object> dataMap;
+                    if (documentSnapshot.exists()) {
+                        dataMap = documentSnapshot.getData();
+                        Toast.makeText(this, "Welcome back!", Toast.LENGTH_SHORT).show();
+                    } else {
+                        // If the document doesn't exist, create a new user
+                        dataMap = new HashMap<>();
+                        dataMap.put("userId", deviceId);
+                        dataMap.put("role", role);
+                        Toast.makeText(this, "Welcome new user!", Toast.LENGTH_SHORT).show();
+                    }
+
+                    // Create the appropriate user object based on the role
+                    if (role.equals("entrant")) {
+                        user = new Entrant(dataMap);
+                        toActivity(EntrantDashboardActivity.class);
+                    } else if (role.equals("organizer")) {
+                        user = new Organizer(dataMap);
+                        toActivity(OrganizerDashboardActivity.class);
+                    } else {
+                        user = new Admin(dataMap);
+                        toActivity(AdminListActivity.class);
+                    }
+
+                    // Save the user data to Firestore
+                    user.saveToFirestore();
+                })
+                .addOnFailureListener(e -> {
+                    Toast.makeText(this, "Error loading user data: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                });
+    }
+
+    private void toActivity(Class<?> activityClass) {
+        Intent intent;
+        intent = new Intent(MainActivity.this, activityClass);
+        intent.putExtra("userObject", user);
         startActivity(intent);
     }
 }

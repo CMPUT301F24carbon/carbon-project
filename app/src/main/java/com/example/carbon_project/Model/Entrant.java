@@ -10,6 +10,16 @@ import java.util.Map;
 public class Entrant extends User implements Serializable {
     private List<String> joinedEvents;
 
+    public Entrant(Map<String, Object> map) {
+        super(map);
+        this.role = "entrant"; // Set the role to "entrant"
+        if (map.containsKey("joinedEvents")) {
+            this.joinedEvents = (List<String>) map.get("joinedEvents");
+        } else {
+            this.joinedEvents = new ArrayList<>();
+        }
+    }
+
     public Entrant(String userId, String name, String email, String phoneNumber) {
         super(userId, name, email, phoneNumber, "entrant");
         this.joinedEvents = new ArrayList<>();

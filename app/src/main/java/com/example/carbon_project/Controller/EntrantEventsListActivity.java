@@ -10,6 +10,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.test.espresso.remote.EspressoRemoteMessage;
 
 import com.example.carbon_project.Model.Entrant;
 import com.example.carbon_project.R;
@@ -19,6 +20,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class EntrantEventsListActivity extends AppCompatActivity {
 
@@ -47,39 +49,36 @@ public class EntrantEventsListActivity extends AppCompatActivity {
         // Initialize ListView and adapter
         eventsListView = findViewById(R.id.eventsListView);
         eventsList = new ArrayList<>();
-        eventIds = new ArrayList<>(); // Initialize eventIds
+        eventIds = new ArrayList<>();
         adapter = new EventsAdapter(this, eventsList);
         eventsListView.setAdapter(adapter);
 
-        // Fetch events from the database
-        fetchUserSpecificEvents(entrant.getUserId());
-
+        // Set up the onItemClickListener for the ListView
         eventsListView.setOnItemClickListener((AdapterView<?> parent, View view, int position, long id) -> {
-            String selectedEvent = eventsList.get(position);
             String eventId = eventIds.get(position);
-
             Intent intent = new Intent(EntrantEventsListActivity.this, EventDetailsActivity.class);
-            intent.putExtra("eventDetails", selectedEvent);
-            intent.putExtra("entrantObject", entrant);
             intent.putExtra("eventId", eventId);
             startActivity(intent);
         });
+
+        // Fetch all events and update the ListView
+        for (String eventId : entrant.getJoinedEvents()) {
+            addEventToList(eventId);
+            Toast.makeText(this, eventId, Toast.LENGTH_SHORT).show();
+        }
 
         // Back Button
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         // Bottom navigation view
         BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_navigation);
-        bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
-            @Override
-            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-                if (item.getItemId() == R.id.navigation_home) {
-                    startActivity(new Intent(getApplicationContext(), MainActivity.class));
-                    overridePendingTransition(0, 0);
-                    return true;
-                }
-                return false;
+        bottomNavigationView.setOnNavigationItemSelectedListener(item -> {
+            if (item.getItemId() == R.id.navigation_home) {
+                startActivity(new Intent(getApplicationContext(), MainActivity.class));
+                overridePendingTransition(0, 0);
+                return true;
             }
+            return false;
         });
     }
 
@@ -91,60 +90,31 @@ public class EntrantEventsListActivity extends AppCompatActivity {
         }
         return super.onOptionsItemSelected(item);
     }
-    private void fetchUserSpecificEvents(String userId) {
-        eventsList.clear();
-        eventIds.clear();
 
-        // Fetch events where the user is in the enrolled list
-        db.collection("events")
-                .whereArrayContains("enrolled", userId)
-                .get()
-                .addOnCompleteListener(task -> {
-                    if (task.isSuccessful()) {
-                        for (QueryDocumentSnapshot document : task.getResult()) {
-                            addEventToList(document);
-                        }
+    // Helper method to fetch event data from Firestore
+    private void addEventToList(String eventId) {
+        db.collection("events").document(eventId).get()
+                .addOnSuccessListener(documentSnapshot -> {
+                    if (documentSnapshot.exists()) {
+                        String eventName = documentSnapshot.getString("name");
+                        String eventStartDate = documentSnapshot.getString("startDate");
+                        String eventEndDate = documentSnapshot.getString("endDate");
+                        String eventDescription = documentSnapshot.getString("description");
+                        int eventCapacity = documentSnapshot.getLong("capacity").intValue();
 
-                        // Fetch events where the user is in the waiting list
-                        db.collection("events")
-                                .whereArrayContains("waitingList", userId)
-                                .get()
-                                .addOnCompleteListener(waitingTask -> {
-                                    if (waitingTask.isSuccessful()) {
-                                        for (QueryDocumentSnapshot document : waitingTask.getResult()) {
-                                            addEventToList(document);
-                                        }
+                        String eventText = eventName + "\n"
+                                + eventDescription + "\n"
+                                + eventStartDate + " to " + eventEndDate + "\n"
+                                + "Capacity: " + eventCapacity;
 
-                                        // Update the adapter
-                                        adapter.notifyDataSetChanged();
-                                    } else {
-                                        Toast.makeText(EntrantEventsListActivity.this, "Failed to load waiting list events.", Toast.LENGTH_SHORT).show();
-                                    }
-                                });
-                    } else {
-                        Toast.makeText(EntrantEventsListActivity.this, "Failed to load enrolled events.", Toast.LENGTH_SHORT).show();
+                        // Add the event info to the list and the eventId to the ids list
+                        eventsList.add(eventText);
+                        eventIds.add(eventId);
+
+                        // Notify the adapter to update the ListView
+                        adapter.notifyDataSetChanged();
                     }
-                });
-    }
-
-    // Helper method to process each document and add to the list
-    private void addEventToList(QueryDocumentSnapshot document) {
-        String eventId = document.getId();
-        String eventName = document.getString("name");
-        String eventStartDate = document.getString("startDate");
-        String eventEndDate = document.getString("endDate");
-        String eventDescription = document.getString("description");
-        Long eventCapacity = document.getLong("capacity");
-
-        String eventText = eventName + "\n"
-                + eventDescription + "\n"
-                + eventStartDate + " to " + eventEndDate + "\n"
-                + "Capacity: " + eventCapacity;
-
-        // Avoid adding duplicate events
-        if (!eventIds.contains(eventId)) {
-            eventsList.add(eventText);
-            eventIds.add(eventId);
-        }
+                })
+                .addOnFailureListener(e -> Toast.makeText(EntrantEventsListActivity.this, "Error loading events: " + e.getMessage(), Toast.LENGTH_SHORT).show());
     }
 }

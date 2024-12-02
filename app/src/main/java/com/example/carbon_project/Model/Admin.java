@@ -6,6 +6,11 @@ import java.io.Serializable;
 import java.util.Map;
 
 public class Admin extends User implements Serializable {
+    public Admin(Map<String, Object> map) {
+        super(map);
+        this.role = "admin"; // Set the role to "admin"
+    }
+
     public Admin(String userId, String name, String email, String phoneNumber) {
         super(userId, name, email, phoneNumber, "admin");
     }

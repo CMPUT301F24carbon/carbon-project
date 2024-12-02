@@ -23,6 +23,7 @@ import com.example.carbon_project.Model.Facility;
 import com.example.carbon_project.R;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.WriterException;
@@ -206,7 +207,7 @@ public class CreateEventActivity extends AppCompatActivity {
 
         // Event poster URL (assuming the organizer uploads an image)
         String eventPosterUrl = "default_poster_url";
-        Event event = new Event(eventId, eventName, eventDescription, organizerId, eventCapacity, geolocationRequired, tvStartDate.getText().toString(), tvEndDate.getText().toString(), eventPosterUrl, qrUri, selectedFacility);
+        Event event = new Event(eventId, eventName, eventDescription, selectedFacility.getFacilityId(), eventCapacity, geolocationRequired, tvStartDate.getText().toString(), tvEndDate.getText().toString(), eventPosterUrl, qrUri);
 
         // Save the event to Firestore
         db.collection("events").document(eventId).set(event.toMap())
@@ -220,6 +221,9 @@ public class CreateEventActivity extends AppCompatActivity {
                 .addOnFailureListener(e -> {
                     Toast.makeText(CreateEventActivity.this, "Error creating event: " + e.getMessage(), Toast.LENGTH_SHORT).show();
                 });
+
+        // Add the event to the organizer's list of created events
+        db.collection("users").document(organizerId).update("createdEvents", FieldValue.arrayUnion(eventId));
     }
 
     // Generate a QR code in byte array format

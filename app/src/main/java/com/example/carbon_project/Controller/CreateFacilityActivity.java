@@ -97,15 +97,8 @@ public class CreateFacilityActivity extends AppCompatActivity {
         // Save the facility to Firestore
         db.collection("facilities").document(facilityId).set(facility)
                 .addOnSuccessListener(aVoid -> {
-                    db.collection("organizers").document(organizerId)
-                            .update("facilityIds", FieldValue.arrayUnion(facilityId))
-                            .addOnSuccessListener(aVoid1 -> {
-                                Toast.makeText(CreateFacilityActivity.this, "Facility created successfully", Toast.LENGTH_SHORT).show();
-                                finish();
-                            })
-                            .addOnFailureListener(e -> {
-                                Toast.makeText(CreateFacilityActivity.this, "Error adding facility to organizer: " + e.getMessage(), Toast.LENGTH_SHORT).show();
-                            });
+                    Toast.makeText(CreateFacilityActivity.this, "Facility created successfully", Toast.LENGTH_SHORT).show();
+                    finish();
                 })
                 .addOnFailureListener(e -> {
                     Toast.makeText(CreateFacilityActivity.this, "Error creating facility: " + e.getMessage(), Toast.LENGTH_SHORT).show();
