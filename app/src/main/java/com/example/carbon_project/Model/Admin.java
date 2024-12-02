@@ -6,6 +6,7 @@ import java.io.Serializable;
 import java.util.Map;
 
 public class Admin extends User implements Serializable {
+
     public Admin(String userId, String name, String email, String phoneNumber) {
         super(userId, name, email, phoneNumber, "admin");
     }
@@ -27,13 +28,5 @@ public class Admin extends User implements Serializable {
                 .addOnFailureListener(e -> {
                     System.out.println("Error saving admin: " + e.getMessage());
                 });
-    }
-
-    // Specific methods for admins
-    public void removeEvent(String eventId) {
-        // Implementation to remove event
-    }
-    public void removeProfile(String userId) {
-        // Implementation to remove profile
     }
 }

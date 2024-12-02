@@ -25,6 +25,17 @@ public class Event {
     private String eventStatus;
     private Facility facility;
 
+    public void setFacility(Facility facility) {
+        this.facility = facility;
+    }
+
+    public List<String> getNotSelectedList() {
+        return notSelectedList;
+    }
+
+    public void setNotSelectedList(List<String> notSelectedList) {
+        this.notSelectedList = notSelectedList;
+    }
 
     private List<String> notSelectedList;
     private List<String> waitingList;

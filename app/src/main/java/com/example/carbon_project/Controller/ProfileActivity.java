@@ -5,7 +5,6 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.provider.Settings;
-import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
@@ -96,41 +95,6 @@ public class ProfileActivity extends AppCompatActivity {
         }
         return super.onOptionsItemSelected(item);
     }
-
-  /*  private void uploadProfilePicture() {
-        Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-        Log.d("ProfileActivity", "Entrant User ID: " + entrant.getUserId());
-        startActivityForResult(intent, REQUEST_CODE_PICK_IMAGE);
-    }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-
-        if (requestCode == REQUEST_CODE_PICK_IMAGE && resultCode == RESULT_OK && data != null && data.getData() != null) {
-            Uri selectedImageUri = data.getData();
-
-            FirebaseStorage storage = FirebaseStorage.getInstance();
-            StorageReference storageRef = storage.getReference().child("profile_pictures/" + entrant.getUserId() + ".jpg");
-
-            storageRef.putFile(selectedImageUri)
-                    .addOnSuccessListener(taskSnapshot -> storageRef.getDownloadUrl().addOnSuccessListener(uri -> {
-                        String profilePictureUrl = uri.toString();
-                        db.collection("users").document(entrant.getUserId())
-                                .update("profilePictureUrl", profilePictureUrl)
-                                .addOnSuccessListener(aVoid -> {
-                                    Toast.makeText(this, "Profile picture updated successfully!", Toast.LENGTH_SHORT).show();
-                                    profilePicture.setVisibility(View.VISIBLE);
-                                    initialsBadge.setVisibility(View.GONE);
-                                    Picasso.get().load(profilePictureUrl).into(profilePicture);
-                                })
-                                .addOnFailureListener(e -> Toast.makeText(this, "Failed to update Firestore: " + e.getMessage(), Toast.LENGTH_SHORT).show());
-                    }).addOnFailureListener(e -> Toast.makeText(this, "Failed to get download URL: " + e.getMessage(), Toast.LENGTH_SHORT).show()))
-                    .addOnFailureListener(e -> Toast.makeText(this, "Failed to upload picture: " + e.getMessage(), Toast.LENGTH_SHORT).show());
-        } else {
-            Toast.makeText(this, "No image selected!", Toast.LENGTH_SHORT).show();
-        }
-    }*/
 
     private void uploadProfilePicture() {
         Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
