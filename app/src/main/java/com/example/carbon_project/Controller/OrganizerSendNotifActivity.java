@@ -57,13 +57,14 @@ public class OrganizerSendNotifActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 String type = userType.getSelectedItem().toString();
-                String bodyText = body.getText().toString();
+                //without the + "0" it doesn't work
+                String bodyText = body.getText().toString() + " 0";
                 switch (type){
                     case "Selected List":
                         Notification.sendToSelected(eventId,bodyText);
                         break;
                     case "Rejected List":
-                        Notification.sendToRejected(eventId,bodyText);
+                        Notification.sendToNotSelected(eventId,bodyText);
                         break;
                     case "Waiting List":
                         Notification.sendToWating(eventId,bodyText);

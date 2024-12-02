@@ -109,7 +109,7 @@ public class Notification {
     }
 
     //sends a notification to all rejected users in an event
-    public static void sendToRejected(String eventId, String body) {
+    public static void sendToNotSelected(String eventId, String body) {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         db.collection("events")
                 .document(eventId)
@@ -117,7 +117,7 @@ public class Notification {
                 .addOnSuccessListener(documentSnapshot -> {
                     if (documentSnapshot.exists()) {
                         // Get list of user IDs in the event
-                        List<String> userIds = (List<String>) documentSnapshot.get("rejectedList");
+                        List<String> userIds = (List<String>) documentSnapshot.get("notSelectedList");
 
                         if (userIds != null) {
                             // Fetch the FCM tokens for these users
