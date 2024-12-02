@@ -11,6 +11,7 @@ import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
 
 import com.example.carbon_project.Controller.MainActivity;
+import com.example.carbon_project.R;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
 
@@ -25,6 +26,7 @@ public class NotificationService extends FirebaseMessagingService {
             NotificationCompat.Builder builder = new NotificationCompat.Builder(this, "notification_channel")
                     .setContentTitle(title)
                     .setContentText(body)
+                    .setSmallIcon(android.R.drawable.ic_notification_overlay) // Replace with your notification icon
                     .setPriority(NotificationCompat.PRIORITY_HIGH) // Ensure the notification is high priority
                     .setAutoCancel(true)  // Automatically dismiss when tapped
                     .setVisibility(NotificationCompat.VISIBILITY_PUBLIC); // Make notification visible to everyone
