@@ -88,6 +88,13 @@
                 android:layout_marginTop="8dp" />
 
             <Button
+                android:id="@+id/notif_button"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Send Notifications"
+                android:layout_marginTop="8dp" />
+
+            <Button
                 android:id="@+id/view_map_button"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

@@ -17,9 +17,7 @@ import com.example.carbon_project.R;
 /*
 * Usage:
 * Intent intent = new Intent({put activity here}, OrganizerSendNotifActivity.class);
-* Bundle bundle = new Bundle();
-* bundle.putString("eventId", {put id here});
-* intent.putExtras(bundle);
+* intent.putExtra("eventId", eventId);
 *
 * startActivity(intent);
 *
@@ -37,16 +35,13 @@ public class OrganizerSendNotifActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_organizer_send_notif);
 
-        Bundle bundle = getIntent().getExtras();
-        if(bundle != null){
-            eventId = bundle.getString("eventId", "");
-        }
+        eventId = getIntent().getStringExtra("eventId");
 
         body = findViewById(R.id.notif_body);
         userType = findViewById(R.id.spinnerNotif);
         send = findViewById(R.id.btnSendNotif);
 
-        String[] spinnerItems = {"Selected List", "Rejected List", "Waiting List"};
+        String[] spinnerItems = {"Selected List", "Waiting List"};
 
         ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, spinnerItems);
 

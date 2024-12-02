@@ -12,6 +12,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.carbon_project.Model.Notification;
 import com.example.carbon_project.R;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -25,7 +26,7 @@ public class OrganizerEventListDetailsActivity extends AppCompatActivity {
     private FirebaseFirestore db;
     private TextView eventName, eventDescription, eventCapacity, eventStart, eventEnd;
     private ImageView eventImage;
-    private Button viewMapButton, viewWaitingListButton, viewSelectedListButton, viewCancelledListButton, viewEnrolledListButton, lotteryButton;
+    private Button viewMapButton, viewWaitingListButton, viewSelectedListButton, viewCancelledListButton, viewEnrolledListButton, lotteryButton, notifButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,6 +44,7 @@ public class OrganizerEventListDetailsActivity extends AppCompatActivity {
         eventStart = findViewById(R.id.event_start_date);
         eventEnd = findViewById(R.id.event_end_date);
         eventImage = findViewById(R.id.event_image);
+        notifButton = findViewById(R.id.notif_button);
         lotteryButton = findViewById(R.id.lottery_button);
 
         viewMapButton = findViewById(R.id.view_map_button);
@@ -65,6 +67,11 @@ public class OrganizerEventListDetailsActivity extends AppCompatActivity {
         viewSelectedListButton.setOnClickListener(v -> openListActivity(eventId, "selectedList"));
         viewCancelledListButton.setOnClickListener(v -> openListActivity(eventId, "cancelledList"));
         viewEnrolledListButton.setOnClickListener(v -> openListActivity(eventId, "enrolledList"));
+        notifButton.setOnClickListener(v -> {
+            Intent intent = new Intent(this, OrganizerSendNotifActivity.class);
+            intent.putExtra("eventId", eventId);
+            startActivity(intent);
+        });
         lotteryButton.setOnClickListener(v -> {
             if (eventId != null) {
                 runLottery(eventId);
@@ -186,6 +193,11 @@ public class OrganizerEventListDetailsActivity extends AppCompatActivity {
                 .addOnFailureListener(e -> {
                     Toast.makeText(this, "Error retrieving event details: " + e.getMessage(), Toast.LENGTH_SHORT).show();
                 });
+
+        Notification.sendToSelected(eventId, "You have been selected to participate in an event." +
+                " Go to the accept invitation page to enroll");
+        Notification.sendToWating(eventId, "You have not been select to participate in " + eventName.getText().toString() +"."
+                + " Don't worry if somebody drops out you will get another chance to participate");
     }
 
 
