@@ -2,13 +2,11 @@ package com.example.carbon_project.Controller;
 
 import android.app.DatePickerDialog;
 import android.content.Intent;
-import android.os.Bundle;
-import android.provider.Settings;
-import android.view.MenuItem;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.util.Base64;
+import android.view.MenuItem;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -36,7 +34,6 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Locale;
 import java.util.UUID;
-
 public class CreateEventActivity extends AppCompatActivity {
 
     private EditText etEventName, etEventDescription, etEventCapacity;
@@ -64,7 +61,7 @@ public class CreateEventActivity extends AppCompatActivity {
         // Initialize views
         etEventName = findViewById(R.id.etEventName);
         etEventDescription = findViewById(R.id.etEventDescription);
-        etEventCapacity = findViewById(R.id.etEventCapacity);
+        etEventCapacity = findViewById(R.id.etEventCapacity);  // Capacity is now optional
         tvStartDate = findViewById(R.id.tvStartDate);
         tvEndDate = findViewById(R.id.tvEndDate);
         cbGeolocationRequired = findViewById(R.id.cbGeolocationRequired);
@@ -86,16 +83,13 @@ public class CreateEventActivity extends AppCompatActivity {
 
         // Bottom navigation view
         BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_navigation);
-        bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
-            @Override
-            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-                if (item.getItemId() == R.id.navigation_home) {
-                    startActivity(new Intent(getApplicationContext(), MainActivity.class));
-                    overridePendingTransition(0, 0);
-                    return true;
-                }
-                return false;
+        bottomNavigationView.setOnNavigationItemSelectedListener(item -> {
+            if (item.getItemId() == R.id.navigation_home) {
+                startActivity(new Intent(getApplicationContext(), MainActivity.class));
+                overridePendingTransition(0, 0);
+                return true;
             }
+            return false;
         });
     }
 
@@ -175,12 +169,17 @@ public class CreateEventActivity extends AppCompatActivity {
         // Validate inputs
         String eventName = etEventName.getText().toString().trim();
         String eventDescription = etEventDescription.getText().toString().trim();
-        int eventCapacity;
-        try {
-            eventCapacity = Integer.parseInt(etEventCapacity.getText().toString().trim());
-        } catch (NumberFormatException e) {
-            etEventCapacity.setError("Invalid capacity");
-            return;
+
+        // If eventCapacity is empty, set it to -1 (optional field)
+        int eventCapacity = -1; // Default value when the field is empty
+        String capacityText = etEventCapacity.getText().toString().trim();
+        if (!capacityText.isEmpty()) {
+            try {
+                eventCapacity = Integer.parseInt(capacityText);
+            } catch (NumberFormatException e) {
+                etEventCapacity.setError("Invalid capacity");
+                return;
+            }
         }
 
         // Check if dates are selected

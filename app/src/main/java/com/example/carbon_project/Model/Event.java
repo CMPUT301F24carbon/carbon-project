@@ -2,9 +2,6 @@ package com.example.carbon_project.Model;
 
 import android.util.Log;
 
-import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.QueryDocumentSnapshot;
-
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -29,7 +26,7 @@ public class Event {
     private Facility facility;
 
 
-    private List<String> rejectedList;
+    private List<String> notSelectedList;
     private List<String> waitingList;
     private List<String> selectedList;
     private List<String> canceledList;
@@ -50,6 +47,7 @@ public class Event {
         this.facility = facility;
         this.waitingList = new ArrayList<>();
         this.selectedList = new ArrayList<>();
+        this.notSelectedList = new ArrayList<>();
         this.canceledList = new ArrayList<>();
         this.enrolledList = new ArrayList<>();
     }
@@ -67,6 +65,7 @@ public class Event {
         this.qrCodeUrl = qrCodeUrl;
         this.waitingList = waitingList;
         this.selectedList = selectedList;
+        this.notSelectedList = selectedList;
         this.enrolledList = enrolledList;
     }
 
@@ -257,7 +256,9 @@ public class Event {
         map.put("endDate", endDate);
         map.put("waitingList", waitingList);
         map.put("selectedList", selectedList);
+        map.put("notSelectedList", notSelectedList);
         map.put("canceledList", canceledList);
+        map.put("enrolledList", enrolledList);
         map.put("eventPosterUrl", eventPosterUrl);
         map.put("qrCodeUrl", qrCodeUrl);
         map.put("eventStatus", eventStatus);

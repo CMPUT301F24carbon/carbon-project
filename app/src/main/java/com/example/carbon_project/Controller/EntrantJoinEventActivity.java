@@ -2,13 +2,10 @@ package com.example.carbon_project.Controller;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.example.carbon_project.Model.Entrant;
 import com.example.carbon_project.R;
-import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.zxing.BarcodeFormat;
 import com.journeyapps.barcodescanner.BarcodeCallback;
 import com.journeyapps.barcodescanner.BarcodeResult;
@@ -57,6 +54,7 @@ public class EntrantJoinEventActivity extends AppCompatActivity {
         Intent intent = new Intent(this, EventDetailsActivity.class);
         intent.putExtra("eventId", scannedData);
         startActivity(intent);
+        finish();
     }
 
     @Override

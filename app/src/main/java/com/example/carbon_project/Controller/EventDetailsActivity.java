@@ -14,8 +14,6 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.example.carbon_project.Model.Entrant;
-import com.example.carbon_project.Model.Event;
 import com.example.carbon_project.R;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.firestore.FieldValue;
@@ -25,121 +23,73 @@ import java.util.List;
 
 public class EventDetailsActivity extends AppCompatActivity {
 
+    // UI elements
     private TextView eventName, eventDescription;
     private Button joinButton, leaveButton;
-    private String eventId;
+
+    // Firebase and data objects
     private FirebaseFirestore db;
-    private Entrant entrant;
-    private Event event;
+    private String userId;
+    private String eventId;
+
+    List<String> waitingList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_event_details);
 
-        // Initialize UI elements
         eventName = findViewById(R.id.event_name);
         eventDescription = findViewById(R.id.event_description);
         joinButton = findViewById(R.id.join_event_button);
         leaveButton = findViewById(R.id.leave_event_button);
 
-        // Retrieve event details from Intent
-        eventId = getIntent().getStringExtra("eventId");
-
-        db = FirebaseFirestore.getInstance();
-        String deviceId = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
-        db.collection("users").document(deviceId).get()
-                .addOnSuccessListener(documentSnapshot -> {
-                    if (documentSnapshot.exists()) {
-                        entrant = new Entrant(deviceId, documentSnapshot.getString("name"), documentSnapshot.getString("email"), documentSnapshot.getString("phoneNumber"));
-                        db.collection("events").document(eventId).get()
-                                .addOnSuccessListener(eventDocumentSnapshot -> {
-                                    if (eventDocumentSnapshot.exists()) {
-                                        event = new Event(
-                                                eventId,
-                                                eventDocumentSnapshot.getString("name"),
-                                                eventDocumentSnapshot.getString("description"),
-                                                eventDocumentSnapshot.getString("organizerId"),
-                                                eventDocumentSnapshot.getLong("capacity").intValue(),
-                                                eventDocumentSnapshot.get("waitingList", List.class),
-                                                eventDocumentSnapshot.get("selectedList", List.class),
-                                                eventDocumentSnapshot.get("canceledList", List.class),
-                                                eventDocumentSnapshot.get("enrolledList", List.class),
-                                                eventDocumentSnapshot.getBoolean("geolocationRequired"),
-                                                eventDocumentSnapshot.getString("startDate"),
-                                                eventDocumentSnapshot.getString("endDate"),
-                                                eventDocumentSnapshot.getString("eventPosterUrl"),
-                                                eventDocumentSnapshot.getString("qrCodeUrl")
-                                                );
-                                        showUI();
-                                    }
-                                })
-                                .addOnFailureListener(e -> {
-                                    Toast.makeText(this, "Error retrieving event details: " + e.getMessage(), Toast.LENGTH_SHORT).show();
-                                });
-                    }
-                })
-                .addOnFailureListener(e -> {
-                    Toast.makeText(this, "Error retrieving user details: " + e.getMessage(), Toast.LENGTH_SHORT).show();
-                });
-    }
-
-    public void showUI() {
-        if (event.getName() != null) {
-            eventName.setText(event.getName());
-        } else {
-            eventName.setText("Event name not provided");
-        }
-        if (event.getDescription() != null) {
-            eventDescription.setText(event.getDescription());
-        } else {
-            eventDescription.setText("No description available.");
-        }
-
-        leaveButton.setVisibility(View.GONE);
-
-        checkIfUserIsInWaitingList();
-
-        // Set onClick listeners for the buttons
-        joinButton.setOnClickListener(v -> checkGeolocationRequirement());
-        leaveButton.setOnClickListener(v -> leaveEvent());
-
-        // Back Button
+        setupBottomNavigation();
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        // Bottom navigation view
-        BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_navigation);
-        bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
-            @Override
-            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-                if (item.getItemId() == R.id.navigation_home) {
-                    startActivity(new Intent(getApplicationContext(), MainActivity.class));
-                    overridePendingTransition(0, 0);
-                    return true;
-                }
-                return false;
-            }
-        });
+        eventId = getIntent().getStringExtra("eventId");
+        if (eventId == null) {
+            Toast.makeText(this, "Event ID is missing", Toast.LENGTH_SHORT).show();
+            finish();
+        }
+        userId = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
+
+        db = FirebaseFirestore.getInstance();
+
+        loadEventData();
     }
 
-    @Override
-    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        if (item.getItemId() == android.R.id.home) {
-            onBackPressed(); // Go back to the previous screen
-            return true;
-        }
-        return super.onOptionsItemSelected(item);
+    // Load event data from Firestore
+    private void loadEventData() {
+        db.collection("events").document(eventId).get()
+                .addOnSuccessListener(documentSnapshot -> {
+                    if (documentSnapshot.exists()) {
+                        String eventNameString = documentSnapshot.getString("name");
+                        String eventDescriptionString = documentSnapshot.getString("description");
+                        String eventLocationString = documentSnapshot.getString("location");
+                        Boolean isGeolocationRequired = documentSnapshot.getBoolean("geolocationRequired");
+                        waitingList = (List<String>) documentSnapshot.get("waitingList");
+
+                        // Setup UI
+                        eventName.setText(eventNameString != null ? eventNameString : "Event name not provided");
+                        eventDescription.setText(eventDescriptionString != null ? eventDescriptionString : "No description available.");
+
+                        leaveButton.setVisibility(View.GONE);
+                        updateJoinLeaveButtonVisibility();
+
+                        joinButton.setOnClickListener(v -> handleJoinEvent(isGeolocationRequired));
+                        leaveButton.setOnClickListener(v -> updateEventWaitingList(false));
+
+                    } else {
+                        showError("Event details not found");
+                    }
+                })
+                .addOnFailureListener(e -> showError("Error retrieving event details: " + e.getMessage()));
     }
 
-    private void checkIfUserIsInWaitingList() {
-        if (eventId == null || entrant.getUserId() == null) {
-            Toast.makeText(this, "Failed to load waiting list. Try again later.", Toast.LENGTH_SHORT).show();
-            return;
-        }
-
-        List<String> waitingList = event.getWaitingList();
-
-        if (waitingList != null && waitingList.contains(entrant.getUserId())) {
+    // Update visibility of join and leave buttons
+    private void updateJoinLeaveButtonVisibility() {
+        if (waitingList != null && waitingList.contains(userId)) {
             joinButton.setVisibility(View.GONE);
             leaveButton.setVisibility(View.VISIBLE);
         } else {
@@ -148,61 +98,65 @@ public class EventDetailsActivity extends AppCompatActivity {
         }
     }
 
-    private void checkGeolocationRequirement() {
-        Boolean geolocationRequired = event.isGeolocationRequired();
-
-        if (Boolean.TRUE.equals(geolocationRequired)) {
-            new AlertDialog.Builder(this)
-                    .setTitle("Location Sharing Required")
-                    .setMessage("This event requires you to share your location. Do you want to proceed?")
-                    .setPositiveButton("OK", (dialog, which) -> {
-                        joinEvent();
-                    })
-                    .setNegativeButton("Cancel", (dialog, which) -> {
-                        Toast.makeText(this, "You need to share your location to join this event.", Toast.LENGTH_SHORT).show();
-                    })
-                    .show();
-
-            // TODO: Implement location handling logic here if necessary
+    // Handle join event logic
+    private void handleJoinEvent(Boolean isGeolocationRequired) {
+        if (Boolean.TRUE.equals(isGeolocationRequired)) {
+            promptGeolocationConsent(() -> updateEventWaitingList(true));
         } else {
-            joinEvent();
+            updateEventWaitingList(true);
         }
     }
 
-
-    private void joinEvent() {
-        if (eventId == null || entrant.getUserId() == null) {
-            Toast.makeText(this, "Failed to join the event. Try again later.", Toast.LENGTH_SHORT).show();
-            return;
-        }
+    // Update waiting list in Firestore
+    private void updateEventWaitingList(boolean isJoining) {
+        String operation = isJoining ? "add" : "remove";
+        FieldValue action = isJoining ? FieldValue.arrayUnion(userId) : FieldValue.arrayRemove(userId);
 
         db.collection("events").document(eventId)
-                .update("waitingList", FieldValue.arrayUnion(entrant.getUserId()))
+                .update("waitingList", action)
                 .addOnSuccessListener(aVoid -> {
-                    Toast.makeText(this, "Successfully added to the event!", Toast.LENGTH_SHORT).show();
-                    joinButton.setVisibility(View.GONE);
-                    leaveButton.setVisibility(View.VISIBLE);
+                    String message = isJoining ? "Successfully joined the event!" : "Successfully left the event!";
+                    Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
+                    updateJoinLeaveButtonVisibility();
                 })
-                .addOnFailureListener(e -> {
-                    Toast.makeText(this, "Failed to join the event: " + e.getMessage(), Toast.LENGTH_SHORT).show();
-                });
+                .addOnFailureListener(e -> showError("Failed to " + operation + " the event: " + e.getMessage()));
     }
 
-    private void leaveEvent() {
-        if (eventId == null || entrant.getUserId() == null) {
-            Toast.makeText(this, "Failed to leave the event. Try again later.", Toast.LENGTH_SHORT).show();
-            return;
-        }
+    // Prompt for geolocation consent
+    private void promptGeolocationConsent(Runnable onConsent) {
+        new AlertDialog.Builder(this)
+                .setTitle("Location Sharing Required")
+                .setMessage("This event requires you to share your location. Do you want to proceed?")
+                .setPositiveButton("OK", (dialog, which) -> onConsent.run())
+                .setNegativeButton("Cancel", (dialog, which) -> Toast.makeText(this, "Location sharing is required to join this event.", Toast.LENGTH_SHORT).show())
+                .show();
+    }
 
-        db.collection("events").document(eventId)
-                .update("waitingList", FieldValue.arrayRemove(entrant.getUserId()))
-                .addOnSuccessListener(aVoid -> {
-                    Toast.makeText(this, "Successfully left the event!", Toast.LENGTH_SHORT).show();
-                    joinButton.setVisibility(View.VISIBLE);
-                    leaveButton.setVisibility(View.GONE);
-                })
-                .addOnFailureListener(e -> {
-                    Toast.makeText(this, "Failed to leave the event: " + e.getMessage(), Toast.LENGTH_SHORT).show();
-                });
+    // Setup bottom navigation
+    private void setupBottomNavigation() {
+        BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_navigation);
+        bottomNavigationView.setOnNavigationItemSelectedListener(item -> {
+            if (item.getItemId() == R.id.navigation_home) {
+                startActivity(new Intent(getApplicationContext(), MainActivity.class));
+                overridePendingTransition(0, 0);
+                return true;
+            }
+            return false;
+        });
+    }
+
+    // Handle back button press
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        if (item.getItemId() == android.R.id.home) {
+            onBackPressed();
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    // Show error message
+    private void showError(String message) {
+        Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
     }
 }

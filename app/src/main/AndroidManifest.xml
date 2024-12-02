@@ -26,7 +26,7 @@
         <activity android:name="com.example.carbon_project.Controller.OrganizerFacilitiesActivity" />
         <activity android:name="com.example.carbon_project.Controller.CreateEventActivity" />
         <activity android:name="com.example.carbon_project.Controller.ViewEventsActivity" />
-        <activity android:name="com.example.carbon_project.Controller.AdminDashboardActivity" />
+
         <activity android:name="com.example.carbon_project.Controller.EventManagementActivity" />
         <activity android:name="com.example.carbon_project.Controller.EventListActivity" />
         <activity android:name="com.example.carbon_project.Controller.EventDetailsActivity" />
@@ -37,6 +37,9 @@
         <activity android:name="com.example.carbon_project.Controller.AdminViewProfileActivity"/>
         <activity android:name="com.example.carbon_project.Controller.SaveQRCodeActivity" />
         <activity android:name="com.example.carbon_project.Controller.EntrantJoinEventActivity" />
+        <activity android:name="com.example.carbon_project.Controller.OrganizerEventListDetailsActivity" />
+        <activity android:name="com.example.carbon_project.Controller.OrganizerMapActivity" />
+        <activity android:name="com.example.carbon_project.Controller.OrganizerUserListActivity" />
         <activity android:name="com.example.carbon_project.Controller.OrganizerSendNotifActivity" />
         <activity android:name="com.example.carbon_project.Controller.EntrantAcceptEventActivity"/>
 
