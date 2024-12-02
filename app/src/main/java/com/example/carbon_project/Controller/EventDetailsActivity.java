@@ -26,6 +26,7 @@ import com.google.android.gms.location.LocationServices;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.squareup.picasso.Picasso;
 
 import java.util.HashMap;
 import java.util.List;
@@ -142,6 +143,13 @@ public class EventDetailsActivity extends AppCompatActivity {
 
         if (organizerName != null) {
             eventOrganizer.setText("Organizer: " + organizerName);
+        }
+
+        // Populate views
+        if (event.getEventPosterUrl() != null && !event.getEventPosterUrl().isEmpty()) {
+            Picasso.get()
+                    .load(event.getEventPosterUrl())
+                    .into(eventImage);
         }
 
         updateButtonVisibility();
