@@ -31,6 +31,9 @@ import com.google.firebase.firestore.QuerySnapshot;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * The EntrantAcceptEventActivity class is an activity that allows an entrant to accept an event.
+ */
 public class EntrantAcceptEventActivity extends AppCompatActivity {
 
     private FirebaseFirestore db;
@@ -40,6 +43,10 @@ public class EntrantAcceptEventActivity extends AppCompatActivity {
     private ArrayList<String> eventNames;
     private ArrayAdapter<String> adapter;
 
+    /**
+     * Called when the activity is starting.
+     * @param savedInstanceState
+     */
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_event_list);
@@ -118,6 +125,13 @@ public class EntrantAcceptEventActivity extends AppCompatActivity {
 
     }
 
+    /**
+     * Update Firstore
+     * @param eventId
+     * @param fromList
+     * @param toList
+     * @param userId
+     */
     private void updateFirestore(String eventId, String fromList, String toList, String userId) {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         DocumentReference docRef = db.collection("events").document(eventId);

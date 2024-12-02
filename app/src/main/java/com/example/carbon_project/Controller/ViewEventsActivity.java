@@ -20,6 +20,9 @@ import com.google.firebase.firestore.QueryDocumentSnapshot;
 
 import java.util.ArrayList;
 
+/**
+ * The ViewEventsActivity class is an activity that displays a list of events created by an organizer.
+ */
 public class ViewEventsActivity extends AppCompatActivity {
 
     private ListView eventsListView;
@@ -29,6 +32,10 @@ public class ViewEventsActivity extends AppCompatActivity {
     private String organizerId;
     private ArrayList<String> eventIds;
 
+    /**
+     * Called when the activity is starting.
+     * @param savedInstanceState
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -84,6 +91,11 @@ public class ViewEventsActivity extends AppCompatActivity {
         });
     }
 
+    /**
+     * Handles the back button click event.
+     * @param item
+     * @return
+     */
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         if (item.getItemId() == android.R.id.home) {
@@ -93,6 +105,10 @@ public class ViewEventsActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    /**
+     * Fetches events from Firestore.
+     * @param organizerId
+     */
     private void fetchEventsFromDatabase(String organizerId) {
         db.collection("events")
                 .whereEqualTo("organizerId", organizerId)

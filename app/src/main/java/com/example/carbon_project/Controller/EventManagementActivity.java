@@ -10,7 +10,14 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.example.carbon_project.R;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
+/**
+ * The EventManagementActivity class is an activity that allows an organizer to manage an event.
+ */
 public class EventManagementActivity extends AppCompatActivity {
+    /**
+     * Called when the activity is starting.
+     * @param savedInstanceState
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -36,6 +43,11 @@ public class EventManagementActivity extends AppCompatActivity {
         });
     }
 
+    /**
+     * Handles the back button click event.
+     * @param item
+     * @return
+     */
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         if (item.getItemId() == android.R.id.home) {

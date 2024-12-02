@@ -13,9 +13,16 @@ import com.journeyapps.barcodescanner.DecoratedBarcodeView;
 
 import java.util.Collections;
 
+/**
+ * The EntrantJoinEventActivity class is an activity that allows an entrant to join an event.
+ */
 public class EntrantJoinEventActivity extends AppCompatActivity {
     private DecoratedBarcodeView barcodeView;
 
+    /**
+     * Called when the activity is starting.
+     * @param savedInstanceState
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -36,6 +43,10 @@ public class EntrantJoinEventActivity extends AppCompatActivity {
     }
 
     private final BarcodeCallback callback = new BarcodeCallback() {
+        /**
+         * Called when a barcode result is received.
+         * @param result the result
+         */
         @Override
         public void barcodeResult(BarcodeResult result) {
             if (result.getText() != null) {
@@ -50,6 +61,10 @@ public class EntrantJoinEventActivity extends AppCompatActivity {
         }
     };
 
+    /**
+     * Handle the scanned QR code.
+     * @param scannedData
+     */
     private void handleScanResult(String scannedData) {
         Intent intent = new Intent(this, EventDetailsActivity.class);
         intent.putExtra("eventId", scannedData);

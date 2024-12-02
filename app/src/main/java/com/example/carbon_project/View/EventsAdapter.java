@@ -9,17 +9,32 @@ import android.widget.TextView;
 
 import java.util.ArrayList;
 
+/**
+ * The EventsAdapter class is a custom adapter for displaying a list of events in a ListView.
+ */
 public class EventsAdapter extends ArrayAdapter<String> {
 
     private Context context;
     private ArrayList<String> events;
 
+    /**
+     * Constructs a new EventsAdapter with the given context and list of events.
+     * @param context
+     * @param events
+     */
     public EventsAdapter(Context context, ArrayList<String> events) {
         super(context, 0, events);
         this.context = context;
         this.events = events;
     }
 
+    /**
+     * Returns the view for the specified position in the list.
+     * @param position
+     * @param convertView
+     * @param parent
+     * @return
+     */
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         if (convertView == null) {

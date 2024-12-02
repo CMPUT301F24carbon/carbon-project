@@ -26,12 +26,20 @@ import com.example.carbon_project.R;
 *Open this with an eventId to open a menu that send notifications to users of that event
 *You can send notifications to selected, rejected, and waiting users.
 * */
+
+/**
+ * The OrganizerSendNotifActivity class is an activity that sends notifications to users of an event.
+ */
 public class OrganizerSendNotifActivity extends AppCompatActivity {
     private EditText body;
     private Spinner userType;
     private Button send;
     private String eventId;
 
+    /**
+     * Called when the activity is starting.
+     * @param savedInstanceState
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

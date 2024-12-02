@@ -19,12 +19,19 @@ import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.UUID;
 
+/**
+ * The CreateFacilityActivity class is an activity that allows the user to create a new facility.
+ */
 public class CreateFacilityActivity extends AppCompatActivity {
     private EditText etFacilityName, etFacilityLocation, etFacilityCapacity;
     private Button btnCreateFacility;
     private FirebaseFirestore db;
     private String organizerId;
 
+    /**
+     * Called when the activity is starting.
+     * @param savedInstanceState
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -62,6 +69,11 @@ public class CreateFacilityActivity extends AppCompatActivity {
         });
     }
 
+    /**
+     * Handles the back button click event.
+     * @param item
+     * @return
+     */
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         if (item.getItemId() == android.R.id.home) {
@@ -71,6 +83,9 @@ public class CreateFacilityActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    /**
+     * Create a facility
+     */
     private void createFacility() {
         String facilityName = etFacilityName.getText().toString().trim();
         String facilityLocation = etFacilityLocation.getText().toString().trim();

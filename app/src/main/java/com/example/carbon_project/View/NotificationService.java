@@ -10,8 +10,15 @@ import com.example.carbon_project.Controller.MainActivity;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
 
+/**
+ * The NotificationService class is a Firebase Cloud Messaging (FCM) service that handles
+ */
 public class NotificationService extends FirebaseMessagingService {
 
+    /**
+     * Called when a new FCM message is received.
+     * @param remoteMessage Remote message that has been received.
+     */
     @Override
     public void onMessageReceived(RemoteMessage remoteMessage) {
         if (remoteMessage.getNotification() != null) {

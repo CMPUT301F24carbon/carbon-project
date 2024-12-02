@@ -40,6 +40,9 @@ import java.util.Calendar;
 import java.util.Locale;
 import java.util.UUID;
 
+/**
+ * The CreateEventActivity class is an activity that allows the user to create a new event.
+ */
 public class CreateEventActivity extends AppCompatActivity {
 
     private EditText etEventName, etEventDescription, etEventCapacity;
@@ -59,6 +62,10 @@ public class CreateEventActivity extends AppCompatActivity {
 
     private static final int PICK_IMAGE_REQUEST = 1;
 
+    /**
+     * Called when the activity is starting.
+     * @param savedInstanceState
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -105,6 +112,11 @@ public class CreateEventActivity extends AppCompatActivity {
         });
     }
 
+    /**
+     * Handles the back button click event.
+     * @param item
+     * @return
+     */
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         if (item.getItemId() == android.R.id.home) {
@@ -114,6 +126,10 @@ public class CreateEventActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    /**
+     * Shows the date picker dialog.
+     * @param isStartDate
+     */
     private void showDatePickerDialog(boolean isStartDate) {
         // Initialize the calendar for the date picker dialog
         Calendar calendar = Calendar.getInstance();
@@ -139,6 +155,13 @@ public class CreateEventActivity extends AppCompatActivity {
         datePickerDialog.show();
     }
 
+    /**
+     * Format Date
+     * @param year
+     * @param month
+     * @param day
+     * @return
+     */
     private String formatDate(int year, int month, int day) {
         // Format the date as YYYY-MM-DD
         Calendar calendar = Calendar.getInstance();
@@ -147,6 +170,10 @@ public class CreateEventActivity extends AppCompatActivity {
         return dateFormat.format(calendar.getTime());
     }
 
+    /**
+     * Fetch facilities for organizer
+     * @param organizerId
+     */
     private void fetchFacilitiesForOrganizer(String organizerId) {
         // Query Firestore for facilities where the organizerId matches the logged-in user
         db.collection("facilities")
@@ -166,6 +193,9 @@ public class CreateEventActivity extends AppCompatActivity {
                 });
     }
 
+    /**
+     * Populate the spinner with facility names.
+     */
     private void populateFacilitySpinner() {
         ArrayList<String> facilityNames = new ArrayList<>();
         for (Facility facility : facilityList) {
@@ -177,6 +207,9 @@ public class CreateEventActivity extends AppCompatActivity {
         spFacility.setAdapter(adapter);
     }
 
+    /**
+     * Create and save event
+     */
     private void createAndSaveEvent() {
         // Validate inputs
         String eventName = etEventName.getText().toString().trim();
@@ -231,6 +264,12 @@ public class CreateEventActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * Upload event poster
+     * @param eventId
+     * @param event
+     * @param qrCode
+     */
     private void uploadEventPoster(String eventId, final Event event, byte[] qrCode) {
         StorageReference storageReference = FirebaseStorage.getInstance().getReference();
         StorageReference eventPosterRef = storageReference.child("event_posters/" + eventId + ".jpg");
@@ -252,6 +291,11 @@ public class CreateEventActivity extends AppCompatActivity {
                 });
     }
 
+    /**
+     * Save event to Firestore
+     * @param event
+     * @param qrCode
+     */
     private void saveEventToFirestore(Event event, byte[] qrCode) {
         db.collection("events").document(event.getEventId()).set(event.toMap())
                 .addOnSuccessListener(aVoid -> {
@@ -266,7 +310,11 @@ public class CreateEventActivity extends AppCompatActivity {
                 });
     }
 
-    // Generate a QR code in byte array format
+    /**
+     * Generate QR code
+     * @param eventId
+     * @return
+     */
     private byte[] generateQRCodeForEvent(String eventId) {
         try {
             // Generate the QR code Bitmap
@@ -283,11 +331,20 @@ public class CreateEventActivity extends AppCompatActivity {
         }
     }
 
-    // Turn a Byte array into a URI to store it as a QR code image URL
+    /**
+     * Convert byte array to URI
+     * @param byteArray
+     * @return
+     */
     private String byteArrayToUri(byte[] byteArray) {
         return Base64.encodeToString(byteArray, Base64.NO_WRAP);
     }
 
+    /**
+     * Upload event poster
+     * @param eventId
+     * @param event
+     */
     private void uploadEventPoster(String eventId, final Event event) {
         StorageReference storageReference = FirebaseStorage.getInstance().getReference();
         StorageReference eventPosterRef = storageReference.child("event_posters/" + eventId + ".jpg");
@@ -307,12 +364,21 @@ public class CreateEventActivity extends AppCompatActivity {
     }
 
 
+    /**
+     * Open image picker
+     */
     private void openImagePicker() {
         Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
         intent.setType("image/*");
         startActivityForResult(Intent.createChooser(intent, "Select Event Poster"), PICK_IMAGE_REQUEST);
     }
 
+    /**
+     * Handle the result of the image picker
+     * @param requestCode
+     * @param resultCode
+     * @param data
+     */
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);

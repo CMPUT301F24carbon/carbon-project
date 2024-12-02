@@ -12,10 +12,17 @@ import com.example.carbon_project.Model.Organizer;
 import com.example.carbon_project.R;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
+/**
+ * The OrganizerDashboardActivity class is an activity that displays the organizer's dashboard.
+ */
 public class OrganizerDashboardActivity extends AppCompatActivity {
     private Button createEventButton, viewEventButton, viewFacilitiesButton, createFacilityButton, myProfileButton;
     private Organizer organizer2;
 
+    /**
+     * Called when the activity is starting.
+     * @param savedInstanceState
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -78,6 +85,11 @@ public class OrganizerDashboardActivity extends AppCompatActivity {
         });
     }
 
+    /**
+     * Handles the back button click event.
+     * @param item
+     * @return
+     */
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         if (item.getItemId() == android.R.id.home) {

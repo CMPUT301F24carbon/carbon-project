@@ -22,6 +22,9 @@ import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.List;
 
+/**
+ * The EventDetailsActivity class is an activity that displays the details of an event.
+ */
 public class EventDetailsActivity extends AppCompatActivity {
 
     // UI elements
@@ -33,6 +36,10 @@ public class EventDetailsActivity extends AppCompatActivity {
     private String userId;
     private Event event;
 
+    /**
+     * Called when the activity is starting.
+     * @param savedInstanceState
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -58,7 +65,10 @@ public class EventDetailsActivity extends AppCompatActivity {
         loadEventData(eventId);
     }
 
-    // Load event data from Firestore
+    /**
+     * Load event data from Firestore.
+     * @param eventId
+     */
     private void loadEventData(String eventId) {
         db.collection("events").document(eventId).get()
                 .addOnSuccessListener(documentSnapshot -> {
@@ -97,7 +107,9 @@ public class EventDetailsActivity extends AppCompatActivity {
                 .addOnFailureListener(e -> showError("Error retrieving event details: " + e.getMessage()));
     }
 
-    // Update visibility of join and leave buttons
+    /**
+     * Update visibility of join and leave buttons.
+     */
     private void updateJoinLeaveButtonVisibility() {
         if (event.getWaitingList() != null && event.getWaitingList().contains(userId)) {
             joinButton.setVisibility(View.GONE);
@@ -108,7 +120,9 @@ public class EventDetailsActivity extends AppCompatActivity {
         }
     }
 
-    // Handle join event logic
+    /**
+     * Handle join event button click.
+     */
     private void handleJoinEvent() {
         if (Boolean.TRUE.equals(event.isGeolocationRequired())) {
             promptGeolocationConsent(() -> updateEventWaitingList(true));
@@ -117,7 +131,10 @@ public class EventDetailsActivity extends AppCompatActivity {
         }
     }
 
-    // Update waiting list in Firestore
+    /**
+     * Update event waiting list in Firestore.
+     * @param isJoining
+     */
     private void updateEventWaitingList(boolean isJoining) {
         String operation = isJoining ? "add" : "remove";
         FieldValue action = isJoining ? FieldValue.arrayUnion(userId) : FieldValue.arrayRemove(userId);
@@ -132,7 +149,10 @@ public class EventDetailsActivity extends AppCompatActivity {
                 .addOnFailureListener(e -> showError("Failed to " + operation + " the event: " + e.getMessage()));
     }
 
-    // Prompt for geolocation consent
+    /**
+     * Prompt for geolocation consent.
+     * @param onConsent
+     */
     private void promptGeolocationConsent(Runnable onConsent) {
         new AlertDialog.Builder(this)
                 .setTitle("Location Sharing Required")
@@ -142,7 +162,9 @@ public class EventDetailsActivity extends AppCompatActivity {
                 .show();
     }
 
-    // Setup bottom navigation
+    /**
+     * Setup bottom navigation.
+     */
     private void setupBottomNavigation() {
         BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_navigation);
         bottomNavigationView.setOnNavigationItemSelectedListener(item -> {
@@ -155,7 +177,11 @@ public class EventDetailsActivity extends AppCompatActivity {
         });
     }
 
-    // Handle back button press
+    /**
+     * Handles the back button click event.
+     * @param item
+     * @return
+     */
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         if (item.getItemId() == android.R.id.home) {
@@ -165,7 +191,10 @@ public class EventDetailsActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    // Show error message
+    /**
+     * Show error message.
+     * @param message
+     */
     private void showError(String message) {
         Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
     }

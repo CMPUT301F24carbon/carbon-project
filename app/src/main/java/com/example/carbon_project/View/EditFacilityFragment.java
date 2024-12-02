@@ -21,8 +21,14 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * The EditFacilityFragment class represents a dialog fragment for editing facility details.
+ */
 public class EditFacilityFragment extends DialogFragment {
 
+    /**
+     * The EditFacilityDialogListener interface defines a callback method for updating a facility.
+     */
     public interface EditFacilityDialogListener {
         void updateFacility(Facility facility, int position);
     }
@@ -32,10 +38,18 @@ public class EditFacilityFragment extends DialogFragment {
     private com.example.carbon_project.Model.Facility facilityToEdit;
     private int position = -1;
 
+    /**
+     * Sets the facility to be edited.
+     * @param facility
+     */
     public void setFacilityToEdit(Facility facility) {
         this.facilityToEdit = facility;
     }
 
+    /**
+     * Called when the fragment is attached to the activity.
+     * @param context
+     */
     @Override
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
@@ -46,6 +60,13 @@ public class EditFacilityFragment extends DialogFragment {
         }
     }
 
+    /**
+     * Called to create the dialog fragment.
+     * @param savedInstanceState The last saved instance state of the Fragment,
+     * or null if this is a freshly created Fragment.
+     *
+     * @return
+     */
     @NonNull
     @Override
     public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
@@ -140,6 +161,10 @@ public class EditFacilityFragment extends DialogFragment {
                 .addOnFailureListener(e -> showToast("Failed to update facility: " + e.getMessage()));
     }
 
+    /**
+     * Sets the position of the facility in the list.
+     * @param position
+     */
     public void setPosition(int position) {
         this.position = position;
     }

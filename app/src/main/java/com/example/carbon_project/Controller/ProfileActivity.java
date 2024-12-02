@@ -28,6 +28,9 @@ import com.squareup.picasso.Picasso;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * The ProfileActivity class is an activity that displays the profile of a user.
+ */
 public class ProfileActivity extends AppCompatActivity {
     private static final int REQUEST_CODE_PICK_IMAGE = 101;
 
@@ -38,6 +41,10 @@ public class ProfileActivity extends AppCompatActivity {
     private FirebaseFirestore db;
     private String userId;
 
+    /**
+     * Called when the activity is starting.
+     * @param savedInstanceState
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -87,6 +94,11 @@ public class ProfileActivity extends AppCompatActivity {
         });
     }
 
+    /**
+     * Handles the back button click event.
+     * @param item
+     * @return
+     */
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         if (item.getItemId() == android.R.id.home) {
@@ -96,11 +108,20 @@ public class ProfileActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    /**
+     * Uploads the profile picture to Firebase Storage.
+     */
     private void uploadProfilePicture() {
         Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
         startActivityForResult(intent, REQUEST_CODE_PICK_IMAGE);
     }
 
+    /**
+     * Handles the result of the image upload.
+     * @param requestCode
+     * @param resultCode
+     * @param data
+     */
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -133,6 +154,10 @@ public class ProfileActivity extends AppCompatActivity {
     }
 
 
+    /**
+     * Loads the user's profile from Firestore.
+     * @param userId
+     */
     private void loadProfile(String userId) {
         db.collection("users").document(userId)
                 .get()
@@ -174,6 +199,9 @@ public class ProfileActivity extends AppCompatActivity {
     }
 
 
+    /**
+     * Saves the user's profile to Firestore.
+     */
     private void saveProfile() {
         String nameValue = name.getText().toString().trim();
         String emailValue = email.getText().toString().trim();
@@ -194,6 +222,10 @@ public class ProfileActivity extends AppCompatActivity {
                 .addOnFailureListener(e -> Toast.makeText(this, "Failed to update profile: " + e.getMessage(), Toast.LENGTH_SHORT).show());
     }
 
+    /**
+     * Displays the user's initials in the badge.
+     * @param name
+     */
     private void displayInitials(String name) {
         String initials = "";
         if (name != null && !name.isEmpty()) {
@@ -208,6 +240,9 @@ public class ProfileActivity extends AppCompatActivity {
         initialsBadge.setText(initials.toUpperCase());
     }
 
+    /**
+     * Removes the user's profile picture from Firestore.
+     */
     private void removeProfilePicture() {
         db.collection("users").document(userId)
                 .update("profilePictureUrl", null)

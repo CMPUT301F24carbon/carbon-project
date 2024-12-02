@@ -13,10 +13,17 @@ import org.osmdroid.util.GeoPoint;
 import org.osmdroid.views.MapView;
 import org.osmdroid.views.overlay.Marker;
 
+/**
+ * The OrganizerMapActivity class is an activity that displays the map of an organizer.
+ */
 public class OrganizerMapActivity extends AppCompatActivity {
 
     private MapView mapView;
 
+    /**
+     * Called when the activity is starting.
+     * @param savedInstanceState
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

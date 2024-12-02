@@ -15,6 +15,9 @@ import com.example.carbon_project.R;
 
 import java.util.List;
 
+/**
+ * The AdminRecyclerViewAdapter class is an adapter for the RecyclerView in the AdminListActivity.
+ */
 public class AdminRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     private final List<Object> data;
@@ -25,15 +28,28 @@ public class AdminRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.
     private static final int VIEW_TYPE_EVENT = 2;
     private static final int VIEW_TYPE_FACILITY = 3;
 
+    /**
+     * The OnItemClickListener interface defines a callback method that is invoked
+     */
     public interface OnItemClickListener {
         void onItemClick(int position);
     }
 
+    /**
+     * Constructs a new AdminRecyclerViewAdapter object.
+     * @param data
+     * @param listener
+     */
     public AdminRecyclerViewAdapter(List<Object> data, OnItemClickListener listener) {
         this.data = data;
         this.listener = listener;
     }
 
+    /**
+     * Returns the view type of the item at the given position.
+     * @param position position to query
+     * @return
+     */
     @Override
     public int getItemViewType(int position) {
         Object item = data.get(position);
@@ -47,6 +63,14 @@ public class AdminRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.
         throw new IllegalArgumentException("Unsupported data type at position " + position);
     }
 
+    /**
+     * Creates a new ViewHolder for the given view type.
+     * @param parent The ViewGroup into which the new View will be added after it is bound to
+     *               an adapter position.
+     * @param viewType The view type of the new View.
+     *
+     * @return
+     */
     @NonNull
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -64,6 +88,12 @@ public class AdminRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.
         throw new IllegalArgumentException("Unsupported view type");
     }
 
+    /**
+     * Updates the contents of the ViewHolder to reflect the item at the given position.
+     * @param holder The ViewHolder which should be updated to represent the contents of the
+     *        item at the given position in the data set.
+     * @param position The position of the item within the adapter's data set.
+     */
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
         Object item = data.get(position);
@@ -76,6 +106,10 @@ public class AdminRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.
         }
     }
 
+    /**
+     * Returns the total number of items in the data set held by the adapter.
+     * @return
+     */
     @Override
     public int getItemCount() {
         return data.size();
@@ -87,6 +121,11 @@ public class AdminRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.
         TextView phone;
 
 
+        /**
+         * Constructs a new UserViewHolder object.
+         * @param itemView
+         * @param listener
+         */
         public UserViewHolder(@NonNull View itemView, OnItemClickListener listener) {
             super(itemView);
             name = itemView.findViewById(R.id.name);
@@ -100,6 +139,10 @@ public class AdminRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.
             });
         }
 
+        /**
+         * Binds the data to the view holder.
+         * @param item
+         */
         public void bind(User item) {
             name.setText(item.getName());
             email.setText(item.getEmail());
@@ -121,6 +164,11 @@ public class AdminRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.
         TextView eventStartDateTextView;
         TextView eventEndDateTextView;
 
+        /**
+         * Constructs a new EventViewHolder object.
+         * @param itemView
+         * @param listener
+         */
         public EventViewHolder(@NonNull View itemView, OnItemClickListener listener) {
             super(itemView);
             eventNameTextView = itemView.findViewById(R.id.textView_event_name);
@@ -137,6 +185,10 @@ public class AdminRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.
             });
         }
 
+        /**
+         * Binds the data to the view holder.
+         * @param item
+         */
         public void bind(Event item) {
             eventNameTextView.setText(item.getName());
             eventDescriptionView.setText(item.getDescription());
@@ -152,6 +204,11 @@ public class AdminRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.
         TextView facilityLocation;
         TextView facilityCapacity;
 
+        /**
+         * Constructs a new FacilityViewHolder object.
+         * @param itemView
+         * @param listener
+         */
         public FacilityViewHolder(@NonNull View itemView, OnItemClickListener listener) {
             super(itemView);
             facilityName = itemView.findViewById(R.id.tvFacilityName);
@@ -165,6 +222,10 @@ public class AdminRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.
             });
         }
 
+        /**
+         * Binds the data to the view holder.
+         * @param item
+         */
         public void bind(Facility item) {
             facilityName.setText(item.getName());
             facilityLocation.setText(item.getLocation());

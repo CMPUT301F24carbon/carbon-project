@@ -18,6 +18,9 @@ import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.UUID;
 
+/**
+ * The OrganizerCreateFacilityActivity class is an activity that allows an organizer to create a facility.
+ */
 public class OrganizerCreateFacilityActivity extends AppCompatActivity {
 
     private EditText facilityNameEditText;
@@ -28,6 +31,10 @@ public class OrganizerCreateFacilityActivity extends AppCompatActivity {
 
     private FirebaseFirestore db;
 
+    /**
+     * Called when the activity is starting.
+     * @param savedInstanceState
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -73,6 +80,11 @@ public class OrganizerCreateFacilityActivity extends AppCompatActivity {
         });
     }
 
+    /**
+     * Handles the back button click event.
+     * @param item
+     * @return
+     */
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         if (item.getItemId() == android.R.id.home) {
@@ -82,6 +94,10 @@ public class OrganizerCreateFacilityActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    /**
+     * Save a facility to the database.
+     * @param facility
+     */
     private void saveFacilityToDatabase(Facility facility) {
         db.collection("facilities")
                 .document(facility.getFacilityId())

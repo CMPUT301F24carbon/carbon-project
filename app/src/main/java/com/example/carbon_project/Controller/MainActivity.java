@@ -21,10 +21,17 @@ import com.example.carbon_project.Model.Organizer;
 import com.example.carbon_project.Model.User;
 import com.example.carbon_project.R;
 
+/**
+ * The MainActivity class is the entry point of the application.
+ */
 public class MainActivity extends AppCompatActivity {
 
     private static final int MULTIPLE_PERMISSIONS_REQUEST_CODE = 101;
 
+    /**
+     * Called when the activity is starting.
+     * @param savedInstanceState
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -54,6 +61,9 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
+    /**
+     * Handles the permissions required for the app.
+     */
     private void handlePermissions() {
         // Check for both permissions
         boolean cameraGranted = ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED;
@@ -79,6 +89,15 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * Callback received when a permissions request has been completed.
+     * @param requestCode The request code passed.
+     * @param permissions The requested permissions. Never null.
+     * @param grantResults The grant results for the corresponding permissions
+     *     which is either {@link android.content.pm.PackageManager#PERMISSION_GRANTED}
+     *     or {@link android.content.pm.PackageManager#PERMISSION_DENIED}. Never null.
+     *
+     */
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         if (requestCode == MULTIPLE_PERMISSIONS_REQUEST_CODE) {
@@ -103,7 +122,11 @@ public class MainActivity extends AppCompatActivity {
         }
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
     }
-
+    /**
+     * Create a new user and navigate to the corresponding dashboard activity.
+     * @param user
+     * @param userType
+     */
         private void createUser(User user, Class<? extends User> userType) {
         User userInstance;
 

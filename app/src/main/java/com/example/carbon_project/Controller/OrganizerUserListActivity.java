@@ -16,6 +16,9 @@ import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.ArrayList;
 
+/**
+ * The OrganizerUserListActivity class is an activity that displays the list of users of an event.
+ */
 public class OrganizerUserListActivity extends AppCompatActivity {
     private FirebaseFirestore db;
     private TextView listNameTextView;
@@ -25,6 +28,10 @@ public class OrganizerUserListActivity extends AppCompatActivity {
     private String eventId;
     private String listType;
 
+    /**
+     * Called when the activity is starting.
+     * @param savedInstanceState
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -71,6 +78,11 @@ public class OrganizerUserListActivity extends AppCompatActivity {
         });
     }
 
+    /**
+     * Handles the back button click event.
+     * @param item
+     * @return
+     */
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         if (item.getItemId() == android.R.id.home) {
@@ -80,6 +92,11 @@ public class OrganizerUserListActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    /**
+     * Fetches the list data from Firestore.
+     * @param eventId
+     * @param listType
+     */
     private void fetchListData(String eventId, String listType) {
         db.collection("events").document(eventId).get()
                 .addOnSuccessListener(documentSnapshot -> {
@@ -99,6 +116,10 @@ public class OrganizerUserListActivity extends AppCompatActivity {
                 });
     }
 
+    /**
+     * Fetches the user's name from Firestore.
+     * @param userId
+     */
     private void fetchUserName(String userId) {
         db.collection("users").document(userId).get()
                 .addOnSuccessListener(userDocument -> {

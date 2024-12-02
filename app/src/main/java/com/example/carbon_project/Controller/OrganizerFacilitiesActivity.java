@@ -27,6 +27,10 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.List;
+
+/**
+ * The OrganizerFacilitiesActivity class is an activity that displays the facilities of an organizer.
+ */
 public class OrganizerFacilitiesActivity extends AppCompatActivity implements EditFacilityFragment.EditFacilityDialogListener {
 
     private RecyclerView facilitiesRecyclerView;
@@ -38,6 +42,10 @@ public class OrganizerFacilitiesActivity extends AppCompatActivity implements Ed
     private Facility lastDeletedFacility;
     private int lastDeletedPosition;
 
+    /**
+     * Called when the activity is starting.
+     * @param savedInstanceState
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -100,6 +108,11 @@ public class OrganizerFacilitiesActivity extends AppCompatActivity implements Ed
         });
     }
 
+    /**
+     * Handles the back button click event.
+     * @param item
+     * @return
+     */
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         if (item.getItemId() == android.R.id.home) {
@@ -109,6 +122,9 @@ public class OrganizerFacilitiesActivity extends AppCompatActivity implements Ed
         return super.onOptionsItemSelected(item);
     }
 
+    /**
+     * Sets up the swipe-to-delete functionality for the RecyclerView.
+     */
     private void setupSwipeToDelete() {
         ItemTouchHelper itemTouchHelper = new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT) {
             @Override
@@ -158,6 +174,11 @@ public class OrganizerFacilitiesActivity extends AppCompatActivity implements Ed
         itemTouchHelper.attachToRecyclerView(facilitiesRecyclerView);
     }
 
+    /**
+     * Deletes a facility and its associated events.
+     * @param facility
+     * @param position
+     */
     private void deleteFacilityAndAssociatedEvents(Facility facility, int position) {
         String facilityId = facility.getFacilityId();
 
@@ -189,6 +210,11 @@ public class OrganizerFacilitiesActivity extends AppCompatActivity implements Ed
                 );
     }
 
+    /**
+     * Updates the facility in the list and notifies the adapter.
+     * @param facility
+     * @param position
+     */
     @Override
     public void updateFacility(Facility facility, int position) {
         facilityList.set(position, facility);

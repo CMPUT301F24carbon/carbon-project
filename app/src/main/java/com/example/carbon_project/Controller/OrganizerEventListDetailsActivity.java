@@ -20,12 +20,20 @@ import com.squareup.picasso.Picasso;
 import java.util.ArrayList;
 import java.util.Random;
 
+/**
+ * The OrganizerEventListDetailsActivity class is an activity that displays the details of an event.
+ */
 public class OrganizerEventListDetailsActivity extends AppCompatActivity {
 
     private FirebaseFirestore db;
     private TextView eventName, eventDescription, eventCapacity, eventStart, eventEnd;
     private ImageView eventImage;
     private Button viewMapButton, viewWaitingListButton, viewSelectedListButton, viewCancelledListButton, viewEnrolledListButton, lotteryButton;
+
+    /**
+     * Called when the activity is starting.
+     * @param savedInstanceState
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -85,6 +93,11 @@ public class OrganizerEventListDetailsActivity extends AppCompatActivity {
         });
     }
 
+    /**
+     * Handles the back button click event.
+     * @param item
+     * @return
+     */
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         if (item.getItemId() == android.R.id.home) {
@@ -94,6 +107,10 @@ public class OrganizerEventListDetailsActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    /**
+     * Fetch event details from Firestore.
+     * @param eventId
+     */
     private void fetchEventDetails(String eventId) {
         db.collection("events").document(eventId).get()
                 .addOnSuccessListener(documentSnapshot -> {
@@ -134,6 +151,10 @@ public class OrganizerEventListDetailsActivity extends AppCompatActivity {
     }
 
 
+    /**
+     * Open the map activity for the event.
+     * @param eventId
+     */
     private void openMapActivity(String eventId) {
         // Intent to open the map activity, passing the event ID
         Intent intent = new Intent(this, OrganizerMapActivity.class);
@@ -141,6 +162,11 @@ public class OrganizerEventListDetailsActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
+    /**
+     * Open a list activity for the event.
+     * @param eventId
+     * @param listType
+     */
     private void openListActivity(String eventId, String listType) {
         // Intent to open a new list activity, passing the event ID and list type
         Intent intent = new Intent(this, OrganizerUserListActivity.class);
@@ -149,6 +175,10 @@ public class OrganizerEventListDetailsActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
+    /**
+     * Run the lottery for the event.
+     * @param eventId
+     */
     private void runLottery(String eventId) {
         db.collection("events").document(eventId).get()
                 .addOnSuccessListener(documentSnapshot -> {

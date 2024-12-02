@@ -20,6 +20,9 @@ import com.google.firebase.firestore.QueryDocumentSnapshot;
 
 import java.util.ArrayList;
 
+/**
+ * The EntrantEventsListActivity class is an activity that displays a list of events for an entrant.
+ */
 public class EntrantEventsListActivity extends AppCompatActivity {
 
     private FirebaseFirestore db;
@@ -29,6 +32,10 @@ public class EntrantEventsListActivity extends AppCompatActivity {
     private Entrant entrant;
     private ArrayList<String> eventIds;
 
+    /**
+     * Called when the activity is starting.
+     * @param savedInstanceState
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -83,6 +90,11 @@ public class EntrantEventsListActivity extends AppCompatActivity {
         });
     }
 
+    /**
+     * Handles the back button click event.
+     * @param item
+     * @return
+     */
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         if (item.getItemId() == android.R.id.home) {
@@ -91,6 +103,11 @@ public class EntrantEventsListActivity extends AppCompatActivity {
         }
         return super.onOptionsItemSelected(item);
     }
+
+    /**
+     * Fetch events from the database
+     * @param userId
+     */
     private void fetchUserSpecificEvents(String userId) {
         eventsList.clear();
         eventIds.clear();
@@ -127,7 +144,10 @@ public class EntrantEventsListActivity extends AppCompatActivity {
                 });
     }
 
-    // Helper method to process each document and add to the list
+    /**
+     * Add event to list
+     * @param document
+     */
     private void addEventToList(QueryDocumentSnapshot document) {
         String eventId = document.getId();
         String eventName = document.getString("name");

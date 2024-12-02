@@ -18,11 +18,18 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
+/**
+ * The SaveQRCodeActivity class is an activity that saves a QR code to a file.
+ */
 public class SaveQRCodeActivity extends AppCompatActivity {
 
     private ImageView qrCodeImageView;
     private Button saveButton;
 
+    /**
+     * Called when the activity is starting.
+     * @param savedInstanceState
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -53,6 +60,10 @@ public class SaveQRCodeActivity extends AppCompatActivity {
         });
     }
 
+    /**
+     * Saves the QR code to a file.
+     * @param qrCodeByteArray
+     */
     private void saveQRCodeToFile(byte[] qrCodeByteArray) {
         // Convert byte array to Bitmap
         Bitmap bitmap = BitmapFactory.decodeByteArray(qrCodeByteArray, 0, qrCodeByteArray.length);

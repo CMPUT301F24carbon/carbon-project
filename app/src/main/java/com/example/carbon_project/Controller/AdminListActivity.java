@@ -11,10 +11,17 @@ import com.example.carbon_project.R;
 import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
 
+/**
+ * The AdminListActivity class is an activity that displays a list of users, events, and facilities for an admin user.
+ */
 public class AdminListActivity extends AppCompatActivity {
     private TabLayout tabLayout;
     private ViewPager2 viewPager;
 
+    /**
+     * Called when the activity is starting.
+     * @param savedInstanceState
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -45,10 +52,19 @@ public class AdminListActivity extends AppCompatActivity {
 
     private static class ViewPagerAdapter extends FragmentStateAdapter {
 
+        /**
+         * Constructs a new ViewPagerAdapter.
+         * @param fragmentActivity
+         */
         public ViewPagerAdapter(@NonNull AppCompatActivity fragmentActivity) {
             super(fragmentActivity);
         }
 
+        /**
+         * Creates a new fragment based on the position.
+         * @param position
+         * @return
+         */
         @NonNull
         @Override
         public Fragment createFragment(int position) {
@@ -64,6 +80,10 @@ public class AdminListActivity extends AppCompatActivity {
             }
         }
 
+        /**
+         * Returns the number of tabs.
+         * @return
+         */
         @Override
         public int getItemCount() {
             return 3; // Number of tabs
