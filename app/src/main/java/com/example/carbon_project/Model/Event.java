@@ -41,7 +41,6 @@ public class Event {
         this.startDate = (String) dataMap.get("startDate");
         this.endDate = (String) dataMap.get("endDate");
 
-        System.out.println("Before");
         if (dataMap.containsKey("waitingList")) {
             this.waitingList = (List<String>) dataMap.get("waitingList");
         } else {
@@ -62,7 +61,6 @@ public class Event {
         } else {
             this.enrolledList = new ArrayList<>();
         }
-        System.out.println("After");
 
         this.eventPosterUrl = (String) dataMap.get("eventPosterUrl");
         this.qrCodeUrl = (String) dataMap.get("qrCodeUrl");
@@ -294,5 +292,22 @@ public class Event {
         map.put("eventStatus", eventStatus);
 
         return map;
+    }
+
+    // Method to get the status of an entrant
+    public String getStatus(String userId) {
+        String status;
+        if (getWaitingList().contains(userId) && getSelectedList() != null) {
+            status = "Waitlist";
+        } else if (getWaitingList().contains(userId)) {
+            status = "Not Selected";
+        } else if (getSelectedList().contains(userId)) {
+            status = "Selected";
+        } else if (getEnrolledList().contains(userId)) {
+            status = "Enrolled";
+        } else {
+            status = "Joinable";
+        }
+        return status;
     }
 }

@@ -34,6 +34,7 @@
                 android:textColor="@android:color/white"
                 android:textSize="24sp"
                 android:visibility="gone"
+                android:layout_gravity="center_horizontal"
                 android:fontFamily="sans-serif-medium" />
 
             <Button

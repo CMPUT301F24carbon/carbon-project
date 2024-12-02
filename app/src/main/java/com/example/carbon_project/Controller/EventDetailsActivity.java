@@ -1,11 +1,13 @@
 package com.example.carbon_project.Controller;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 
 import android.os.Bundle;
 import android.provider.Settings;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -24,7 +26,8 @@ import java.util.Objects;
 public class EventDetailsActivity extends AppCompatActivity {
 
     // UI elements
-    private TextView eventName, eventDescription;
+    private ImageView eventImage;
+    private TextView eventName, eventDescription, eventCapacity, eventDate, eventOrganizer;
     private Button joinButton, leaveButton, enrollButton;
 
     // Firebase and data objects
@@ -37,8 +40,12 @@ public class EventDetailsActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_event_details);
 
+        eventImage = findViewById(R.id.event_image);
         eventName = findViewById(R.id.event_name);
         eventDescription = findViewById(R.id.event_description);
+        eventCapacity = findViewById(R.id.event_capacity);
+        eventDate = findViewById(R.id.event_date);
+        eventOrganizer = findViewById(R.id.event_organizer);
         joinButton = findViewById(R.id.join_event_button);
         leaveButton = findViewById(R.id.leave_event_button);
         enrollButton = findViewById(R.id.enroll_event_button);
@@ -65,14 +72,16 @@ public class EventDetailsActivity extends AppCompatActivity {
                     if (documentSnapshot.exists()) {
                         Map<String, Object> eventData = documentSnapshot.getData();
                         event = new Event(eventData);
-
-                        setUpUI();
-
-                        // Set button click listeners
-                        joinButton.setOnClickListener(v -> handleJoinEvent());
-                        leaveButton.setOnClickListener(v -> handleLeaveEvent());
-                        enrollButton.setOnClickListener(v -> handleEnrollEvent());
-
+                        if (event.getOrganizerId() != null) {
+                            db.collection("users").document(event.getOrganizerId()).get()
+                                    .addOnSuccessListener(documentSnapshot2 -> {
+                                        if (documentSnapshot2.exists()) {
+                                            setUpUI(documentSnapshot2.getString("name"));
+                                        }
+                                    });
+                        } else {
+                            setUpUI(null);
+                        }
                     } else {
                         showError("Event details not found");
                     }
@@ -81,10 +90,26 @@ public class EventDetailsActivity extends AppCompatActivity {
     }
 
     // Set up UI elements
-    private void setUpUI() {
+    private void setUpUI(String organizerName) {
+        if (event.getEventPosterUrl() != null) {
+            // Set Image Here
+        }
         eventName.setText(event.getName());
         eventDescription.setText(event.getDescription());
+        int currentJoined = event.getWaitingList().size() + event.getSelectedList().size() + event.getEnrolledList().size();
+        eventCapacity.setText("Capacity: " + currentJoined + "/" + event.getCapacity());
+        eventDate.setText("Date: " + event.getStartDate() + " to " + event.getEndDate());
+
+        if (organizerName != null) {
+            eventOrganizer.setText("Organizer: " + organizerName);
+        }
+
         updateButtonVisibility();
+
+        // Set button click listeners
+        joinButton.setOnClickListener(v -> handleJoinEvent());
+        leaveButton.setOnClickListener(v -> handleLeaveEvent());
+        enrollButton.setOnClickListener(v -> handleEnrollEvent());
     }
 
     // Update button visibility based on user's list status

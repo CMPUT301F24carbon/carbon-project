@@ -13,6 +13,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.test.espresso.remote.EspressoRemoteMessage;
 
 import com.example.carbon_project.Model.Entrant;
+import com.example.carbon_project.Model.Event;
 import com.example.carbon_project.R;
 import com.example.carbon_project.View.EventsAdapter;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
@@ -21,6 +22,7 @@ import com.google.firebase.firestore.QueryDocumentSnapshot;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 public class EntrantEventsListActivity extends AppCompatActivity {
 
@@ -64,7 +66,6 @@ public class EntrantEventsListActivity extends AppCompatActivity {
         // Fetch all events and update the ListView
         for (String eventId : entrant.getJoinedEvents()) {
             addEventToList(eventId);
-            Toast.makeText(this, eventId, Toast.LENGTH_SHORT).show();
         }
 
         // Back Button
@@ -96,16 +97,16 @@ public class EntrantEventsListActivity extends AppCompatActivity {
         db.collection("events").document(eventId).get()
                 .addOnSuccessListener(documentSnapshot -> {
                     if (documentSnapshot.exists()) {
-                        String eventName = documentSnapshot.getString("name");
-                        String eventStartDate = documentSnapshot.getString("startDate");
-                        String eventEndDate = documentSnapshot.getString("endDate");
-                        String eventDescription = documentSnapshot.getString("description");
-                        int eventCapacity = documentSnapshot.getLong("capacity").intValue();
+                        Map<String, Object> eventData = documentSnapshot.getData();
+                        Event event = new Event(eventData);
 
-                        String eventText = eventName + "\n"
-                                + eventDescription + "\n"
-                                + eventStartDate + " to " + eventEndDate + "\n"
-                                + "Capacity: " + eventCapacity;
+                        String status = event.getStatus(entrant.getUserId());
+
+                        String eventText = event.getName() + "          Status: " + status + "\n"
+                                + event.getDescription() + "\n"
+                                + event.getStartDate() + " to " + event.getEndDate() + "\n"
+                                + "Capacity: " + event.getCapacity();
+
 
                         // Add the event info to the list and the eventId to the ids list
                         eventsList.add(eventText);
