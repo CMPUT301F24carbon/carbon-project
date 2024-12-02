@@ -1,5 +1,6 @@
 package com.example.carbon_project.Controller;
 
+import android.app.AlertDialog;
 import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -46,14 +47,14 @@ public class AdminEventListFragment extends Fragment {
 
         List<Object> data = new ArrayList<>();
 
-
-//        data.add(new Event("event1id", "Event 1", "Desc1", "False_Org", 21, true, "April1", "April2", "URL", "QR", new Facility("FID1", "Test Facility 1", "Unknown", 500, "False_Org")));
-//        data.add(new Event("event2id", "Event 2", "Desc2", "False_Org", 21, true, "April1", "April2", "URL", "QR", new Facility("FID1", "Test Facility 1", "Unknown", 500, "False_Org")));
-//        data.add(new Event("event3id", "Event 3", "Desc3", "False_Org", 21, true, "April1", "April2", "URL", "QR", new Facility("FID1", "Test Facility 1", "Unknown", 500, "False_Org")));
-
         AdminRecyclerViewAdapter adapter = new AdminRecyclerViewAdapter(data, position -> {
             Event clickedEvent = (Event) data.get(position);
-            Toast.makeText(getContext(), "Clicked " + clickedEvent.getName(), Toast.LENGTH_SHORT).show();
+            new AlertDialog.Builder(getContext())
+                    .setTitle("Delete Event")
+                    .setMessage("Are you sure you want to delete this event?")
+                    .setPositiveButton("Confirm", (dialog, which) -> clickedEvent.deleteEvent())
+                    .setNegativeButton("Cancel", (dialog, which) -> dialog.dismiss())
+                    .show();
         });
         recyclerView.setAdapter(adapter);
 
@@ -67,18 +68,7 @@ public class AdminEventListFragment extends Fragment {
                 if (value != null) {
                     data.clear();
                     for (QueryDocumentSnapshot doc:value) {
-                        // collect data needed for event class
-                        String eventId = doc.getId();
-                        String eventName = doc.getString("name");
-                        String description = doc.getString("description");
-                        String organizerId = doc.getString("organizerId");
-                        int capacity = doc.getLong("capacity").intValue();
-                        boolean geolocationRequired = doc.getBoolean("geolocationRequired");
-                        String startDate = doc.getString("startDate");
-                        String endDate = doc.getString("endDate");
-                        String eventPosterURL = doc.getString("eventPosterURL");
-                        String qrURL = doc.getString("qrCodeURL");
-                        data.add(new Event(eventId, eventName, description, organizerId, capacity, geolocationRequired, startDate, endDate, eventPosterURL,qrURL));
+                        data.add(new Event(doc.getData()));
                     }
                     adapter.notifyDataSetChanged();
                 }

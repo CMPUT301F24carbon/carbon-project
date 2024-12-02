@@ -26,7 +26,9 @@ public class User implements Serializable {
         this.email = (String) map.get("email");
         this.phoneNumber = (String) map.get("phoneNumber");
         this.profilePictureUrl = (String) map.get("profilePictureUrl");
-
+        this.fcm = (String) map.get("fcm");
+        this.role = (String) map.get("role");
+      
         this.requestToken();
     }
 
@@ -36,7 +38,7 @@ public class User implements Serializable {
         this.email = email;
         this.phoneNumber = phoneNumber;
         this.role = role;
-        this.profilePictureUrl = null;
+        this.profilePictureUrl = "";
 
         this.requestToken();
     }

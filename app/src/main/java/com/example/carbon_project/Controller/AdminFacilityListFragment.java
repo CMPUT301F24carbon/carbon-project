@@ -1,5 +1,6 @@
 package com.example.carbon_project.Controller;
 
+import android.app.AlertDialog;
 import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -43,13 +44,16 @@ public class AdminFacilityListFragment extends Fragment {
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 
         List<Object> data = new ArrayList<>();
-//        data.add(new Facility("facilityID1", "Facility 1", "Anderossa", 500, "False_Org"));
-//        data.add(new Facility("facilityID2", "Facility 2", "Anderossa", 500, "Falser_Org"));
-//        data.add(new Facility("facilityID3", "Facility 3", "Anderossa", 500, "Falsest_Org"));
 
         AdminRecyclerViewAdapter adapter = new AdminRecyclerViewAdapter(data, position -> {
             Facility clickedFacility = (Facility) data.get(position);
-            Toast.makeText(getContext(), "Clicked " + clickedFacility.getName(), Toast.LENGTH_SHORT).show();
+            new AlertDialog.Builder(getContext())
+                    .setTitle("Delete Facility")
+                    .setMessage("Are you sure you want to delete this facility and all its associated events?")
+                    .setPositiveButton("Confirm", (dialog, which) -> clickedFacility.deleteFacility())
+                    .setNegativeButton("Cancel", (dialog, which) -> dialog.dismiss())
+                    .show();
+
         });
         recyclerView.setAdapter(adapter);
 
