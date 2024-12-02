@@ -16,6 +16,9 @@ import org.osmdroid.util.GeoPoint;
 import org.osmdroid.views.MapView;
 import org.osmdroid.views.overlay.Marker;
 
+import java.util.List;
+import java.util.Map;
+
 public class OrganizerMapActivity extends AppCompatActivity {
 
     private MapView mapView;
@@ -44,7 +47,7 @@ public class OrganizerMapActivity extends AppCompatActivity {
         // Set initial map view
         IMapController mapController = mapView.getController();
         mapController.setZoom(10.0);
-        GeoPoint startPoint = new GeoPoint(37.7749, -122.4194); // Example: San Francisco
+        GeoPoint startPoint = new GeoPoint(53.631611, -113.323975); // Example: Edmonton
         mapController.setCenter(startPoint);
 
         // Fetch geolocations from Firestore and add markers
@@ -53,24 +56,28 @@ public class OrganizerMapActivity extends AppCompatActivity {
 
     private void fetchGeolocationsAndAddMarkers() {
         // Fetch the geolocation data (latitude and longitude) from Firestore
-        db.collection("events") // Replace with the actual collection containing event data
+        db.collection("events").document(eventId)
                 .get()
-                .addOnSuccessListener(queryDocumentSnapshots -> {
-                    for (QueryDocumentSnapshot document : queryDocumentSnapshots) {
-                        Double latitude = document.getDouble("latitude");
-                        Double longitude = document.getDouble("longitude");
+                .addOnSuccessListener(documentSnapshot -> {
+                    List<Map<String, Object>> geoLocations = (List<Map<String, Object>>) documentSnapshot.get("geoLocations");
+                    if (geoLocations != null) {
+                        for (Map<String, Object> location : geoLocations) {
+                            Double latitude = (Double) location.get("latitude");
+                            Double longitude = (Double) location.get("longitude");
+                            Toast.makeText(this, "Latitude: " + latitude + ", Longitude: " + longitude, Toast.LENGTH_SHORT).show();
 
-                        if (latitude != null && longitude != null) {
-                            // Create a GeoPoint for the location
                             GeoPoint geoPoint = new GeoPoint(latitude, longitude);
 
                             // Add a marker on the map
                             Marker marker = new Marker(mapView);
                             marker.setPosition(geoPoint);
-                            marker.setTitle(document.getString("eventName")); // Set event name as the marker title
+                            marker.setTitle(documentSnapshot.getString("eventName")); // Set event name as the marker title
                             mapView.getOverlays().add(marker);
                         }
+                    } else {
+                        Toast.makeText(this, "No entrants found for this event.", Toast.LENGTH_SHORT).show();
                     }
+
                 })
                 .addOnFailureListener(e -> {
                     // Handle failure if needed
