@@ -3,14 +3,17 @@ package com.example.carbon_project.Controller;
 import android.app.DatePickerDialog;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.net.Uri;
 import android.os.Bundle;
-import android.provider.Settings;
+import android.provider.MediaStore;
 import android.util.Base64;
+import android.util.Log;
 import android.view.MenuItem;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -23,8 +26,9 @@ import com.example.carbon_project.Model.Facility;
 import com.example.carbon_project.R;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.WriterException;
 import com.journeyapps.barcodescanner.BarcodeEncoder;
@@ -35,6 +39,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Locale;
 import java.util.UUID;
+
 public class CreateEventActivity extends AppCompatActivity {
 
     private EditText etEventName, etEventDescription, etEventCapacity;
@@ -45,6 +50,8 @@ public class CreateEventActivity extends AppCompatActivity {
     private FirebaseFirestore db;
     private String organizerId;
     private ArrayList<Facility> facilityList;
+    private ImageView ivEventPoster;
+    private Uri selectedPosterUri;
 
     // Variables for the date picker
     private int startYear, startMonth, startDay;
@@ -56,24 +63,26 @@ public class CreateEventActivity extends AppCompatActivity {
         setContentView(R.layout.activity_create_event);
 
         db = FirebaseFirestore.getInstance();
-
-        organizerId = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
+        organizerId = android.provider.Settings.Secure.getString(getContentResolver(), android.provider.Settings.Secure.ANDROID_ID);
 
         // Initialize views
         etEventName = findViewById(R.id.etEventName);
         etEventDescription = findViewById(R.id.etEventDescription);
-        etEventCapacity = findViewById(R.id.etEventCapacity);  // Capacity is now optional
+        etEventCapacity = findViewById(R.id.etEventCapacity);  // Capacity is optional
         tvStartDate = findViewById(R.id.tvStartDate);
         tvEndDate = findViewById(R.id.tvEndDate);
         cbGeolocationRequired = findViewById(R.id.cbGeolocationRequired);
         btnSaveEvent = findViewById(R.id.btnSaveEvent);
         spFacility = findViewById(R.id.spinnerFacility);
+        ivEventPoster = findViewById(R.id.ivEventPoster);
 
         // Initialize the facility list
         facilityList = new ArrayList<>();
 
+        // Set listeners
         tvStartDate.setOnClickListener(v -> showDatePickerDialog(true));
         tvEndDate.setOnClickListener(v -> showDatePickerDialog(false));
+        ivEventPoster.setOnClickListener(v -> openGalleryForImage());
 
         btnSaveEvent.setOnClickListener(v -> createAndSaveEvent());
 
@@ -104,13 +113,11 @@ public class CreateEventActivity extends AppCompatActivity {
     }
 
     private void showDatePickerDialog(boolean isStartDate) {
-        // Initialize the calendar for the date picker dialog
         Calendar calendar = Calendar.getInstance();
         int year = calendar.get(Calendar.YEAR);
         int month = calendar.get(Calendar.MONTH);
         int day = calendar.get(Calendar.DAY_OF_MONTH);
 
-        // Show the date picker dialog
         DatePickerDialog datePickerDialog = new DatePickerDialog(this, (view, year1, month1, dayOfMonth) -> {
             if (isStartDate) {
                 startYear = year1;
@@ -129,7 +136,6 @@ public class CreateEventActivity extends AppCompatActivity {
     }
 
     private String formatDate(int year, int month, int day) {
-        // Format the date as YYYY-MM-DD
         Calendar calendar = Calendar.getInstance();
         calendar.set(year, month, day);
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
@@ -137,7 +143,6 @@ public class CreateEventActivity extends AppCompatActivity {
     }
 
     private void fetchFacilitiesForOrganizer(String organizerId) {
-        // Query Firestore for facilities where the organizerId matches the logged-in user
         db.collection("facilities")
                 .whereEqualTo("organizerId", organizerId)
                 .get()
@@ -167,12 +172,10 @@ public class CreateEventActivity extends AppCompatActivity {
     }
 
     private void createAndSaveEvent() {
-        // Validate inputs
         String eventName = etEventName.getText().toString().trim();
         String eventDescription = etEventDescription.getText().toString().trim();
 
-        // If eventCapacity is empty, set it to -1 (optional field)
-        int eventCapacity = -1; // Default value when the field is empty
+        int eventCapacity = Integer.MAX_VALUE;
         String capacityText = etEventCapacity.getText().toString().trim();
         if (!capacityText.isEmpty()) {
             try {
@@ -189,63 +192,89 @@ public class CreateEventActivity extends AppCompatActivity {
             return;
         }
 
-        // Get the geolocation requirement
         boolean geolocationRequired = cbGeolocationRequired.isChecked();
 
-        // Get the selected facility from the spinner
         int selectedFacilityPosition = spFacility.getSelectedItemPosition();
         if (selectedFacilityPosition == -1) {
             Toast.makeText(this, "Please select a facility", Toast.LENGTH_SHORT).show();
             return;
         }
 
-        Facility selectedFacility = facilityList.get(selectedFacilityPosition);
-
         String eventId = UUID.randomUUID().toString();
         byte[] qrCode = generateQRCodeForEvent(eventId);
         String qrUri = byteArrayToUri(qrCode);
 
-        // Event poster URL (assuming the organizer uploads an image)
-        String eventPosterUrl = "default_poster_url";
-        Event event = new Event(eventId, eventName, eventDescription, organizerId, eventCapacity, geolocationRequired, tvStartDate.getText().toString(), tvEndDate.getText().toString(), eventPosterUrl, qrUri);
+        if (selectedPosterUri != null) {
+            uploadEventPoster(selectedPosterUri, eventId, qrCode, qrUri);
+        } else {
+            String eventPosterUrl = "default_poster_url";
+            Event event = new Event(eventId, eventName, eventDescription, organizerId, eventCapacity, geolocationRequired, tvStartDate.getText().toString(), tvEndDate.getText().toString(), eventPosterUrl, qrUri);
 
-        // Save the event to Firestore
-        db.collection("events").document(eventId).set(event.toMap())
+            saveEventToFirestore(event);
+        }
+    }
+
+    private void uploadEventPoster(Uri posterUri, String eventId, byte[] qrCode, String qrUri) {
+        FirebaseStorage storage = FirebaseStorage.getInstance();
+        StorageReference storageRef = storage.getReference().child("event_posters/" + eventId + ".jpg");
+
+        storageRef.putFile(posterUri)
+                .addOnSuccessListener(taskSnapshot -> {
+                    storageRef.getDownloadUrl().addOnSuccessListener(uri -> {
+                        String eventPosterUrl = uri.toString();
+                        Event event = new Event(eventId, etEventName.getText().toString().trim(), etEventDescription.getText().toString().trim(), organizerId,
+                                Integer.parseInt(etEventCapacity.getText().toString()), cbGeolocationRequired.isChecked(), tvStartDate.getText().toString(),
+                                tvEndDate.getText().toString(), eventPosterUrl, qrUri);
+
+                        saveEventToFirestore(event);
+                    });
+                })
+                .addOnFailureListener(e -> {
+                    Toast.makeText(CreateEventActivity.this, "Error uploading event poster: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                });
+    }
+
+    private void saveEventToFirestore(Event event) {
+        db.collection("events").document(event.getEventId()).set(event)
                 .addOnSuccessListener(aVoid -> {
                     Toast.makeText(CreateEventActivity.this, "Event created successfully", Toast.LENGTH_SHORT).show();
-                    // Navigate to the QR code activity
                     Intent intent = new Intent(CreateEventActivity.this, SaveQRCodeActivity.class);
-                    intent.putExtra("qrCodeByteArray", qrCode);     // Pass the byte array
+                    intent.putExtra("qrCodeByteArray", generateQRCodeForEvent(event.getEventId()));  // Pass the byte array
                     startActivity(intent);
                 })
                 .addOnFailureListener(e -> {
-                    Toast.makeText(CreateEventActivity.this, "Error creating event: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(CreateEventActivity.this, "Error saving event: " + e.getMessage(), Toast.LENGTH_SHORT).show();
                 });
-
-        // Add the event to the organizer's list of created events
-        db.collection("users").document(organizerId).update("createdEvents", FieldValue.arrayUnion(eventId));
     }
 
-    // Generate a QR code in byte array format
     private byte[] generateQRCodeForEvent(String eventId) {
         try {
-            // Generate the QR code Bitmap
             BarcodeEncoder barcodeEncoder = new BarcodeEncoder();
             Bitmap bitmap = barcodeEncoder.encodeBitmap(eventId, BarcodeFormat.QR_CODE, 200, 200);
-
-            // Convert the Bitmap into a byte array
             ByteArrayOutputStream stream = new ByteArrayOutputStream();
             bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream);
             return stream.toByteArray();
         } catch (WriterException e) {
-            System.err.println("Error generating QR code: " + e.getMessage());
+            Log.e("CreateEvent", "Error generating QR code", e);
             return null;
         }
     }
 
-    // Turn a Byte array into a base64-encoded Uri to be stored in Firestore
-    public String byteArrayToUri(byte[] byteArray) {
-        // Convert byte array to Base64 string
-        return Base64.encodeToString(byteArray, Base64.DEFAULT);
+    private String byteArrayToUri(byte[] qrCode) {
+        return Base64.encodeToString(qrCode, Base64.DEFAULT);
+    }
+
+    private void openGalleryForImage() {
+        Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+        startActivityForResult(intent, 100); // Request code 100
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == 100 && resultCode == RESULT_OK && data != null) {
+            selectedPosterUri = data.getData();
+            ivEventPoster.setImageURI(selectedPosterUri);
+        }
     }
 }
