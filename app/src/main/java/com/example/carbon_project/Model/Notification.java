@@ -12,8 +12,16 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * Represents a notification in the system.
+ */
 public class Notification {
 
+    /**
+     * Sends notifications to a list of users.
+     * @param users
+     * @param body
+     */
     public static void sendtoUsers(List<String> users, String body) {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         if (users != null) {
@@ -38,7 +46,11 @@ public class Notification {
         }
     }
 
-    //this sends a notification to all selected users in an event
+    /**
+     * Send a notification to all selected users in an event.
+     * @param eventId
+     * @param body
+     */
     public static void sendToSelected(String eventId, String body) {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         db.collection("events")
@@ -73,7 +85,11 @@ public class Notification {
                 });
     }
 
-    //this sends a notification to all wating users in an event
+    /**
+     * Send a notification to all waiting users in an event.
+     * @param eventId
+     * @param body
+     */
     public static void sendToWating(String eventId, String body) {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         db.collection("events")
@@ -108,6 +124,11 @@ public class Notification {
                 });
     }
 
+    /**
+     * Send a notification to all enrolled users in an event.
+     * @param eventId
+     * @param body
+     */
     public static void sendToEnrolled(String eventId, String body) {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         db.collection("events")
@@ -142,6 +163,11 @@ public class Notification {
                 });
     }
 
+    /**
+     * Send FCM notifications to a list of tokens.
+     * @param fcmTokens
+     * @param body
+     */
     private static void sendFcmNotifications(List<String> fcmTokens, String body) {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
 
