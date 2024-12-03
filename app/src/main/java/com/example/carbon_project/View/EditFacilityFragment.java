@@ -42,7 +42,7 @@ public class EditFacilityFragment extends DialogFragment {
         if (context instanceof EditFacilityDialogListener) {
             listener = (EditFacilityDialogListener) context;
         } else {
-            throw new RuntimeException(context + " must implement EditFacilityDialogListener");
+            throw new RuntimeException(context + "  must implement EditFacilityDialogListener");
         }
     }
 
