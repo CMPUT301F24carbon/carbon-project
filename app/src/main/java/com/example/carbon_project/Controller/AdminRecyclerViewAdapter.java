@@ -111,7 +111,7 @@ public class AdminRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.
             }
             name.setText(item.getName());
             email.setText(item.getEmail());
-            if (item.getPhoneNumber() != null || !item.getPhoneNumber().isEmpty()) {
+            if (item.getPhoneNumber() != null && !item.getPhoneNumber().isEmpty()) {
                 phone.setVisibility(View.VISIBLE);
                 phone.setText(item.getPhoneNumber());
             }

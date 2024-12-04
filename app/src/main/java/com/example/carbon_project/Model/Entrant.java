@@ -24,7 +24,7 @@ public class Entrant extends User implements Serializable {
      */
     public Entrant(Map<String, Object> map) {
         super(map);
-        this.role = "entrant"; // Set the role to "entrant"
+        this.setRole("entrant"); // Set the role to "entrant"
         if (map.containsKey("joinedEvents")) {
             this.joinedEvents = (List<String>) map.get("joinedEvents");
         } else {

@@ -1,7 +1,9 @@
 package com.example.carbon_project.Controller;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
@@ -10,12 +12,15 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.carbon_project.Model.Notification;
 import com.example.carbon_project.R;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
@@ -27,6 +32,10 @@ public class OrganizerEventListDetailsActivity extends AppCompatActivity {
     private TextView eventName, eventDescription, eventCapacity, eventStart, eventEnd;
     private ImageView eventImage;
     private Button viewMapButton, viewWaitingListButton, viewSelectedListButton, viewCancelledListButton, viewEnrolledListButton, lotteryButton, notifButton;
+
+    private String eventId;
+    private Uri imageUri;
+    private static final int PICK_IMAGE_REQUEST = 101;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,7 +52,6 @@ public class OrganizerEventListDetailsActivity extends AppCompatActivity {
         eventCapacity = findViewById(R.id.event_capacity);
         eventStart = findViewById(R.id.event_start_date);
         eventEnd = findViewById(R.id.event_end_date);
-        eventImage = findViewById(R.id.event_image);
         notifButton = findViewById(R.id.notif_button);
         lotteryButton = findViewById(R.id.lottery_button);
 
@@ -54,7 +62,7 @@ public class OrganizerEventListDetailsActivity extends AppCompatActivity {
         viewEnrolledListButton = findViewById(R.id.view_enrolled_list_button);
 
         // Get the event ID from Intent
-        String eventId = getIntent().getStringExtra("eventId");
+        eventId = getIntent().getStringExtra("eventId");
         if (eventId != null) {
             fetchEventDetails(eventId);
         } else {
@@ -62,11 +70,12 @@ public class OrganizerEventListDetailsActivity extends AppCompatActivity {
         }
 
         // Button Click Listeners
-        viewMapButton.setOnClickListener(v -> openMapActivity(eventId));
-        viewWaitingListButton.setOnClickListener(v -> openListActivity(eventId, "waitingList"));
-        viewSelectedListButton.setOnClickListener(v -> openListActivity(eventId, "selectedList"));
-        viewCancelledListButton.setOnClickListener(v -> openListActivity(eventId, "cancelledList"));
-        viewEnrolledListButton.setOnClickListener(v -> openListActivity(eventId, "enrolledList"));
+        eventImage.setOnClickListener(v -> openImagePicker());
+        viewMapButton.setOnClickListener(v -> openMapActivity());
+        viewWaitingListButton.setOnClickListener(v -> openListActivity("waitingList"));
+        viewSelectedListButton.setOnClickListener(v -> openListActivity("selectedList"));
+        viewCancelledListButton.setOnClickListener(v -> openListActivity("cancelledList"));
+        viewEnrolledListButton.setOnClickListener(v -> openListActivity("enrolledList"));
         notifButton.setOnClickListener(v -> {
             Intent intent = new Intent(this, OrganizerSendNotifActivity.class);
             intent.putExtra("eventId", eventId);
@@ -74,7 +83,7 @@ public class OrganizerEventListDetailsActivity extends AppCompatActivity {
         });
         lotteryButton.setOnClickListener(v -> {
             if (eventId != null) {
-                runLottery(eventId);
+                runLottery();
             }
         });
 
@@ -142,14 +151,14 @@ public class OrganizerEventListDetailsActivity extends AppCompatActivity {
     }
 
 
-    private void openMapActivity(String eventId) {
+    private void openMapActivity() {
         // Intent to open the map activity, passing the event ID
         Intent intent = new Intent(this, OrganizerMapActivity.class);
         intent.putExtra("eventId", eventId);
         startActivity(intent);
     }
 
-    private void openListActivity(String eventId, String listType) {
+    private void openListActivity(String listType) {
         // Intent to open a new list activity, passing the event ID and list type
         Intent intent = new Intent(this, OrganizerUserListActivity.class);
         intent.putExtra("eventId", eventId);
@@ -157,7 +166,7 @@ public class OrganizerEventListDetailsActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
-    private void runLottery(String eventId) {
+    private void runLottery() {
         db.collection("events").document(eventId).get()
                 .addOnSuccessListener(documentSnapshot -> {
                     if (documentSnapshot.exists()) {
@@ -208,5 +217,47 @@ public class OrganizerEventListDetailsActivity extends AppCompatActivity {
                 });
     }
 
+    private void openImagePicker() {
+        Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+        intent.setType("image/*");
+        startActivityForResult(intent, PICK_IMAGE_REQUEST);
+    }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == PICK_IMAGE_REQUEST && resultCode == RESULT_OK && data != null && data.getData() != null) {
+            imageUri = data.getData();
+
+            // Display selected image in the ImageView
+            eventImage.setImageURI(imageUri);
+
+            // Upload the image to Firebase Storage
+            uploadImageToFirebase();
+        }
+    }
+
+    private void uploadImageToFirebase() {
+        if (imageUri != null) {
+            StorageReference storageRef = FirebaseStorage.getInstance().getReference();
+            StorageReference fileRef = storageRef.child("event_posters/" + eventId + ".jpg");
+            fileRef.putFile(imageUri)
+                    .addOnSuccessListener(taskSnapshot -> fileRef.getDownloadUrl()
+                            .addOnSuccessListener(uri -> {
+                                // Get the download URL
+                                String downloadUrl = uri.toString();
+
+                                // Update Firestore with the new image URL
+                                String eventId = getIntent().getStringExtra("eventId");
+                                db.collection("events").document(eventId)
+                                        .update("eventPosterUrl", downloadUrl)
+                                        .addOnSuccessListener(aVoid -> Toast.makeText(this, "Image uploaded successfully!", Toast.LENGTH_SHORT).show())
+                                        .addOnFailureListener(e -> Toast.makeText(this, "Failed to update Firestore: " + e.getMessage(), Toast.LENGTH_SHORT).show());
+                            }))
+                    .addOnFailureListener(e -> Toast.makeText(this, "Failed to upload image: " + e.getMessage(), Toast.LENGTH_SHORT).show());
+        } else {
+            Toast.makeText(this, "No image selected.", Toast.LENGTH_SHORT).show();
+        }
+    }
 }

@@ -30,6 +30,20 @@ public class User implements Serializable {
 
     private String fcm;                // FCM token used for sending notifications
 
+
+    public User(Map<String, Object> map) {
+        this.userId = (String) map.get("userId");
+        this.name = (String) map.get("name");
+        this.email = (String) map.get("email");
+        this.phoneNumber = (String) map.get("phoneNumber");
+        this.profilePictureUrl = (String) map.get("profilePictureUrl");
+        this.fcm = (String) map.get("fcm");
+        if (fcm == null || fcm.isEmpty()) {
+            this.requestToken();
+        }
+        this.role = (String) map.get("role");
+    }
+
     /**
      * Constructor for creating a User object with essential details and generating an FCM token.
      * The FCM token is retrieved from Firebase Cloud Messaging and saved to Firestore.
@@ -48,17 +62,7 @@ public class User implements Serializable {
         this.role = role;
         this.profilePictureUrl = null;
 
-        // Retrieve FCM token from Firebase Cloud Messaging (FCM) and store it
-        FirebaseMessaging.getInstance().getToken()
-                .addOnCompleteListener(task -> {
-                    if (task.isSuccessful()) {
-                        this.fcm = task.getResult();
-                        this.saveToFirestore();  // Save user to Firestore once FCM token is retrieved
-                        Log.d("Success", this.fcm);
-                    } else {
-                        System.err.println("Failed to retrieve FCM token");
-                    }
-                });
+        this.requestToken();
     }
 
     /**
@@ -78,9 +82,8 @@ public class User implements Serializable {
         this.phoneNumber = phoneNumber;
         this.role = role;
         this.profilePictureUrl = profilePictureUrl;
-    }
 
-    public User(Map<String, Object> map) {
+        this.requestToken();
     }
 
     // Getter and Setter methods for each field
@@ -225,5 +228,19 @@ public class User implements Serializable {
         map.put("profilePictureUrl", profilePictureUrl);
         map.put("fcm", fcm);
         return map;
+    }
+
+    private void requestToken(){
+        FirebaseMessaging.getInstance().getToken()
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        // Retrieve the FCM token
+                        this.fcm = task.getResult();
+                        this.saveToFirestore();
+                        Log.d("Success", this.fcm);
+                    } else {
+                        System.err.println("Failed to retrieve FCM token");
+                    }
+                });
     }
 }

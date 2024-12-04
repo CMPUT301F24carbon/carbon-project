@@ -19,7 +19,7 @@ public class Admin extends User implements Serializable {
      */
     public Admin(Map<String, Object> map) {
         super(map);
-        this.role = "admin"; // Set the role to "admin"
+        this.setRole("admin"); // Set the role to "admin"
     }
 
     /**

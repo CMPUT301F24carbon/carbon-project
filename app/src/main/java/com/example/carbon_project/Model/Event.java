@@ -29,7 +29,6 @@ public class Event {
     private String endDate;
     private String eventPosterUrl;
     private String qrCodeUrl;
-    private String eventStatus;
 
     private List<String> waitingList;
     private List<String> selectedList;
@@ -244,24 +243,6 @@ public class Event {
      */
     public void setQrCodeUrl(String qrCodeUrl) {
         this.qrCodeUrl = qrCodeUrl;
-    }
-
-    /**
-     * Returns the status of the event.
-     *
-     * @return The event status.
-     */
-    public String getEventStatus() {
-        return eventStatus;
-    }
-
-    /**
-     * Sets the status of the event.
-     *
-     * @param eventStatus The event status.
-     */
-    public void setEventStatus(String eventStatus) {
-        this.eventStatus = eventStatus;
     }
 
     /**
